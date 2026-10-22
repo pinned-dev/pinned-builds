@@ -1,0 +1,7 @@
+# The one pinned toolchain for every recipe. scripts/fetch-toolchain.sh reads
+# these keys (it does not source this file) and refuses any archive whose
+# SHA-256 differs from TOOLCHAIN_SHA256.
+TOOLCHAIN_TAG=toolchain-v2-670d6e7d
+TOOLCHAIN_ASSET=pinned-toolchain-v2-x86_64-linux-670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e.tar.zst
+TOOLCHAIN_SHA256=670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e
+TOOLCHAIN_URL=https://github.com/pinned-dev/pinned-builds/releases/download/toolchain-v2-670d6e7d/pinned-toolchain-v2-x86_64-linux-670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e.tar.zst

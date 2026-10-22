@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(pb_cmake_chain_smoke CXX)
+find_package(spdlog 1.15.3 EXACT REQUIRED CONFIG)
+find_package(fmt 11.2.0 EXACT REQUIRED CONFIG)
+add_executable(smoke_chain smoke_chain.cpp)
+target_link_libraries(smoke_chain PRIVATE spdlog::spdlog fmt::fmt)

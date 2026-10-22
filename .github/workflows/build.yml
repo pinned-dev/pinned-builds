@@ -1,0 +1,123 @@
+# Build every recipe under recipes/ with the pinned toolchain on GitHub-hosted
+# runners and keep a results manifest (digests only) per recipe.
+#
+# Rules for this workflow: read-only token, no secrets, no
+# pull_request_target, GitHub-hosted runners only, actions pinned by full
+# commit SHA. Results are digests and safe metadata (results/, CC0-1.0), not
+# raw logs, and they are public-corpus evidence only.
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      recipe:
+        description: "Build only this recipe (empty: all recipes)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  fetch-toolchain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      recipes: ${{ steps.plan.outputs.recipes }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download and verify the toolchain (anonymous, fail closed)
+        run: |
+          mkdir -p "$RUNNER_TEMP/toolchain"
+          scripts/fetch-toolchain.sh download "$RUNNER_TEMP/toolchain/toolchain.tar.zst"
+          # Unpack once here as well, so a bad archive fails before any fan-out.
+          scripts/fetch-toolchain.sh install "$RUNNER_TEMP/toolchain/toolchain.tar.zst" \
+            "$RUNNER_TEMP/toolchain-check"
+
+      - name: List recipes for the build matrix
+        id: plan
+        env:
+          ONLY: ${{ inputs.recipe }}
+        run: |
+          recipes=$(find recipes -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | LC_ALL=C sort)
+          if [ -n "$ONLY" ]; then
+            grep -qxF -- "$ONLY" <<< "$recipes" || { echo "no recipe named $ONLY" >&2; exit 1; }
+            recipes=$ONLY
+          fi
+          while read -r r; do
+            [[ $r =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo "bad recipe name: $r" >&2; exit 1; }
+          done <<< "$recipes"
+          echo "recipes=$(jq -cnR '[inputs]' <<< "$recipes")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: toolchain
+          path: ${{ runner.temp }}/toolchain/toolchain.tar.zst
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+
+  build:
+    needs: fetch-toolchain
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        recipe: ${{ fromJSON(needs.fetch-toolchain.outputs.recipes) }}
+    name: build (${{ matrix.recipe }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: toolchain
+          path: ${{ runner.temp }}/toolchain
+
+      - name: Install the toolchain (digest re-checked against toolchain.lock)
+        run: |
+          scripts/fetch-toolchain.sh install "$RUNNER_TEMP/toolchain/toolchain.tar.zst" \
+            "$RUNNER_TEMP/pinned-toolchain-v2"
+          rm -f "$RUNNER_TEMP/toolchain/toolchain.tar.zst"
+
+      - name: Build ${{ matrix.recipe }}
+        env:
+          RECIPE: ${{ matrix.recipe }}
+        run: |
+          PB_TOOLCHAIN_ARCHIVE_SHA256=$(grep -E '^TOOLCHAIN_SHA256=' toolchain.lock | cut -d= -f2) \
+            scripts/build-recipe.sh "$RECIPE" "$RUNNER_TEMP/pinned-toolchain-v2" \
+            "$RUNNER_TEMP/work" "results/$RECIPE.json"
+
+      - name: Show the results manifest
+        if: always()
+        env:
+          RECIPE: ${{ matrix.recipe }}
+        run: |
+          if [ -f "results/$RECIPE.json" ]; then
+            jq '{recipe, status, outputs: .outputs.digest, toolchain: .toolchain.archive_sha256, runner}' \
+              "results/$RECIPE.json"
+          fi
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: results-${{ matrix.recipe }}
+          path: results/${{ matrix.recipe }}.json
+          if-no-files-found: ignore
