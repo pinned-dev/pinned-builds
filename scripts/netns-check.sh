@@ -13,7 +13,8 @@
 # Positive controls: https://github.com is reachable; a unix socket listening
 # under $HOME and one under /var/tmp accept connections; a probe file under
 # $HOME is writable; the environ of the probe socket processes is readable;
-# a probe file under /dev/shm exists (when /dev/shm is writable); a probe
+# a probe file under /dev/shm exists (when /dev/shm is writable); a POSIX
+# message queue shows under /dev/mqueue (when it is mounted); a probe
 # pty opens for writing.
 #
 # The negative check requires: only lo; https and TCP by address fail; no
@@ -309,7 +310,18 @@ sandbox_token() {
 }
 
 # (globals, because the EXIT trap runs after outside() has returned)
-h='' v='' shm='' pids=()
+h='' v='' shm='' mq='' pids=()
+
+# mqueue <create|unlink> <name>: a POSIX message queue /<name> on the host.
+mqueue() {
+  python3 -I -c 'import ctypes, os, sys
+libc = ctypes.CDLL(None, use_errno=True)
+name = ("/" + sys.argv[2]).encode()
+if sys.argv[1] == "create":
+    fd = libc.mq_open(name, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600, None)
+    sys.exit(1 if fd < 0 or libc.close(fd) != 0 else 0)
+sys.exit(0 if libc.mq_unlink(name) == 0 else 1)' "$1" "$2"
+}
 outside() {
   local s rc pty
   host_userns
@@ -326,6 +338,7 @@ outside() {
     if [ -n "$h" ]; then rm -f "$h/s.sock" "$h/probe" "$h/pty"; rmdir "$h" 2> /dev/null || true; fi
     if [ -n "$v" ]; then rm -f "$v/s.sock"; rmdir "$v" 2> /dev/null || true; fi
     if [ -n "$shm" ]; then rm -f "$shm"; fi
+    if [ -n "$mq" ]; then mqueue unlink "$mq" 2> /dev/null || true; fi
   }
   trap cleanup EXIT
   for s in "$h/s.sock" "$v/s.sock"; do
@@ -362,6 +375,13 @@ time.sleep(120)' "$h/pty" &
   pty=$(head -n 1 "$h/pty" 2> /dev/null || true)
   case "$pty" in /dev/pts/[0-9]*) ;; *) die host-pty "positive control: no probe pty" ;; esac
   writable "$pty" || die host-pty "positive control: the probe pty $pty is not writable on the host"
+  # A POSIX message queue, where the host has the mqueue filesystem mounted:
+  # it shows under /dev/mqueue, which the sandbox must hide.
+  if mountpoint -q /dev/mqueue 2> /dev/null; then
+    mq=netns-check.$$.$RANDOM
+    mqueue create "$mq" && [ -e "/dev/mqueue/$mq" ] ||
+      die host-mqueue "positive control: cannot create a message queue visible under /dev/mqueue"
+  fi
   if [ -d /dev/shm ] && [ -w /dev/shm ]; then
     shm=$(mktemp /dev/shm/.netns-check.XXXXXX) || die host-shm "cannot create a probe file under /dev/shm"
   fi
