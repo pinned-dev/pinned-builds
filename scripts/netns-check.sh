@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Prove that the sandbox recipe builds run in (sandbox.sh) has no network and
-# cannot write outside its work directory.
+# Prove that the sandbox recipe builds run in (sandbox.sh) has no network,
+# cannot write outside its work directory, and cannot see the runner's
+# processes, IPC objects or keyrings.
 #
 #   netns-check.sh          positive controls on the host, then the negative
 #                           check inside the sandbox; exit 0 only if the host
@@ -10,7 +11,8 @@
 #
 # Positive controls: https://github.com is reachable; a unix socket listening
 # under $HOME and one under /var/tmp accept connections; a probe file under
-# $HOME is writable.
+# $HOME is writable; the environ of the probe socket processes is readable;
+# a probe file under /dev/shm exists (when /dev/shm is writable).
 #
 # The negative check requires: only lo; https and TCP by address fail; no
 # mount is writable except /tmp and the work directories; no docker or
@@ -21,7 +23,12 @@
 # not writable; no descriptor above 2, and none of 0-2 is a socket; every
 # capability set is empty and no_new_privs is set; unmounting $HOME,
 # remounting / or $HOME read-write, and doing either from a nested user
-# namespace all fail.
+# namespace all fail; the PID namespace differs from the host's and /proc is
+# its own, no host process (this script's, sandbox.sh's and its parent's) is
+# visible in /proc and none of their environ can be read; unmounting /proc
+# from a nested user namespace fails; the IPC namespace differs from the
+# host's and /dev/shm and /dev/mqueue are empty; the session keyring differs
+# from the host's and is empty.
 #
 # On ubuntu-24.04 runners unprivileged user namespaces are blocked by AppArmor
 # until kernel.apparmor_restrict_unprivileged_userns is set to 0.
@@ -43,10 +50,14 @@ SOCKETS="/var/run/docker.sock /run/docker.sock /run/containerd/containerd.sock /
 INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
             writable-outside devnull workdir-not-writable caps no-new-privs
             umount-home remount-root remount-home nested-remount-root
-            nested-umount-home inherited-fd fd-socket rw-mount)
+            nested-umount-home inherited-fd fd-socket rw-mount host-info pid-ns
+            proc-not-own host-pid-visible host-environ-readable
+            nested-umount-proc ipc-ns ipc-visible keyring-shared
+            keyring-not-empty)
 SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
-             [116]=workdir-rw [117]=check-not-run [125]=usage)
+             [116]=workdir-rw [117]=check-not-run [118]=session-keyring
+             [125]=usage)
 
 # summary <line>: one sanitized line for the GitHub step summary, if any.
 summary() {
@@ -98,8 +109,17 @@ except OSError:
 
 writable() { (: >> "$1") 2> /dev/null; }
 
+# starttime <pid>: the start time of a process (field 22 of its stat).
+starttime() {
+  local s
+  read -r s 2> /dev/null < "/proc/$1/stat" || return 1
+  s=${s##*) }
+  set -- $s
+  echo "${20}"
+}
+
 inside() {
-  local ifaces s f fd n target found
+  local ifaces s f fd n p target found
   # /proc/net/dev lists the interfaces of the current network namespace.
   ifaces=$(tail -n +3 /proc/net/dev | cut -d: -f1 | tr -d ' ' | sort | tr '\n' ' ')
   [ "$ifaces" = "lo " ] || die ifaces "namespace has interfaces other than lo: $ifaces"
@@ -119,11 +139,11 @@ inside() {
   # /tmp and the work directories.
   found=$(python3 -I -c 'import re, sys
 unesc = lambda p: re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), p)
-allowed = ["/tmp"] + sys.argv[1:]
+rw = sys.argv[1:]
 for line in open("/proc/self/mountinfo"):
     f = line.split()
     mp, opts = unesc(f[4]), f[5].split(",")
-    if "rw" in opts and not any(mp == a or mp.startswith(a.rstrip("/") + "/") for a in allowed):
+    if "rw" in opts and mp != "/tmp" and not any(mp == a or mp.startswith(a.rstrip("/") + "/") for a in rw):
         print(mp)
         break' ${PB_SANDBOX_RW:-}) || die rw-mount "cannot read the mount table"
   [ -z "$found" ] || die rw-mount "a writable mount inside the sandbox: $found"
@@ -150,6 +170,33 @@ for line in open("/proc/self/mountinfo"):
   if unshare --user --mount -- umount -l "$HOME" 2> /dev/null; then
     die nested-umount-home "a nested user namespace could unmount \$HOME"
   fi
+  # PID namespace: not the host's, /proc is its own (/proc/self is this
+  # shell), and no host process sandbox.sh named is there (same PID and same
+  # start time), nor its environ readable.
+  [ -n "${PB_HOST_PIDNS:-}" ] && [ -n "${PB_HOST_IPCNS:-}" ] && [ -n "${PB_HOST_KEYRING:-}" ] &&
+    [ -n "${PB_HOST_PIDS:-}" ] || die host-info "sandbox.sh passed no host namespaces, keyring or processes"
+  [ "$(readlink /proc/self/ns/pid)" != "$PB_HOST_PIDNS" ] || die pid-ns "the sandbox shares the host PID namespace"
+  s=''
+  read -r s _ < /proc/self/stat 2> /dev/null || true
+  [ "$s" = "$$" ] || die proc-not-own "/proc is not the sandbox's own"
+  for p in $PB_HOST_PIDS; do
+    n=${p%%:*}
+    # (a sandbox process may have the same PID, but not the same start time)
+    [ "$(starttime "$n" || true)" = "${p#*:}" ] || continue
+    if head -c 1 "/proc/$n/environ" > /dev/null 2>&1; then
+      die host-environ-readable "the environ of host process $n is readable inside the sandbox"
+    fi
+    die host-pid-visible "host process $n is visible inside the sandbox"
+  done
+  if unshare --user --map-root-user --mount -- umount -l /proc 2> /dev/null; then
+    die nested-umount-proc "a nested user namespace could unmount /proc"
+  fi
+  [ "$(readlink /proc/self/ns/ipc)" != "$PB_HOST_IPCNS" ] || die ipc-ns "the sandbox shares the host IPC namespace"
+  found=$(find /dev/shm /dev/mqueue -mindepth 1 -print -quit 2> /dev/null || true)
+  [ -z "$found" ] || die ipc-visible "a host IPC object is visible inside the sandbox: $found"
+  read -r s n < <(python3 -I "$HERE/session-keyring.py" --show) || die keyring-shared "no session keyring inside the sandbox"
+  [ "$s" != "$PB_HOST_KEYRING" ] || die keyring-shared "the sandbox shares the host session keyring"
+  [ "$n" = 0 ] || die keyring-not-empty "the sandbox session keyring is not empty"
   for fd in "/proc/$$/fd"/*; do
     n=${fd##*/}
     [ -e "$fd" ] || continue # the descriptor the glob itself used, now closed
@@ -162,11 +209,13 @@ for line in open("/proc/self/mountinfo"):
   echo "netns-check: inside: interfaces [${ifaces% }], $PROBE_URL unreachable, TCP by address refused," \
        "only /tmp and work dirs mounted writable, docker/containerd and probe sockets unreachable, no sockets under /run /tmp /var/tmp \$HOME," \
        "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket," \
-       "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused"
+       "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused," \
+       "own PID namespace and /proc, no host process visible or its environ readable," \
+       "own IPC namespace, /dev/shm and /dev/mqueue empty, new empty session keyring"
 }
 
 # (globals, because the EXIT trap runs after outside() has returned)
-h='' v='' pids=()
+h='' v='' shm='' pids=()
 outside() {
   local s rc
   host_userns
@@ -182,10 +231,11 @@ outside() {
     [ ${#pids[@]} -eq 0 ] || kill "${pids[@]}" 2> /dev/null || true
     if [ -n "$h" ]; then rm -f "$h/s.sock" "$h/probe"; rmdir "$h" 2> /dev/null || true; fi
     if [ -n "$v" ]; then rm -f "$v/s.sock"; rmdir "$v" 2> /dev/null || true; fi
+    if [ -n "$shm" ]; then rm -f "$shm"; fi
   }
   trap cleanup EXIT
   for s in "$h/s.sock" "$v/s.sock"; do
-    python3 -I -c 'import socket, sys, time
+    PB_NETNS_CHECK_ENVIRON_PROBE=1 python3 -I -c 'import socket, sys, time
 s = socket.socket(socket.AF_UNIX)
 s.bind(sys.argv[1])
 s.listen(8)
@@ -198,9 +248,17 @@ time.sleep(120)' "$s" &
     connects "$s" || die host-probe-socket "positive control: the probe socket $s does not accept connections"
   done
   writable "$h/probe" || die host-probe-file "positive control: $h/probe is not writable on the host"
-  echo "netns-check: host reaches $PROBE_URL and the probe sockets; probe file writable"
+  for s in "${pids[@]}"; do
+    tr '\0' '\n' < "/proc/$s/environ" | grep -qx PB_NETNS_CHECK_ENVIRON_PROBE=1 ||
+      die host-environ "positive control: the environ of probe process $s is not readable on the host"
+  done
+  if [ -d /dev/shm ] && [ -w /dev/shm ]; then
+    shm=$(mktemp /dev/shm/.netns-check.XXXXXX) || die host-shm "cannot create a probe file under /dev/shm"
+  fi
+  echo "netns-check: host reaches $PROBE_URL and the probe sockets; probe file writable; probe process environ readable"
   rc=0
-  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" "$HERE/sandbox.sh" -- true || rc=$?
+  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" PB_PROBE_PIDS="${pids[*]}" \
+    "$HERE/sandbox.sh" -- true || rc=$?
   if [ "$rc" -ne 0 ]; then
     local id=sandbox-exit
     if [ "$rc" -ge 64 ] && [ "$rc" -lt $((64 + ${#INSIDE_IDS[@]})) ]; then

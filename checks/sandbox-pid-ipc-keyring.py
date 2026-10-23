@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Check: the build sandbox has its own PID and IPC namespaces and session
-keyring (known failure: exits 1 until the sandbox is fixed).
+keyring (was a known failure; fixed).
 
-scripts/sandbox.sh gives the build new user, network and mount namespaces,
-but it shares the host's PID namespace and /proc, the host's IPC namespace
-and /dev/shm, and the session keyring of the process that started it. The
-mapped root inside has the same kernel uid as the runner, so the build can
-see runner processes, read their /proc/<pid>/environ and signal them.
+scripts/sandbox.sh used to give the build new user, network and mount
+namespaces only: it shared the host's PID namespace and /proc, the host's IPC
+namespace and /dev/shm, and the session keyring of the process that started
+it. The mapped root inside has the same kernel uid as the runner, so the
+build could see runner processes and signal them. sandbox.sh now also
+unshares the PID namespace (with a fresh /proc) and the IPC namespace, hides
+/dev/shm and /dev/mqueue, and joins a new session keyring.
 
 The check starts a marker process on the host (its environment holds a
 random value) and a file under /dev/shm, then runs a probe through

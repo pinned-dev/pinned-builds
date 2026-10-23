@@ -6,10 +6,11 @@
 # commit SHA. Results are digests and safe metadata (results/, CC0-1.0), not
 # raw logs, and they are public-corpus evidence only. Sources and the
 # toolchain are fetched and verified first; build.sh itself runs in a sandbox
-# with no network (scripts/sandbox.sh: new user, network and mount
-# namespaces, no inherited descriptors, docker stopped, the host filesystem
-# read-only except the work directory, and /run, /tmp, /var/tmp and $HOME
-# hidden), and scripts/netns-check.sh proves it per job and per build.
+# with no network (scripts/sandbox.sh: new user, network, mount, PID and IPC
+# namespaces, a new session keyring, no inherited descriptors, docker
+# stopped, the host filesystem read-only except the work directory, and
+# /run, /tmp, /var/tmp, $HOME, /dev/shm and /dev/mqueue hidden), and
+# scripts/netns-check.sh proves it per job and per build.
 # When that proof fails, netns-check.sh names the failed assertion with a
 # fixed token in the step summary (no paths, no environment), so a failure
 # can be diagnosed without reading raw logs.
