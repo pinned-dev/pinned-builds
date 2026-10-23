@@ -13,7 +13,8 @@
 # $HOME is writable.
 #
 # The negative check requires: only lo; https and TCP by address fail; no
-# docker or containerd socket, the probe sockets refuse connections, and no
+# mount is writable except /tmp and the work directories; no docker or
+# containerd socket, the probe sockets refuse connections, and no
 # socket at all under /run, /tmp, /var/tmp and $HOME; the probe file, the
 # GitHub Actions command files (GITHUB_ENV, GITHUB_PATH, GITHUB_OUTPUT,
 # GITHUB_STATE, GITHUB_STEP_SUMMARY, when set) and the scripts directory are
@@ -24,6 +25,14 @@
 #
 # On ubuntu-24.04 runners unprivileged user namespaces are blocked by AppArmor
 # until kernel.apparmor_restrict_unprivileged_userns is set to 0.
+#
+# Diagnosis without logs: every failure has a fixed token. Inside, the token
+# becomes the exit code (64 + its index in INSIDE_IDS), which sandbox.sh
+# passes on; outside, netns-check.sh maps that code (or sandbox.sh's own
+# stage code) back to the token and, when GITHUB_STEP_SUMMARY is set, appends
+# exactly one line "netns-check: FAIL <token> (exit <n>)" or
+# "netns-check: PASS", after one line with the host's user namespace sysctls
+# (integers only). Nothing else (no path, no environment) goes there.
 set -euo pipefail
 export LC_ALL=C
 
@@ -31,7 +40,50 @@ HERE=$(cd "$(dirname "$0")" && pwd -P)
 PROBE_URL=https://github.com/
 SOCKETS="/var/run/docker.sock /run/docker.sock /run/containerd/containerd.sock /var/run/containerd/containerd.sock"
 
-die() { echo "netns-check: FAIL: $*" >&2; exit 1; }
+INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
+            writable-outside devnull workdir-not-writable caps no-new-privs
+            umount-home remount-root remount-home nested-remount-root
+            nested-umount-home inherited-fd fd-socket rw-mount)
+SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
+             [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
+             [116]=workdir-rw [117]=check-not-run [125]=usage)
+
+# summary <line>: one sanitized line for the GitHub step summary, if any.
+summary() {
+  [[ $1 =~ ^(FAIL\ [a-z0-9-]+\ \(exit\ [0-9]+\)|PASS|host\ userns:(\ [a-z_]+=[a-z0-9]+)+)$ ]] || return 0
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -f "$GITHUB_STEP_SUMMARY" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    printf 'netns-check: %s\n' "$1" >> "$GITHUB_STEP_SUMMARY" || true
+  fi
+}
+
+# die <token> <message>: inside, exit with the token's code; outside, also
+# name the token in the step summary.
+die() {
+  local id=$1 i; shift
+  echo "netns-check: FAIL [$id]: $*" >&2
+  if [ "$MODE" = inside ]; then
+    for i in "${!INSIDE_IDS[@]}"; do
+      if [ "${INSIDE_IDS[$i]}" = "$id" ]; then exit $((64 + i)); fi
+    done
+    exit 99
+  fi
+  summary "FAIL $id (exit ${DIE_RC:-1})"
+  exit 1
+}
+
+# The host's user namespace settings, as integers (or "absent").
+host_userns() {
+  local f k v out=''
+  for f in /proc/sys/kernel/apparmor_restrict_unprivileged_userns \
+           /proc/sys/kernel/unprivileged_userns_clone /proc/sys/user/max_user_namespaces; do
+    k=${f##*/}
+    v=absent
+    if [ -r "$f" ]; then v=$(head -c 20 "$f" 2> /dev/null || true); [[ $v =~ ^[0-9]+$ ]] || v=unreadable; fi
+    out+=" $k=$v"
+  done
+  echo "netns-check: host userns:$out"
+  summary "host userns:$out"
+}
 
 # connects <socket>: exit 0 if a unix socket at that path accepts a connection
 connects() {
@@ -50,41 +102,53 @@ inside() {
   local ifaces s f fd n target found
   # /proc/net/dev lists the interfaces of the current network namespace.
   ifaces=$(tail -n +3 /proc/net/dev | cut -d: -f1 | tr -d ' ' | sort | tr '\n' ' ')
-  [ "$ifaces" = "lo " ] || die "namespace has interfaces other than lo: $ifaces"
+  [ "$ifaces" = "lo " ] || die ifaces "namespace has interfaces other than lo: $ifaces"
   if curl --silent --max-time 10 -o /dev/null "$PROBE_URL"; then
-    die "$PROBE_URL is reachable inside the namespace"
+    die https "$PROBE_URL is reachable inside the namespace"
   fi
   if (exec 3<> /dev/tcp/140.82.112.3/443) 2> /dev/null; then
-    die "a TCP connection by address succeeded inside the namespace"
+    die tcp "a TCP connection by address succeeded inside the namespace"
   fi
   for s in $SOCKETS ${PB_PROBE_SOCKETS:-}; do
-    if [ -e "$s" ] || [ -L "$s" ]; then die "$s is visible inside the namespace"; fi
-    if connects "$s"; then die "$s accepts connections inside the namespace"; fi
+    if [ -e "$s" ] || [ -L "$s" ]; then die socket-visible "$s is visible inside the namespace"; fi
+    if connects "$s"; then die socket-accepts "$s accepts connections inside the namespace"; fi
   done
   found=$(find /run /tmp /var/tmp ${HOME:+"$HOME"} -xdev -type s -print -quit 2> /dev/null || true)
-  [ -z "$found" ] || die "unix socket visible inside the namespace: $found"
+  [ -z "$found" ] || die socket-under-hidden "unix socket visible inside the namespace: $found"
+  # Every mount (shadowed ones included) is read-only, except the scratch
+  # /tmp and the work directories.
+  found=$(python3 -I -c 'import re, sys
+unesc = lambda p: re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), p)
+allowed = ["/tmp"] + sys.argv[1:]
+for line in open("/proc/self/mountinfo"):
+    f = line.split()
+    mp, opts = unesc(f[4]), f[5].split(",")
+    if "rw" in opts and not any(mp == a or mp.startswith(a.rstrip("/") + "/") for a in allowed):
+        print(mp)
+        break' ${PB_SANDBOX_RW:-}) || die rw-mount "cannot read the mount table"
+  [ -z "$found" ] || die rw-mount "a writable mount inside the sandbox: $found"
   for f in ${PB_PROBE_FILE:-} ${GITHUB_ENV:-} ${GITHUB_PATH:-} ${GITHUB_OUTPUT:-} \
            ${GITHUB_STATE:-} ${GITHUB_STEP_SUMMARY:-} "$HERE/.netns-check-write-probe"; do
-    if writable "$f"; then die "$f is writable inside the namespace"; fi
+    if writable "$f"; then die writable-outside "$f is writable inside the namespace"; fi
   done
-  if ! echo 2> /dev/null > /dev/null; then die "/dev/null is not writable inside the namespace"; fi
+  if ! echo 2> /dev/null > /dev/null; then die devnull "/dev/null is not writable inside the namespace"; fi
   for f in ${PB_SANDBOX_RW:-}; do
-    writable "$f/.netns-check-rw-probe" || die "the work directory $f is not writable"
+    writable "$f/.netns-check-rw-probe" || die workdir-not-writable "the work directory $f is not writable"
     rm -f "$f/.netns-check-rw-probe"
   done
   # No capabilities and no_new_privs, so nothing above can be undone.
   for f in CapInh CapPrm CapEff CapBnd CapAmb; do
-    grep -qxE "$f:[[:space:]]+0+" /proc/self/status || die "$f is not empty inside the sandbox"
+    grep -qxE "$f:[[:space:]]+0+" /proc/self/status || die caps "$f is not empty inside the sandbox"
   done
-  grep -qxE 'NoNewPrivs:[[:space:]]+1' /proc/self/status || die "no_new_privs is not set inside the sandbox"
-  if umount -l "$HOME" 2> /dev/null; then die "umount of \$HOME succeeded inside the sandbox"; fi
-  if mount -o remount,bind,rw / 2> /dev/null; then die "a read-write remount of / succeeded inside the sandbox"; fi
-  if mount -o remount,bind,rw "$HOME" 2> /dev/null; then die "a read-write remount of \$HOME succeeded inside the sandbox"; fi
+  grep -qxE 'NoNewPrivs:[[:space:]]+1' /proc/self/status || die no-new-privs "no_new_privs is not set inside the sandbox"
+  if umount -l "$HOME" 2> /dev/null; then die umount-home "umount of \$HOME succeeded inside the sandbox"; fi
+  if mount -o remount,bind,rw / 2> /dev/null; then die remount-root "a read-write remount of / succeeded inside the sandbox"; fi
+  if mount -o remount,bind,rw "$HOME" 2> /dev/null; then die remount-home "a read-write remount of \$HOME succeeded inside the sandbox"; fi
   if unshare --user --map-root-user --mount -- mount -o remount,bind,rw / 2> /dev/null; then
-    die "a nested user namespace could remount / read-write"
+    die nested-remount-root "a nested user namespace could remount / read-write"
   fi
   if unshare --user --mount -- umount -l "$HOME" 2> /dev/null; then
-    die "a nested user namespace could unmount \$HOME"
+    die nested-umount-home "a nested user namespace could unmount \$HOME"
   fi
   for fd in "/proc/$$/fd"/*; do
     n=${fd##*/}
@@ -92,11 +156,11 @@ inside() {
     target=$(readlink "$fd" || true)
     # bash reads this script through 255 (close-on-exec); that one is fine
     if [ "$n" = 255 ] && [ "$target" = "$(readlink -f "$0")" ]; then continue; fi
-    if [ "$n" -gt 2 ]; then die "inherited descriptor $n ($target) inside the namespace"; fi
-    case "$target" in socket:*) die "descriptor $n is a socket inside the namespace" ;; esac
+    if [ "$n" -gt 2 ]; then die inherited-fd "inherited descriptor $n ($target) inside the namespace"; fi
+    case "$target" in socket:*) die fd-socket "descriptor $n is a socket inside the namespace" ;; esac
   done
   echo "netns-check: inside: interfaces [${ifaces% }], $PROBE_URL unreachable, TCP by address refused," \
-       "docker/containerd and probe sockets unreachable, no sockets under /run /tmp /var/tmp \$HOME," \
+       "only /tmp and work dirs mounted writable, docker/containerd and probe sockets unreachable, no sockets under /run /tmp /var/tmp \$HOME," \
        "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket," \
        "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused"
 }
@@ -104,15 +168,16 @@ inside() {
 # (globals, because the EXIT trap runs after outside() has returned)
 h='' v='' pids=()
 outside() {
-  local s
+  local s rc
+  host_userns
   curl --silent --show-error --max-time 30 -o /dev/null "$PROBE_URL" ||
-    die "positive control: $PROBE_URL is not reachable from the host"
+    die host-https "positive control: $PROBE_URL is not reachable from the host"
   for s in $SOCKETS; do
     if [ -S "$s" ]; then echo "netns-check: host has $s (must be hidden in the sandbox)"; fi
   done
-  if [ -z "${HOME:-}" ] || [ ! -d "$HOME" ]; then die "HOME is not set to a directory"; fi
-  h=$(mktemp -d "$HOME/.netns-check.XXXXXX")
-  v=$(mktemp -d /var/tmp/.netns-check.XXXXXX)
+  if [ -z "${HOME:-}" ] || [ ! -d "$HOME" ]; then die host-home "HOME is not set to a directory"; fi
+  h=$(mktemp -d "$HOME/.netns-check.XXXXXX") || die host-home "cannot create a probe directory under \$HOME"
+  v=$(mktemp -d /var/tmp/.netns-check.XXXXXX) || die host-var-tmp "cannot create a probe directory under /var/tmp"
   cleanup() {
     [ ${#pids[@]} -eq 0 ] || kill "${pids[@]}" 2> /dev/null || true
     if [ -n "$h" ]; then rm -f "$h/s.sock" "$h/probe"; rmdir "$h" 2> /dev/null || true; fi
@@ -130,17 +195,28 @@ time.sleep(120)' "$s" &
   : > "$h/probe"
   for s in "$h/s.sock" "$v/s.sock"; do
     for _ in 1 2 3 4 5 6 7 8 9 10; do [ -S "$s" ] && break; sleep 0.2; done
-    connects "$s" || die "positive control: the probe socket $s does not accept connections"
+    connects "$s" || die host-probe-socket "positive control: the probe socket $s does not accept connections"
   done
-  writable "$h/probe" || die "positive control: $h/probe is not writable on the host"
+  writable "$h/probe" || die host-probe-file "positive control: $h/probe is not writable on the host"
   echo "netns-check: host reaches $PROBE_URL and the probe sockets; probe file writable"
-  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" "$HERE/sandbox.sh" -- true ||
-    die "the sandbox check did not pass (are unprivileged user namespaces allowed here?)"
+  rc=0
+  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" "$HERE/sandbox.sh" -- true || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    local id=sandbox-exit
+    if [ "$rc" -ge 64 ] && [ "$rc" -lt $((64 + ${#INSIDE_IDS[@]})) ]; then
+      id=inside-${INSIDE_IDS[$((rc - 64))]}
+    elif [ -n "${SANDBOX_IDS[$rc]:-}" ]; then
+      id=sandbox-${SANDBOX_IDS[$rc]}
+    fi
+    DIE_RC=$rc die "$id" "the sandbox check did not pass (sandbox exit $rc)"
+  fi
   echo "netns-check: PASS"
+  summary PASS
 }
 
+MODE=${1:-outside}
 case "${1:-}" in
   inside) inside ;;
   '') outside ;;
-  *) die "usage: $0 [inside]" ;;
+  *) MODE=outside; die usage "usage: $0 [inside]" ;;
 esac

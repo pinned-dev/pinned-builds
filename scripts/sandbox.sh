@@ -21,13 +21,30 @@
 #   start if it fails.
 #
 # The scripts directory is always kept (read-only). No kept directory may
-# live under /run, which is hidden first. Needs util-linux 2.39 or later
-# (recursive read-only bind mounts).
+# live under /run, which is hidden first. Needs Linux 5.12 or later and
+# python3: the recursive read-only and writable remounts call mount_setattr(2)
+# through mount-setattr.py, because mount(8) from util-linux 2.39.3
+# (ubuntu-24.04) silently ignores "ro=recursive" and remounts / alone.
+#
+# Exit status: the command's own, or, when the sandbox itself fails, one
+# fixed code per stage, so that netns-check.sh can name the stage without
+# any log:
+#   1        unshare failed (no user, network or mount namespace, or the
+#            mount propagation change was refused, as under an AppArmor
+#            unprivileged_userns profile)
+#   64-99    an assertion of netns-check.sh inside failed (its own code)
+#   110      tmpfs over /run          114  bind the kept directories back
+#   111      keep the kept directories 115  make hidden $HOME, /var/tmp ro
+#   112      make / read-only          116  make the --rw directories writable
+#   113      tmpfs over /tmp, /var/tmp, $HOME
+#   117      netns-check.sh inside did not run (e.g. setpriv failed)
+#   125      usage
 set -euo pipefail
 export LC_ALL=C
 
 HERE=$(cd "$(dirname "$0")" && pwd -P)
-die() { echo "sandbox: $*" >&2; exit 125; }
+# die <exit code> <message>
+die() { local rc=$1; shift; echo "sandbox: $*" >&2; exit "$rc"; }
 
 # Close every descriptor above 2. The glob is expanded before the loop runs,
 # so the descriptor bash used to read /proc/$$/fd is already closed. Bash
@@ -51,60 +68,66 @@ if [ "${1:-}" = --inside ]; then INSIDE=1; shift; fi
 while [ $# -gt 0 ]; do
   case "$1" in
     --rw|--ro)
-      [ $# -ge 2 ] || die "$1 needs a directory"
-      d=$(realpath -e "$2") || die "no such directory: $2"
-      [ -d "$d" ] || die "not a directory: $2"
-      case "$d/" in /run/*|/var/run/*|/) die "cannot keep $d in the sandbox" ;; esac
+      [ $# -ge 2 ] || die 125 "$1 needs a directory"
+      d=$(realpath -e "$2") || die 125 "no such directory: $2"
+      [ -d "$d" ] || die 125 "not a directory: $2"
+      case "$d/" in /run/*|/var/run/*|/) die 125 "cannot keep $d in the sandbox" ;; esac
       if [ "$1" = --rw ]; then RW+=("$d"); else RO+=("$d"); fi
       shift 2 ;;
     --) shift; break ;;
-    *) die "usage: $0 [--rw DIR]... [--ro DIR]... -- <command> [args...]" ;;
+    *) die 125 "usage: $0 [--rw DIR]... [--ro DIR]... -- <command> [args...]" ;;
   esac
 done
-[ $# -ge 1 ] || die "no command"
+[ $# -ge 1 ] || die 125 "no command"
 
 if [ "$INSIDE" = 1 ]; then
   close_fds
   # 1. Hide /run, then keep a handle on every kept directory under it.
-  mount -t tmpfs -o mode=0755,nosuid,nodev sandbox-run /run || die "cannot mount tmpfs over /run"
-  mkdir /run/keep
+  mount -t tmpfs -o mode=0755,nosuid,nodev sandbox-run /run || die 110 "cannot mount tmpfs over /run"
+  mkdir /run/keep || die 111 "cannot create /run/keep"
   KEEP=("${RO[@]}" "${RW[@]}")
   for i in "${!KEEP[@]}"; do
-    mkdir "/run/keep/$i"
-    mount --rbind "${KEEP[$i]}" "/run/keep/$i" || die "cannot bind ${KEEP[$i]}"
+    mkdir "/run/keep/$i" || die 111 "cannot create /run/keep/$i"
+    mount --rbind "${KEEP[$i]}" "/run/keep/$i" || die 111 "cannot bind ${KEEP[$i]}"
   done
   # 2. Everything read-only, recursively (device nodes still work).
-  mount -o remount,bind,ro=recursive / || die "cannot make / read-only"
+  python3 -I "$HERE/mount-setattr.py" ro / || die 112 "cannot make / read-only"
   # 3. Hide the other places where stray sockets live.
   hide=(/tmp /var/tmp)
   if [ -n "${HOME:-}" ] && [ -d "$HOME" ] && [ "$HOME" != / ]; then
-    hide+=("$(realpath -e "$HOME")")
+    home=$(realpath -e "$HOME") || die 113 "cannot resolve \$HOME"
+    hide+=("$home")
   fi
   for h in "${hide[@]}"; do
-    mount -t tmpfs -o mode=1777,nosuid,nodev sandbox-hide "$h" || die "cannot mount tmpfs over $h"
+    mount -t tmpfs -o mode=1777,nosuid,nodev sandbox-hide "$h" || die 113 "cannot mount tmpfs over $h"
   done
   # 4. Bind the kept directories back: read-only ones first, then the
   #    writable ones (which may be nested inside them).
   for i in "${!KEEP[@]}"; do
     p=${KEEP[$i]}
-    [ -d "$p" ] || mkdir -p "$p" || die "cannot recreate $p"
-    mount --rbind "/run/keep/$i" "$p" || die "cannot bind back $p"
+    [ -d "$p" ] || mkdir -p "$p" || die 114 "cannot recreate $p"
+    mount --rbind "/run/keep/$i" "$p" || die 114 "cannot bind back $p"
   done
   # Nothing may write into the hidden $HOME and /var/tmp either (so a write
   # to, say, a GitHub Actions command file under $HOME fails rather than
   # landing in the tmpfs); /tmp stays a writable scratch tmpfs.
   for h in "${hide[@]:1}"; do
-    mount -o remount,bind,ro "$h" || die "cannot make $h read-only"
+    mount -o remount,bind,ro "$h" || die 115 "cannot make $h read-only"
   done
   for p in "${RW[@]}"; do
-    mount -o remount,bind,rw=recursive "$p" || die "cannot make $p writable"
+    python3 -I "$HERE/mount-setattr.py" rw "$p" || die 116 "cannot make $p writable"
   done
   # 5. Drop every capability for good (the mounts above are only as strong
   #    as the build's inability to undo them), with no_new_privs, and run the
   #    check under exactly the same restrictions as the command.
   CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --)
-  PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside ||
-    die "the build sandbox is not isolated"
+  # A failed assertion keeps its own code (64-99); anything else is 117.
+  rc=0
+  PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    [ "$rc" -ge 64 ] && [ "$rc" -le 99 ] || rc=117
+    die "$rc" "the build sandbox is not isolated"
+  fi
   exec "${CONFINE[@]}" "$@"
 fi
 

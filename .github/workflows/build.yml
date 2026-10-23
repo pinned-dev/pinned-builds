@@ -10,6 +10,9 @@
 # namespaces, no inherited descriptors, docker stopped, the host filesystem
 # read-only except the work directory, and /run, /tmp, /var/tmp and $HOME
 # hidden), and scripts/netns-check.sh proves it per job and per build.
+# When that proof fails, netns-check.sh names the failed assertion with a
+# fixed token in the step summary (no paths, no environment), so a failure
+# can be diagnosed without reading raw logs.
 name: build
 
 on:
@@ -104,9 +107,13 @@ jobs:
 
       - name: Allow unprivileged user namespaces (for the no-network build namespace)
         run: |
-          # ubuntu-24.04 blocks unprivileged user namespaces through AppArmor.
-          if [ -e /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]; then
-            sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          # ubuntu-24.04 restricts unprivileged user namespaces through AppArmor
+          # (the namespace is created but cannot mount). Turn that off and fail
+          # unless it took; netns-check.sh records the value in the summary.
+          f=/proc/sys/kernel/apparmor_restrict_unprivileged_userns
+          if [ -e "$f" ]; then
+            sudo sysctl -q -w kernel.apparmor_restrict_unprivileged_userns=0
+            [ "$(cat "$f")" = 0 ] || { echo "the AppArmor user namespace restriction is still on" >&2; exit 1; }
           fi
 
       - name: Stop docker and containerd (their sockets would bypass the network namespace)

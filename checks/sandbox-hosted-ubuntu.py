@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""KNOWN FAILURE (expected to exit 1 until fixed): sandbox on ubuntu-24.04.
+"""Check: the build sandbox on ubuntu-24.04 (was a known failure; fixed).
 
 The first hosted run of the build workflow failed in both build jobs at
 "Prove the build sandbox has no network" (scripts/netns-check.sh). This check
@@ -21,9 +21,10 @@ B. When the sandbox cannot be set up, the step summary must name the failed
    and write exactly one sanitized "netns-check: FAIL <token>" line to
    GITHUB_STEP_SUMMARY.
 
-Exit 0 when both hold, 1 when either known failure is present, 2 when the
-check cannot run (no unprivileged user namespaces, no Landlock, no TMPDIR
-outside the directories the sandbox hides).
+Exit 0 when both hold, 1 when either fails again, 2 when the check cannot
+run (no unprivileged user namespaces, no Landlock, no TMPDIR outside the
+directories the sandbox hides). Run it locally with
+`TMPDIR=<dir> python3 -I checks/sandbox-hosted-ubuntu.py`.
 """
 import ctypes
 import os
@@ -38,7 +39,7 @@ import tempfile
 
 sys.dont_write_bytecode = True
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
+ROOT = pathlib.Path(__file__).resolve().parents[1]
 NETNS_CHECK = ROOT / "scripts" / "netns-check.sh"
 SUMMARY_LINE = re.compile(r"netns-check: (FAIL [a-z0-9-]+ \(exit [0-9]+\)|PASS|host userns: [a-z0-9_=-]+( [a-z0-9_=-]+)*)")
 
@@ -142,7 +143,7 @@ def main():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     for f in failures:
-        print(f"KNOWN FAILURE: {f}")
+        print(f"FAIL: {f}")
     if not failures:
         print("sandbox-hosted-ubuntu: A and B hold")
     return 1 if failures else 0
