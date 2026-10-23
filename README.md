@@ -28,6 +28,23 @@ works, a network connection.
 - Workflow runs for pull requests from forks need approval from a maintainer
   before they run.
 
+### What a result does and does not show
+
+- **Network isolation is verified.** Every job, and every build, starts with
+  `scripts/netns-check.sh`. It proves on the host that the network and the
+  probe sockets are reachable there, and then proves inside the build's
+  sandbox that they are not. The build does not run if any assertion fails.
+- **Build-input control covers what the compiler and the linker report.**
+  After a build, `scripts/check-build-inputs.py` rejects any input that the
+  compiler (headers) or the linker (objects and libraries) recorded from
+  outside the pinned toolchain, the work directory and this repository. A
+  build step that reads other host files without reporting them is not
+  covered by that check. The sandbox hides the host's headers and
+  `/usr/local`, but the rest of the host filesystem stays readable.
+- **A result here is not semantic-versioning gate evidence.** A result
+  manifest records how one public recipe built on a GitHub-hosted runner.
+  It is not used as release or version-gate evidence for any other project.
+
 To build a recipe locally:
 
 ```sh
