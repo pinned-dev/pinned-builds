@@ -10,6 +10,20 @@ repository, verified by digest before use). `.github/workflows/build.yml`
 builds every recipe as its own job on GitHub-hosted runners, with a
 read-only token and no secrets, and keeps one manifest per recipe (input,
 output and toolchain digests, runner image) as `results-<recipe>`.
+Sources and the toolchain are downloaded and checked against their pinned
+digests before the build; the build itself runs in a network namespace with
+no network.
+
+### Results policy
+
+- Only `results-<recipe>` manifests from `push` runs on `main` of
+  `pinned-dev/pinned-builds` are harvested into `results/`. Manifests from
+  pull request runs (including forks) and from manual runs are never
+  harvested.
+- Any harvesting job checks the run's event, branch and head repository
+  before it copies anything, and never uses `pull_request_target`.
+- Workflow runs for pull requests from forks need approval from a maintainer
+  before they run.
 
 To build a recipe locally:
 
@@ -25,6 +39,9 @@ scripts/build-recipe.sh catch2 pinned-toolchain-v2 work-catch2 results/catch2.js
   are licensed under the Apache License, Version 2.0 (see `LICENSE`).
 - Everything under `results/` is dedicated to the public domain under
   CC0 1.0 Universal (SPDX: `CC0-1.0`; see `results/LICENSE`).
+- Upstream sources and their SPDX licenses are listed in
+  `recipes/*/sources.txt`: currently Catch2 (BSL-1.0), fmt (MIT) and
+  spdlog (MIT).
 - The third-party libraries that the recipes build keep their own licenses,
   which apply to any artifacts built from them. This repository does not
   redistribute those built artifacts.

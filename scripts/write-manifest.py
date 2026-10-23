@@ -74,8 +74,10 @@ def main():
 
     recipe_files = tree(a.recipe_dir)
     scripts = [{"path": rel, "sha256": sha256_file(os.path.join(a.repo_root, rel))}
-               for rel in ("scripts/build-recipe.sh", "scripts/recipe-lib.sh",
-                           "scripts/write-manifest.py", "toolchain.lock")]
+               for rel in (".github/workflows/build.yml", "scripts/build-recipe.sh",
+                           "scripts/fetch-toolchain.sh", "scripts/netns-check.sh",
+                           "scripts/recipe-lib.sh", "scripts/write-manifest.py",
+                           "toolchain.lock")]
 
     lock = lock_values(a.toolchain_lock)
     toolchain = {

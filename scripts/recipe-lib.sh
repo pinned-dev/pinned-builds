@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Helpers for recipes/<name>/build.sh. build-recipe.sh runs build.sh under
 # `env -i` with only the PB_* variables it documents; build.sh sources this
 # file through "$PB_LIB".
@@ -13,6 +14,7 @@ pb_cmake() {
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="$PB_INSTALL_PREFIX" \
     -DCMAKE_PREFIX_PATH="$PB_PREFIX" \
+    -DFETCHCONTENT_FULLY_DISCONNECTED=ON \
     "$@"
   "$PB_CMAKE" --build "$PB_BUILD/$name" --parallel "$PB_JOBS"
 }

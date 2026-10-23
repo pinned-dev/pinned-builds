@@ -4,7 +4,9 @@
 # Rules for this workflow: read-only token, no secrets, no
 # pull_request_target, GitHub-hosted runners only, actions pinned by full
 # commit SHA. Results are digests and safe metadata (results/, CC0-1.0), not
-# raw logs, and they are public-corpus evidence only.
+# raw logs, and they are public-corpus evidence only. Sources and the
+# toolchain are fetched and verified first; build.sh itself runs in a network
+# namespace with no network (scripts/netns-check.sh proves it per job).
 name: build
 
 on:
@@ -96,6 +98,16 @@ jobs:
           scripts/fetch-toolchain.sh install "$RUNNER_TEMP/toolchain/toolchain.tar.zst" \
             "$RUNNER_TEMP/pinned-toolchain-v2"
           rm -f "$RUNNER_TEMP/toolchain/toolchain.tar.zst"
+
+      - name: Allow unprivileged user namespaces (for the no-network build namespace)
+        run: |
+          # ubuntu-24.04 blocks unprivileged user namespaces through AppArmor.
+          if [ -e /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]; then
+            sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          fi
+
+      - name: Prove the build namespace has no network
+        run: scripts/netns-check.sh
 
       - name: Build ${{ matrix.recipe }}
         env:

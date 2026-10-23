@@ -61,7 +61,7 @@ cmd_download() {
 }
 
 cmd_install() {
-  local archive=$1 dest=$2 got work t
+  local archive=$1 dest=$2 got work t bad extra e
   [ -f "$archive" ] || die "no archive at $archive"
   [ ! -e "$dest" ] || die "$dest already exists"
   got=$(digest "$archive")
@@ -74,11 +74,30 @@ cmd_install() {
     die "unpack failed"
   [ "$(ls -A "$work")" = pinned-toolchain-v2 ] || die "unexpected top-level entries"
   t=$work/pinned-toolchain-v2
-  [ -z "$(find "$t" -type l -print -quit)" ] || die "symlink in toolchain"
+  # Only regular files and directories, no hardlinks, and only the known
+  # top-level entries (the manifests below cover everything else).
+  bad=$(find "$t" ! -type f ! -type d -print -quit)
+  [ -z "$bad" ] || die "entry that is not a regular file or directory: ${bad#"$work"/}"
+  bad=$(find "$t" -type f -links +1 -print -quit)
+  [ -z "$bad" ] || die "hardlinked file: ${bad#"$work"/}"
+  extra=
+  for e in "$t"/* "$t"/.[!.]* "$t"/..?*; do
+    [ -e "$e" ] || continue
+    case "${e##*/}" in
+      host-utils|sysroot|reference-tools|licenses|MANIFEST.sha256|LICENSES-MANIFEST.sha256|NOTICE.md|PROVISION-INFO.txt) ;;
+      *) extra="$extra ${e##*/}" ;;
+    esac
+  done
+  [ -z "$extra" ] || die "unexpected entries in pinned-toolchain-v2/: $extra"
   manifest "$t" | cmp -s - "$t/MANIFEST.sha256" || die "MANIFEST.sha256 mismatch"
   [ -f "$t/LICENSES-MANIFEST.sha256" ] || die "LICENSES-MANIFEST.sha256 missing"
   (cd "$t" && sha256sum --quiet --strict -c LICENSES-MANIFEST.sha256) ||
     die "LICENSES-MANIFEST.sha256 mismatch"
+  # Every file outside MANIFEST.sha256's scope must be listed in
+  # LICENSES-MANIFEST.sha256 (except the two manifests and PROVISION-INFO.txt).
+  extra=$(cd "$t" && { find licenses -type f; ls NOTICE.md; } | LC_ALL=C sort |
+    comm -23 - <(sed 's/^[0-9a-f]\{64\}  //' LICENSES-MANIFEST.sha256 | LC_ALL=C sort))
+  [ -z "$extra" ] || die "files not covered by LICENSES-MANIFEST.sha256: $extra"
   mv "$t" "$dest"
   rm -rf "$work"
   trap - EXIT

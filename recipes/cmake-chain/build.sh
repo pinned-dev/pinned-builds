@@ -1,6 +1,8 @@
+# shellcheck shell=bash source-path=SCRIPTDIR/../..
 # A small CMake package chain: fmt is installed, spdlog finds it with
 # find_package(fmt CONFIG) and is installed, and a consumer finds spdlog
 # (and, transitively, fmt) and runs.
+# shellcheck source=scripts/recipe-lib.sh
 . "$PB_LIB"
 pb_cmake_install fmt "$PB_SRC/fmt" \
   -DFMT_TEST=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON

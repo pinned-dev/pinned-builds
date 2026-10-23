@@ -26,7 +26,9 @@ RECIPE=$1 TC_IN=$2 W_IN=$3 MANIFEST_OUT=$4
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 [[ $RECIPE =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "bad recipe name: $RECIPE"
 RDIR=$ROOT/recipes/$RECIPE
-[ -f "$RDIR/sources.txt" ] && [ -f "$RDIR/build.sh" ] || die "no recipe at $RDIR"
+if [ ! -f "$RDIR/sources.txt" ] || [ ! -f "$RDIR/build.sh" ]; then
+  die "no recipe at $RDIR"
+fi
 TC=$(cd "$TC_IN" && pwd)
 [ ! -e "$W_IN" ] || die "work dir exists: $W_IN"
 mkdir -p "$W_IN"
@@ -69,8 +71,8 @@ set(CMAKE_CXX_COMPILER "$GXX")
 set(CMAKE_AR "$TC/host-utils/bin/ar" CACHE FILEPATH "")
 set(CMAKE_RANLIB "$TC/host-utils/bin/ranlib" CACHE FILEPATH "")
 set(CMAKE_SYSROOT "$W/sysroot")
-set(CMAKE_C_FLAGS_INIT "-ffile-prefix-map=$W=/pb")
-set(CMAKE_CXX_FLAGS_INIT "-ffile-prefix-map=$W=/pb")
+set(CMAKE_C_FLAGS_INIT "-ffile-prefix-map=$ROOT=/pb-repo -ffile-prefix-map=$W=/pb")
+set(CMAKE_CXX_FLAGS_INIT "-ffile-prefix-map=$ROOT=/pb-repo -ffile-prefix-map=$W=/pb")
 set(CMAKE_FIND_ROOT_PATH "$W/out/root/pb")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -108,9 +110,14 @@ while read -r name sha top spdx url; do
   echo "build-recipe: source $name sha256=$sha OK"
 done < "$RDIR/sources.txt"
 
+# The build itself runs with no network: a new user+network namespace whose
+# only interface is lo (down). Prove that first; fail closed if it cannot be
+# set up.
+"$ROOT/scripts/netns-check.sh" || die "no network-isolated namespace for the build"
+
 START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 set +e
-env -i \
+unshare --user --map-root-user --net -- env -i \
   PATH=/usr/bin:/bin HOME="$W/home" TMPDIR="$W/tmp" LC_ALL=C TZ=UTC \
   SOURCE_DATE_EPOCH=1 LD_LIBRARY_PATH="$W/hostlibs" \
   PB_LIB="$ROOT/scripts/recipe-lib.sh" PB_RECIPE_DIR="$RDIR" PB_WORK="$W" \
