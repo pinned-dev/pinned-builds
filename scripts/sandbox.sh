@@ -139,8 +139,10 @@ if [ "$INSIDE" = 1 ]; then
   # (The lib*.so development symlinks in /usr/lib* stay: a mount cannot
   # cover a symlink without covering its target, the runtime library that
   # the host tools in the sandbox load, and that runtime library could be
-  # copied just the same. The input check after the build is the guard
-  # there: the linker records every library it reads.)
+  # copied just the same. The input check after the build catches only
+  # host libraries that the linker reads in place; a build step that copies
+  # a host runtime library into the work directory and links the copy is
+  # not detected.)
   for h in /usr/include /usr/local; do
     if [ -d "$h" ] && [ ! -L "$h" ]; then hide+=("$h"); fi
   done

@@ -39,8 +39,11 @@ works, a network connection.
   compiler (headers) or the linker (objects and libraries) recorded from
   outside the pinned toolchain, the work directory and this repository. A
   build step that reads other host files without reporting them is not
-  covered by that check. The sandbox hides the host's headers and
-  `/usr/local`, but the rest of the host filesystem stays readable.
+  covered by that check. The sandbox hides exactly `/usr/include` and
+  `/usr/local`; the rest of the host filesystem stays readable, including
+  the host compiler's own include directories and `/opt`. Known residual:
+  a build step that copies a host runtime library into the work directory
+  and links the copy is not detected.
 - **A result here is not semantic-versioning gate evidence.** A result
   manifest records how one public recipe built on a GitHub-hosted runner.
   It is not used as release or version-gate evidence for any other project.
