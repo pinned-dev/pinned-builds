@@ -76,6 +76,8 @@ def main():
     scripts = [{"path": rel, "sha256": sha256_file(os.path.join(a.repo_root, rel))}
                for rel in (".github/workflows/build.yml", "scripts/build-recipe.sh",
                            "scripts/fetch-toolchain.sh", "scripts/netns-check.sh", "scripts/sandbox.sh",
+                           "scripts/mount-setattr.py", "scripts/session-keyring.py",
+                           "scripts/deny-keyrings.py", "scripts/nested-userns.py",
                            "scripts/recipe-lib.sh", "scripts/write-manifest.py",
                            "toolchain.lock")]
 
