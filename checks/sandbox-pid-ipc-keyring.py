@@ -14,7 +14,8 @@ The check starts a marker process on the host (its environment holds a
 random value) and a file under /dev/shm, then runs a probe through
 sandbox.sh and requires, inside:
   - /proc/self/ns/pid and /proc/self/ns/ipc differ from the host's;
-  - the session keyring differs from the host's and is empty;
+  - the session keyring differs from the host's and is empty, or keyctl is
+    refused altogether;
   - the marker process is not visible in /proc (matched by PID and start
     time), its environ cannot be read and it cannot be signalled;
   - the /dev/shm file is not visible.
@@ -52,8 +53,11 @@ def keyctl(*args):
 
 
 def session_keyring():
-    """(serial, number of links) of the session keyring, or (None, None)."""
+    """(serial, number of links) of the session keyring, ("refused", 0) if
+    keyctl is refused with EPERM, or (None, None)."""
     r = keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_SESSION_KEYRING, 0)
+    if r is not None and r < 0 and ctypes.get_errno() == 1:
+        return "refused", 0
     if r is None or r < 0:
         return None, None
     n = keyctl(KEYCTL_READ, r, None, 0)

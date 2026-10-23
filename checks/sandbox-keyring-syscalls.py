@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Check: the build sandbox cannot use the kernel keyring system calls
-(known failure: exits 1 until the sandbox is fixed).
+(was a known failure; fixed).
 
 The sandbox gives the build a new, empty session keyring, but keyring access
 is checked by kernel uid, and the mapped root inside has the runner's kernel
-uid. So the build can still reach the runner's keyrings by serial number:
+uid. So the build could still reach the runner's keyrings by serial number:
 describe the runner's session keyring and link the runner's user keyring
-into its own session keyring, which makes the keys in it its own.
+into its own session keyring, which makes the keys in it its own. A seccomp
+filter (scripts/deny-keyrings.py) now refuses keyctl, add_key and
+request_key in the sandbox.
 
 The check takes the serials of this process's session and user keyrings,
 runs a probe through sandbox.sh and requires that, inside, keyctl, add_key

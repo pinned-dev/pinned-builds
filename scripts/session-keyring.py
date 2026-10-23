@@ -11,8 +11,9 @@ it. It fails closed: if any of that fails (no keyrings in the kernel, the
 call refused, an unsupported architecture), it exits with CODE and COMMAND
 does not run.
 
-The second form prints "<serial> <number of links>" for the session keyring
-(the user session keyring if the process has none), or exits 1.
+The second form prints "<serial> <number of links> <user keyring serial>"
+for the session keyring (the user session keyring if the process has none),
+or exits 1.
 """
 import ctypes
 import os
@@ -24,6 +25,7 @@ KEYCTL_GET_KEYRING_ID = 0
 KEYCTL_JOIN_SESSION_KEYRING = 1
 KEYCTL_READ = 11
 KEY_SPEC_SESSION_KEYRING = -3
+KEY_SPEC_USER_KEYRING = -4
 
 
 def keyctl(op, a2=0, a3=0, a4=0):
@@ -50,7 +52,8 @@ def current():
 def main():
     if sys.argv[1:] == ["--show"]:
         try:
-            print("%d %d" % current())
+            user = keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_USER_KEYRING, 0)
+            print("%d %d %d" % (current() + (user,)))
         except OSError as e:
             print(f"session-keyring: {e}", file=sys.stderr)
             return 1

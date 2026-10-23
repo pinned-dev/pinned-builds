@@ -27,8 +27,11 @@
 # its own, no host process (this script's, sandbox.sh's and its parent's) is
 # visible in /proc and none of their environ can be read; unmounting /proc
 # from a nested user namespace fails; the IPC namespace differs from the
-# host's and /dev/shm and /dev/mqueue are empty; the session keyring differs
-# from the host's and is empty.
+# host's and /dev/shm and /dev/mqueue are empty; a seccomp filter is in
+# place, keyctl, add_key and request_key are refused with EPERM, and the
+# host's session and user keyrings can be neither described nor linked by
+# serial number (sandbox.sh checks that the session keyring is a new, empty
+# one before the filter makes that impossible).
 #
 # On ubuntu-24.04 runners unprivileged user namespaces are blocked by AppArmor
 # until kernel.apparmor_restrict_unprivileged_userns is set to 0.
@@ -52,12 +55,12 @@ INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
             umount-home remount-root remount-home nested-remount-root
             nested-umount-home inherited-fd fd-socket rw-mount host-info pid-ns
             proc-not-own host-pid-visible host-environ-readable
-            nested-umount-proc ipc-ns ipc-visible keyring-shared
-            keyring-not-empty)
+            nested-umount-proc ipc-ns ipc-visible seccomp keyctl-allowed
+            add-key-allowed request-key-allowed host-keyring-reachable)
 SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
              [116]=workdir-rw [117]=check-not-run [118]=session-keyring
-             [125]=usage)
+             [119]=keyring-filter [125]=usage)
 
 # summary <line>: one sanitized line for the GitHub step summary, if any.
 summary() {
@@ -194,9 +197,20 @@ for line in open("/proc/self/mountinfo"):
   [ "$(readlink /proc/self/ns/ipc)" != "$PB_HOST_IPCNS" ] || die ipc-ns "the sandbox shares the host IPC namespace"
   found=$(find /dev/shm /dev/mqueue -mindepth 1 -print -quit 2> /dev/null || true)
   [ -z "$found" ] || die ipc-visible "a host IPC object is visible inside the sandbox: $found"
-  read -r s n < <(python3 -I "$HERE/session-keyring.py" --show) || die keyring-shared "no session keyring inside the sandbox"
-  [ "$s" != "$PB_HOST_KEYRING" ] || die keyring-shared "the sandbox shares the host session keyring"
-  [ "$n" = 0 ] || die keyring-not-empty "the sandbox session keyring is not empty"
+  # Keyrings: the filter is there, and the runner's keyrings are out of reach.
+  grep -qxE 'Seccomp:[[:space:]]+2' /proc/self/status || die seccomp "no seccomp filter inside the sandbox"
+  python3 -I "$HERE/deny-keyrings.py" --check keyctl || die keyctl-allowed "keyctl is not refused inside the sandbox"
+  python3 -I "$HERE/deny-keyrings.py" --check add_key || die add-key-allowed "add_key is not refused inside the sandbox"
+  python3 -I "$HERE/deny-keyrings.py" --check request_key ||
+    die request-key-allowed "request_key is not refused inside the sandbox"
+  [ -n "${PB_HOST_USER_KEYRING:-}" ] || die host-info "sandbox.sh passed no host user keyring"
+  for s in $PB_HOST_KEYRING $PB_HOST_USER_KEYRING; do
+    [ "$s" != none ] || continue
+    for f in describe link; do
+      python3 -I "$HERE/deny-keyrings.py" --check "$f" "$s" ||
+        die host-keyring-reachable "the host keyring $s can be reached by serial ($f) inside the sandbox"
+    done
+  done
   for fd in "/proc/$$/fd"/*; do
     n=${fd##*/}
     [ -e "$fd" ] || continue # the descriptor the glob itself used, now closed
@@ -211,7 +225,7 @@ for line in open("/proc/self/mountinfo"):
        "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket," \
        "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused," \
        "own PID namespace and /proc, no host process visible or its environ readable," \
-       "own IPC namespace, /dev/shm and /dev/mqueue empty, new empty session keyring"
+       "own IPC namespace, /dev/shm and /dev/mqueue empty, keyring system calls refused, host keyrings unreachable"
 }
 
 # (globals, because the EXIT trap runs after outside() has returned)

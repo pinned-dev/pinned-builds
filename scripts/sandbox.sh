@@ -11,7 +11,10 @@
 #   processes (so no runner process can be seen, read or signalled), and
 #   SysV IPC and POSIX message queues are the sandbox's own;
 # - the command has a new, empty session keyring (scripts/session-keyring.py;
-#   the sandbox does not start without one);
+#   the sandbox does not start without one), and a seccomp filter refuses
+#   keyctl, add_key and request_key (scripts/deny-keyrings.py), because
+#   keyring access is checked by kernel uid, which the sandbox shares with
+#   the runner;
 # - the whole host filesystem is read-only (recursively); fresh tmpfs mounts
 #   over /run, /tmp, /var/tmp and $HOME hide the filesystem sockets there
 #   (docker, containerd, dbus, gpg-agent, ...), fresh tmpfs mounts over
@@ -45,6 +48,7 @@
 #   113      tmpfs over /tmp, /var/tmp, $HOME, /dev/shm, /dev/mqueue
 #   117      netns-check.sh inside did not run (e.g. setpriv failed)
 #   118      no new session keyring
+#   119      the keyring system call filter could not be installed
 #   125      usage
 set -euo pipefail
 export LC_ALL=C
@@ -133,15 +137,23 @@ if [ "$INSIDE" = 1 ]; then
   # 5. Drop every capability for good (the mounts above are only as strong
   #    as the build's inability to undo them), with no_new_privs, and run the
   #    check under exactly the same restrictions as the command.
-  CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --)
-  # A failed assertion keeps its own code (64-99); anything else is 117.
+  #    The session keyring must still be the new, empty one (from here on
+  #    the keyring system calls are refused, so this is the last look).
+  ks='' kn=''
+  read -r ks kn _ < <(python3 -I "$HERE/session-keyring.py" --show) || true
+  [ -n "$ks" ] && [ "$ks" != "${PB_HOST_KEYRING:-}" ] && [ "$kn" = 0 ] ||
+    die 118 "the session keyring is not a new, empty one"
+  CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --
+           python3 -I "$HERE/deny-keyrings.py" 119)
+  # A failed assertion keeps its own code (64-99), and a filter that could
+  # not be installed its own (119); anything else is 117.
   rc=0
   PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside || rc=$?
   if [ "$rc" -ne 0 ]; then
-    [ "$rc" -ge 64 ] && [ "$rc" -le 99 ] || rc=117
+    [ "$rc" -ge 64 ] && [ "$rc" -le 99 ] || [ "$rc" = 119 ] || rc=117
     die "$rc" "the build sandbox is not isolated"
   fi
-  unset PB_HOST_PIDNS PB_HOST_IPCNS PB_HOST_KEYRING PB_HOST_PIDS
+  unset PB_HOST_PIDNS PB_HOST_IPCNS PB_HOST_KEYRING PB_HOST_USER_KEYRING PB_HOST_PIDS
   # The command becomes PID 1 of the sandbox: when it exits, the kernel
   # kills whatever it left behind.
   exec "${CONFINE[@]}" "$@"
@@ -165,14 +177,14 @@ for d in "${RW[@]}"; do ARGS+=(--rw "$d"); done
 # and any probe processes) that must not be visible inside.
 PB_HOST_PIDNS=$(readlink /proc/self/ns/pid) || die 125 "cannot read the PID namespace"
 PB_HOST_IPCNS=$(readlink /proc/self/ns/ipc) || die 125 "cannot read the IPC namespace"
-PB_HOST_KEYRING=$(python3 -I "$HERE/session-keyring.py" --show) || PB_HOST_KEYRING=none
-PB_HOST_KEYRING=${PB_HOST_KEYRING%% *}
+PB_HOST_KEYRING=none PB_HOST_USER_KEYRING=none
+read -r PB_HOST_KEYRING _ PB_HOST_USER_KEYRING < <(python3 -I "$HERE/session-keyring.py" --show) || true
 PB_HOST_PIDS=''
 for p in $$ $PPID ${PB_PROBE_PIDS:-}; do
   t=$(starttime "$p") || die 125 "no such process: $p"
   PB_HOST_PIDS+="$p:$t "
 done
-export PB_HOST_PIDNS PB_HOST_IPCNS PB_HOST_KEYRING PB_HOST_PIDS
+export PB_HOST_PIDNS PB_HOST_IPCNS PB_HOST_KEYRING PB_HOST_USER_KEYRING PB_HOST_PIDS
 close_fds
 set +e
 # --kill-child: if unshare is killed, so is the whole sandbox. The new
