@@ -7,7 +7,8 @@
 # raw logs, and they are public-corpus evidence only. Sources and the
 # toolchain are fetched and verified first; build.sh itself runs in a sandbox
 # with no network (scripts/sandbox.sh: new user, network and mount
-# namespaces, no inherited descriptors, docker stopped and /run and /tmp
+# namespaces, no inherited descriptors, docker stopped, the host filesystem
+# read-only except the work directory, and /run, /tmp, /var/tmp and $HOME
 # hidden), and scripts/netns-check.sh proves it per job and per build.
 name: build
 

@@ -23,16 +23,22 @@ die() { echo "build-recipe: $*" >&2; exit 2; }
 [ $# -eq 4 ] || die "usage: $0 <recipe> <toolchain-dir> <work-dir> <manifest-out>"
 RECIPE=$1 TC_IN=$2 W_IN=$3 MANIFEST_OUT=$4
 
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+ROOT=$(cd "$(dirname "$0")/.." && pwd -P)
 [[ $RECIPE =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "bad recipe name: $RECIPE"
 RDIR=$ROOT/recipes/$RECIPE
 if [ ! -f "$RDIR/sources.txt" ] || [ ! -f "$RDIR/build.sh" ]; then
   die "no recipe at $RDIR"
 fi
-TC=$(cd "$TC_IN" && pwd)
-[ ! -e "$W_IN" ] || die "work dir exists: $W_IN"
-mkdir -p "$W_IN"
-W=$(cd "$W_IN" && pwd)
+TC=$(realpath -e "$TC_IN") || die "no toolchain at $TC_IN"
+if [ -e "$W_IN" ] || [ -L "$W_IN" ]; then die "work dir exists: $W_IN"; fi
+W_PARENT=$(realpath -e "$(dirname "$W_IN")") || die "the parent of $W_IN must exist"
+W=$W_PARENT/$(basename "$W_IN")
+# The build runs in the sandbox of sandbox.sh, which hides /run first; check
+# the resolved paths before anything is created or downloaded.
+for p in "$ROOT" "$TC" "$W"; do
+  case "$p/" in /run/*|/var/run/*) die "$p is hidden inside the build sandbox; use another directory" ;; esac
+done
+mkdir "$W"
 
 GCC=$TC/host-utils/bin/gcc-16/bin/gcc
 GXX=$TC/host-utils/bin/gcc-16/bin/g++
@@ -110,18 +116,17 @@ while read -r name sha top spdx url; do
   echo "build-recipe: source $name sha256=$sha OK"
 done < "$RDIR/sources.txt"
 
-# The build itself runs with no network, in the sandbox of sandbox.sh (new
-# user, network and mount namespaces, no inherited descriptors, /run and /tmp
-# hidden). netns-check.sh first proves the host does have network, so that the
-# sandbox's own check (run inside, before build.sh starts) means something.
-for p in "$ROOT" "$TC" "$W"; do
-  case "$p/" in /run/*|/tmp/*|/var/run/*) die "$p is hidden inside the build sandbox; use another directory" ;; esac
-done
-"$ROOT/scripts/netns-check.sh" || die "no network-isolated sandbox for the build"
+# The build itself runs with no network in the sandbox of sandbox.sh: new
+# user, network and mount namespaces, no inherited descriptors, the host
+# filesystem read-only, /run, /tmp, /var/tmp and $HOME hidden, and only the
+# work directory writable. netns-check.sh first runs its positive controls on
+# the host, so that the sandbox's own check (run inside, before build.sh
+# starts) means something.
+"$ROOT/scripts/netns-check.sh" || die "no isolated sandbox for the build"
 
 START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 set +e
-"$ROOT/scripts/sandbox.sh" env -i \
+"$ROOT/scripts/sandbox.sh" --ro "$ROOT" --ro "$TC" --rw "$W" -- env -i \
   PATH=/usr/bin:/bin HOME="$W/home" TMPDIR="$W/tmp" LC_ALL=C TZ=UTC \
   SOURCE_DATE_EPOCH=1 LD_LIBRARY_PATH="$W/hostlibs" \
   PB_LIB="$ROOT/scripts/recipe-lib.sh" PB_RECIPE_DIR="$RDIR" PB_WORK="$W" \
