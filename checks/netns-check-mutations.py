@@ -50,6 +50,8 @@ MUTATIONS = {
          "setpriv --no-new-privs --")]),
     "no-shm-hide": ("inside-ipc-visible", [
         (SB, "for h in /dev/shm /dev/mqueue /dev/pts; do", "for h in /dev/pts; do")]),
+    "no-mqueue-hide": ("inside-ipc-visible", [
+        (SB, "for h in /dev/shm /dev/mqueue /dev/pts; do", "for h in /dev/shm /dev/pts; do")]),
     "no-pts-hide": ("inside-host-tty-writable", [
         (SB, "for h in /dev/shm /dev/mqueue /dev/pts; do", "for h in /dev/shm /dev/mqueue; do")]),
     "no-keyring-filter": ("inside-seccomp", [
@@ -83,6 +85,7 @@ MUTATIONS = {
 
 # Mutations that can only be caught where the host has what they expose.
 NEEDS = {
+    "no-mqueue-hide": lambda: os.path.ismount("/dev/mqueue"),
     "no-host-dev-hide": lambda: any(os.scandir("/usr/include")) if os.path.isdir("/usr/include") else False,
 }
 
