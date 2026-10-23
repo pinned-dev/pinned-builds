@@ -5,8 +5,10 @@
 # pull_request_target, GitHub-hosted runners only, actions pinned by full
 # commit SHA. Results are digests and safe metadata (results/, CC0-1.0), not
 # raw logs, and they are public-corpus evidence only. Sources and the
-# toolchain are fetched and verified first; build.sh itself runs in a network
-# namespace with no network (scripts/netns-check.sh proves it per job).
+# toolchain are fetched and verified first; build.sh itself runs in a sandbox
+# with no network (scripts/sandbox.sh: new user, network and mount
+# namespaces, no inherited descriptors, docker stopped and /run and /tmp
+# hidden), and scripts/netns-check.sh proves it per job and per build.
 name: build
 
 on:
@@ -106,7 +108,18 @@ jobs:
             sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           fi
 
-      - name: Prove the build namespace has no network
+      - name: Stop docker and containerd (their sockets would bypass the network namespace)
+        run: |
+          sudo systemctl stop docker.socket docker.service containerd.service
+          sudo systemctl mask docker.socket docker.service containerd.service
+          for s in /var/run/docker.sock /run/containerd/containerd.sock; do
+            if sudo curl --silent --max-time 5 --unix-socket "$s" -o /dev/null http://d/_ping; then
+              echo "$s still answers" >&2
+              exit 1
+            fi
+          done
+
+      - name: Prove the build sandbox has no network
         run: scripts/netns-check.sh
 
       - name: Build ${{ matrix.recipe }}

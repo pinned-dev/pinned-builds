@@ -61,6 +61,9 @@ cmd_download() {
 }
 
 cmd_install() {
+  local PROVISION_INFO_WANT
+  PROVISION_INFO_WANT=$(lock_value TOOLCHAIN_PROVISION_INFO_SHA256)
+  [[ $PROVISION_INFO_WANT =~ ^[0-9a-f]{64}$ ]] || die "malformed TOOLCHAIN_PROVISION_INFO_SHA256 in toolchain.lock"
   local archive=$1 dest=$2 got work t bad extra e
   [ -f "$archive" ] || die "no archive at $archive"
   [ ! -e "$dest" ] || die "$dest already exists"
@@ -98,6 +101,12 @@ cmd_install() {
   extra=$(cd "$t" && { find licenses -type f; ls NOTICE.md; } | LC_ALL=C sort |
     comm -23 - <(sed 's/^[0-9a-f]\{64\}  //' LICENSES-MANIFEST.sha256 | LC_ALL=C sort))
   [ -z "$extra" ] || die "files not covered by LICENSES-MANIFEST.sha256: $extra"
+  # PROVISION-INFO.txt is in neither manifest: pin it, and check that it names
+  # the MANIFEST.sha256 that was just verified.
+  [ "$(digest "$t/PROVISION-INFO.txt")" = "$PROVISION_INFO_WANT" ] ||
+    die "PROVISION-INFO.txt does not match TOOLCHAIN_PROVISION_INFO_SHA256"
+  grep -qxF "manifest-sha256: $(digest "$t/MANIFEST.sha256")" "$t/PROVISION-INFO.txt" ||
+    die "PROVISION-INFO.txt names a different MANIFEST.sha256"
   mv "$t" "$dest"
   rm -rf "$work"
   trap - EXIT

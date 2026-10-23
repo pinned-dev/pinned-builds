@@ -5,3 +5,5 @@ TOOLCHAIN_TAG=toolchain-v2-670d6e7d
 TOOLCHAIN_ASSET=pinned-toolchain-v2-x86_64-linux-670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e.tar.zst
 TOOLCHAIN_SHA256=670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e
 TOOLCHAIN_URL=https://github.com/pinned-dev/pinned-builds/releases/download/toolchain-v2-670d6e7d/pinned-toolchain-v2-x86_64-linux-670d6e7d9665afbfa4e409d08c29d8b9da00b1086a6737d242f65a6ea9a46c3e.tar.zst
+# PROVISION-INFO.txt is outside both in-archive manifests, so it is pinned here.
+TOOLCHAIN_PROVISION_INFO_SHA256=f5cba0a9997a051b9f695a2dec12e7d2e2ff63404f17c0403ad49814db727a21

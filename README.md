@@ -11,8 +11,10 @@ builds every recipe as its own job on GitHub-hosted runners, with a
 read-only token and no secrets, and keeps one manifest per recipe (input,
 output and toolchain digests, runner image) as `results-<recipe>`.
 Sources and the toolchain are downloaded and checked against their pinned
-digests before the build; the build itself runs in a network namespace with
-no network.
+digests before the build; the build itself runs in a sandbox with no network
+(`scripts/sandbox.sh`), so building a recipe locally needs Linux with
+unprivileged user namespaces and, for the check that proves the sandbox
+works, a network connection.
 
 ### Results policy
 

@@ -110,14 +110,18 @@ while read -r name sha top spdx url; do
   echo "build-recipe: source $name sha256=$sha OK"
 done < "$RDIR/sources.txt"
 
-# The build itself runs with no network: a new user+network namespace whose
-# only interface is lo (down). Prove that first; fail closed if it cannot be
-# set up.
-"$ROOT/scripts/netns-check.sh" || die "no network-isolated namespace for the build"
+# The build itself runs with no network, in the sandbox of sandbox.sh (new
+# user, network and mount namespaces, no inherited descriptors, /run and /tmp
+# hidden). netns-check.sh first proves the host does have network, so that the
+# sandbox's own check (run inside, before build.sh starts) means something.
+for p in "$ROOT" "$TC" "$W"; do
+  case "$p/" in /run/*|/tmp/*|/var/run/*) die "$p is hidden inside the build sandbox; use another directory" ;; esac
+done
+"$ROOT/scripts/netns-check.sh" || die "no network-isolated sandbox for the build"
 
 START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 set +e
-unshare --user --map-root-user --net -- env -i \
+"$ROOT/scripts/sandbox.sh" env -i \
   PATH=/usr/bin:/bin HOME="$W/home" TMPDIR="$W/tmp" LC_ALL=C TZ=UTC \
   SOURCE_DATE_EPOCH=1 LD_LIBRARY_PATH="$W/hostlibs" \
   PB_LIB="$ROOT/scripts/recipe-lib.sh" PB_RECIPE_DIR="$RDIR" PB_WORK="$W" \
