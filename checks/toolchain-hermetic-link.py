@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Check: a recipe build links against the pinned toolchain's libc, never the
-host's (known failure: exits 1 until build-recipe.sh is fixed).
+host's (was a known failure; fixed).
 
 build-recipe.sh stages the compiler's sysroot with symlinks into the
 toolchain. The toolchain's libc.so and libm.so are GNU ld scripts that name
 /usr/lib/libc.so.6, /usr/lib/libm.so.6 and so on. ld prefixes those paths
 with the sysroot only when the script itself lies inside the sysroot, and it
 decides that on the script's real path, which the symlinks move into the
-toolchain directory. So ld uses the HOST's /usr/lib/libc.so.6 and
-/usr/lib/libm.so.6: on a host that has them (Arch) every link silently uses
+toolchain directory. So ld used the HOST's /usr/lib/libc.so.6 and
+/usr/lib/libm.so.6: on a host that has them (Arch) every link silently used
 the host's glibc, and on one that does not (ubuntu-24.04, which keeps them in
-/usr/lib/x86_64-linux-gnu) the first link fails, which is the CMake compiler
-check, so every recipe fails at configure.
+/usr/lib/x86_64-linux-gnu) the first link failed, which is the CMake compiler
+check, so every recipe failed at configure. build-recipe.sh now stages lib/
+and lib64/ as real directories with the ld scripts copied, and proves a
+trivial link hermetic before the build (stage toolchain-sysroot).
 
 The check copies the repository's scripts into a scratch tree, adds a
 one-file recipe that links a C++ program with -Wl,--trace, and builds it

@@ -22,8 +22,10 @@
 #                                  where <stage> is a fixed token, and nothing
 #                                  else (no path, no environment, no output)
 #
-# Stages (the failure tokens): usage, toolchain, sources-download,
-# sources-verify, sources-unpack, sandbox-check (netns-check.sh on the host),
+# Stages (the failure tokens): usage, toolchain, toolchain-sysroot (a
+# trivial link must take libc and the loader from the staged sysroot),
+# sources-download, sources-verify, sources-unpack, sandbox-check
+# (netns-check.sh on the host),
 # then inside the sandbox either the sandbox stage or assertion that failed
 # (sandbox-<id> or inside-<id>, as netns-check.sh names them) or the build
 # stage the recipe reached (recipe, configure, compile, install,
@@ -102,9 +104,24 @@ mkdir -p "$W/dl" "$W/src" "$W/build" "$W/out/root/pb" "$W/home" "$W/tmp" \
 # Staged sysroot: the toolchain's libc.so names /usr/lib/..., and the bundle
 # only has lib/ and lib64/. Nothing of the host's /usr/include or /usr/lib is
 # visible to the compiler or linker through it.
-ln -s "$TC/sysroot/lib" "$W/sysroot/lib"
-ln -s "$TC/sysroot/lib64" "$W/sysroot/lib64"
-ln -s "$TC/sysroot/lib" "$W/sysroot/usr/lib"
+#
+# lib/ and lib64/ are real directories of per-file symlinks, and the GNU ld
+# scripts among the files (libc.so, libm.so) are copied, not linked: ld
+# prefixes the /usr/lib/... paths in a script with the sysroot only when the
+# script's real path lies inside the sysroot. Through a symlink into the
+# toolchain it does not, and ld would take the host's /usr/lib/libc.so.6.
+for d in lib lib64; do
+  mkdir "$W/sysroot/$d"
+  for f in "$TC/sysroot/$d"/* "$TC/sysroot/$d"/.[!.]*; do
+    [ -e "$f" ] || [ -L "$f" ] || continue
+    if [ -f "$f" ] && [ ! -L "$f" ] && head -c 256 "$f" | grep -qa 'GNU ld script'; then
+      cp "$f" "$W/sysroot/$d/"
+    else
+      ln -s "$f" "$W/sysroot/$d/"
+    fi
+  done
+done
+ln -s ../lib "$W/sysroot/usr/lib"
 
 # The compiler and binutils run on the host's loader and libc (they need at
 # most GLIBC_2.38), so only the toolchain's non-glibc runtime libraries go on
@@ -116,6 +133,24 @@ for lib in libbfd-2.46.1.so libctf.so.0 libsframe.so.3 libgmp.so.10 libisl.so.23
   [ -f "$TC/sysroot/lib/$lib" ] || die "toolchain is missing sysroot/lib/$lib"
   ln -s "$TC/sysroot/lib/$lib" "$W/hostlibs/$lib"
 done
+
+# Prove it: link a trivial program and require every libc, libm, libmvec,
+# libc_nonshared and loader input to come from the staged sysroot.
+STAGE=toolchain-sysroot
+printf 'int main() { return 0; }\n' > "$W/tmp/pb-link-check.cc"
+LD_LIBRARY_PATH="$W/hostlibs" "$GXX" --sysroot="$W/sysroot" "$W/tmp/pb-link-check.cc" \
+  -o "$W/tmp/pb-link-check" -Wl,--trace > "$W/tmp/pb-link-check.trace" ||
+  die "the toolchain cannot link a trivial program against the staged sysroot"
+while read -r input; do
+  case "${input##*/}" in
+    libc.so*|libm.so*|libmvec.so*|libc_nonshared.a|ld-linux-*.so*)
+      case "$input" in
+        "$W/sysroot/"*) ;;
+        *) die "the link took $input from outside the staged sysroot" ;;
+      esac ;;
+  esac
+done < "$W/tmp/pb-link-check.trace"
+rm -f "$W/tmp/pb-link-check.cc" "$W/tmp/pb-link-check" "$W/tmp/pb-link-check.trace"
 
 cat > "$W/toolchain.cmake" <<EOF
 set(CMAKE_C_COMPILER "$GCC")
