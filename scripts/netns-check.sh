@@ -176,12 +176,13 @@ for line in open("/proc/self/mountinfo"):
   if umount -l "$HOME" 2> /dev/null; then die umount-home "umount of \$HOME succeeded inside the sandbox"; fi
   if mount -o remount,bind,rw / 2> /dev/null; then die remount-root "a read-write remount of / succeeded inside the sandbox"; fi
   if mount -o remount,bind,rw "$HOME" 2> /dev/null; then die remount-home "a read-write remount of \$HOME succeeded inside the sandbox"; fi
-  if unshare --user --map-root-user --mount -- mount -o remount,bind,rw / 2> /dev/null; then
+  # A nested user namespace: /proc is read-only, so unshare(1) could not map
+  # one, but its creator holds every capability in it until execve, so
+  # nested-userns.py makes the calls itself.
+  python3 -I "$HERE/nested-userns.py" remount-rw / ||
     die nested-remount-root "a nested user namespace could remount / read-write"
-  fi
-  if unshare --user --mount -- umount -l "$HOME" 2> /dev/null; then
+  python3 -I "$HERE/nested-userns.py" umount "$HOME" ||
     die nested-umount-home "a nested user namespace could unmount \$HOME"
-  fi
   # PID namespace: not the host's, /proc is its own (/proc/self is this
   # shell), and no host process sandbox.sh named is there (same PID and same
   # start time), nor its environ readable.
@@ -200,9 +201,8 @@ for line in open("/proc/self/mountinfo"):
     fi
     die host-pid-visible "host process $n is visible inside the sandbox"
   done
-  if unshare --user --map-root-user --mount -- umount -l /proc 2> /dev/null; then
+  python3 -I "$HERE/nested-userns.py" umount /proc ||
     die nested-umount-proc "a nested user namespace could unmount /proc"
-  fi
   [ "$(readlink /proc/self/ns/ipc)" != "$PB_HOST_IPCNS" ] || die ipc-ns "the sandbox shares the host IPC namespace"
   found=$(find /dev/shm /dev/mqueue -mindepth 1 -print -quit 2> /dev/null || true)
   [ -z "$found" ] || die ipc-visible "a host IPC object is visible inside the sandbox: $found"
@@ -219,7 +219,11 @@ for line in open("/proc/self/mountinfo"):
     if [ -e "$f" ] && [ -n "$(head -c 1 "$f" 2> /dev/null)" ]; then
       die proc-keys-visible "$f lists keys inside the sandbox"
     fi
+    python3 -I "$HERE/nested-userns.py" umount "$f" ||
+      die proc-keys-visible "a nested user namespace could unmount the mask over $f"
   done
+  python3 -I "$HERE/nested-userns.py" mount-proc ||
+    die proc-keys-visible "a nested user namespace could mount a new /proc"
   [ -n "${PB_HOST_USER_KEYRING:-}" ] || die host-info "sandbox.sh passed no host user keyring"
   for s in $PB_HOST_KEYRING $PB_HOST_USER_KEYRING; do
     [ "$s" != none ] || continue
@@ -303,6 +307,10 @@ time.sleep(120)' "$s" &
     connects "$s" || die host-probe-socket "positive control: the probe socket $s does not accept connections"
   done
   writable "$h/probe" || die host-probe-file "positive control: $h/probe is not writable on the host"
+  # The nested user namespace probes work: on the host, / remounts.
+  if python3 -I "$HERE/nested-userns.py" remount-rw /; then
+    die host-nested-userns "positive control: a nested user namespace cannot remount / on the host"
+  fi
   for s in "${pids[@]}"; do
     tr '\0' '\n' < "/proc/$s/environ" | grep -qx PB_NETNS_CHECK_ENVIRON_PROBE=1 ||
       die host-environ "positive control: the environ of probe process $s is not readable on the host"
