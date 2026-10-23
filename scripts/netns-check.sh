@@ -68,6 +68,13 @@ SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
              [116]=workdir-rw [117]=check-not-run [118]=session-keyring
              [119]=keyring-filter [125]=usage)
+# Inside, assertion i exits with 64 + i, and sandbox.sh passes 64-109 on:
+# 64-108 are the assertions and 109 an unknown token. The codes from 110 on
+# are sandbox.sh's own stages, so there may be at most 45 assertions.
+if [ $((64 + ${#INSIDE_IDS[@]})) -gt 109 ]; then
+  echo "netns-check: too many inside assertions for the exit codes 64-108" >&2
+  exit 1
+fi
 
 # summary <line>: one sanitized line for the GitHub step summary, if any.
 summary() {
@@ -86,7 +93,7 @@ die() {
     for i in "${!INSIDE_IDS[@]}"; do
       if [ "${INSIDE_IDS[$i]}" = "$id" ]; then exit $((64 + i)); fi
     done
-    exit 99
+    exit 109
   fi
   summary "FAIL $id (exit ${DIE_RC:-1})"
   exit 1

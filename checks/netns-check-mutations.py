@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check: every sandbox defence is caught by its own netns-check.sh token
-(known failure: exits 1 until the sandbox exit codes are fixed).
+(was a known failure; fixed: proc-keys-visible, exit code 100, used to be
+reported as check-not-run because sandbox.sh passed only 64-99 on).
 
 For each mutation below, the check copies scripts/ into a scratch tree,
 removes one defence from sandbox.sh or deny-keyrings.py (and, where a

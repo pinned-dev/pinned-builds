@@ -45,7 +45,7 @@
 #   1        unshare failed (no user, network, mount, PID or IPC namespace,
 #            the mount propagation change or the /proc mount was refused,
 #            as under an AppArmor unprivileged_userns profile)
-#   64-99    an assertion of netns-check.sh inside failed (its own code)
+#   64-109   an assertion of netns-check.sh inside failed (its own code)
 #   110      tmpfs over /run
 #   111      keep the kept directories, or mask /proc/keys, /proc/key-users
 #   112      make / read-only
@@ -163,12 +163,12 @@ if [ "$INSIDE" = 1 ]; then
   #    setsid: a new session, with no controlling terminal.
   CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --
            setsid --wait -- python3 -I "$HERE/deny-keyrings.py" 119)
-  # A failed assertion keeps its own code (64-99), and a filter that could
+  # A failed assertion keeps its own code (64-109), and a filter that could
   # not be installed its own (119); anything else is 117.
   rc=0
   PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside || rc=$?
   if [ "$rc" -ne 0 ]; then
-    [ "$rc" -ge 64 ] && [ "$rc" -le 99 ] || [ "$rc" = 119 ] || rc=117
+    [ "$rc" -ge 64 ] && [ "$rc" -le 109 ] || [ "$rc" = 119 ] || rc=117
     die "$rc" "the build sandbox is not isolated"
   fi
   unset PB_HOST_PIDNS PB_HOST_IPCNS PB_HOST_KEYRING PB_HOST_USER_KEYRING PB_HOST_PIDS
