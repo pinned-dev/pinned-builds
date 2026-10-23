@@ -32,6 +32,7 @@ import platform
 import secrets
 import subprocess
 import sys
+import time
 
 sys.dont_write_bytecode = True
 
@@ -126,16 +127,23 @@ def main():
                             env=dict(env, PB_CHECK_MARKER=marker))
     shm_made = False
     try:
-        start = None
-        for _ in range(50):
+        # Right after the fork, until the child has called execve, its environ
+        # is still this process's, without the marker: wait for the exec.
+        start, seen = None, False
+        for _ in range(200):
             start = starttime(host.pid)
-            if start:
+            try:
+                with open(f"/proc/{host.pid}/environ", "rb") as f:
+                    seen = marker.encode() in f.read()
+            except OSError:
+                seen = False
+            if start and seen:
                 break
-        with open(f"/proc/{host.pid}/environ", "rb") as f:
-            if start is None or marker.encode() not in f.read():
-                print("positive control: the marker process environ is not readable on the host;"
-                      " check not run", file=sys.stderr)
-                return 2
+            time.sleep(0.05)
+        if not (start and seen):
+            print("positive control: the marker process environ is not readable on the host;"
+                  " check not run", file=sys.stderr)
+            return 2
         try:
             with open(shm, "x"):
                 shm_made = True
