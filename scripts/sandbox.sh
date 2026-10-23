@@ -20,10 +20,12 @@
 #   (docker, containerd, dbus, gpg-agent, ...), fresh tmpfs mounts over
 #   /dev/shm and /dev/mqueue hide the host's POSIX shared memory and message
 #   queues, one over /dev/pts hides the host's ptys (a read-only mount does
-#   not stop a device node from being opened for writing), and all of them
-#   but /tmp are read-only too; the --ro and --rw
-#   directories are bound back in,
-#   and only the --rw directories and the scratch /tmp are writable;
+#   not stop a device node from being opened for writing), ones over
+#   /usr/include and /usr/local hide the host's headers and locally
+#   installed tools and libraries (so no build step can copy them into the
+#   work directory), and all of them but /tmp are read-only too; the --ro
+#   and --rw directories are bound back in, and only the --rw directories
+#   and the scratch /tmp are writable;
 # - all capabilities are dropped (effective, permitted, inheritable, ambient
 #   and bounding sets) with no_new_privs, so the command cannot unmount or
 #   remount anything (uid 0 inside the user namespace stays, but powerless);
@@ -131,6 +133,17 @@ if [ "$INSIDE" = 1 ]; then
   for h in /dev/shm /dev/mqueue /dev/pts; do
     if [ -d "$h" ]; then hide+=("$h"); fi
   done
+  # The host's headers and everything installed under /usr/local: the
+  # toolchain brings its own headers, and nothing the sandbox itself runs
+  # lives there (PATH is set to /usr/bin:/bin:/usr/sbin:/sbin below).
+  # (The lib*.so development symlinks in /usr/lib* stay: a mount cannot
+  # cover a symlink without covering its target, the runtime library that
+  # the host tools in the sandbox load, and that runtime library could be
+  # copied just the same. The input check after the build is the guard
+  # there: the linker records every library it reads.)
+  for h in /usr/include /usr/local; do
+    if [ -d "$h" ] && [ ! -L "$h" ]; then hide+=("$h"); fi
+  done
   for h in "${hide[@]}"; do
     mount -t tmpfs -o mode=1777,nosuid,nodev sandbox-hide "$h" || die 113 "cannot mount tmpfs over $h"
   done
@@ -166,7 +179,8 @@ if [ "$INSIDE" = 1 ]; then
   # A failed assertion keeps its own code (64-109), and a filter that could
   # not be installed its own (119); anything else is 117.
   rc=0
-  PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside || rc=$?
+  export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+  PB_SANDBOX_RW="${RW[*]}" PB_SANDBOX_KEEP="${KEEP[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside || rc=$?
   if [ "$rc" -ne 0 ]; then
     [ "$rc" -ge 64 ] && [ "$rc" -le 109 ] || [ "$rc" = 119 ] || rc=117
     die "$rc" "the build sandbox is not isolated"

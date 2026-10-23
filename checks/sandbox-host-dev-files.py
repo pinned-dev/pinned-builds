@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check: a build step cannot copy the host's headers or /usr/local files
-into the work directory (known failure: exits 1 until they are hidden).
+into the work directory (was a known failure; fixed: sandbox.sh hides
+/usr/include and /usr/local under read-only, empty tmpfs mounts).
 
 The input check after the build covers every file the compiler and the
 linker record. A build step that first copies a host file into the build
@@ -50,6 +51,9 @@ foreach(f IN LISTS HOST_FILES)
   list(APPEND copied "${CMAKE_BINARY_DIR}/copied-${n}")
 endforeach()
 add_custom_target(copy_host_files ALL DEPENDS ${copied})
+# (one compiled program, so the build has a dependency log to check)
+file(WRITE "${CMAKE_BINARY_DIR}/t.c" "int main(void) { return 0; }\n")
+add_executable(t "${CMAKE_BINARY_DIR}/t.c")
 EOF
 pb_cmake hostdevfiles "$PB_BUILD/src" "-DHOST_FILES=@HOST_FILES@" > "$PB_BUILD/log" 2>&1 || true
 bad=0
@@ -128,7 +132,7 @@ def main():
         for ln in copied:
             print(f"FAIL: a build step {ln[len('host input: '):]}")
         return 1
-    print(f"the build did not get to the link test (exit {r.returncode}); check not run", file=sys.stderr)
+    print(f"the build failed for another reason (exit {r.returncode}); check not run", file=sys.stderr)
     print(r.stderr[-1500:], file=sys.stderr)
     return 2
 

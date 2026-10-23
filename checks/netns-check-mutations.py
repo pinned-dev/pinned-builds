@@ -69,6 +69,8 @@ MUTATIONS = {
     "no-proc-keys-mask-nested": ("inside-proc-keys-visible", [
         (SB, 'then mount --bind /dev/null "$f" || die 111 "cannot mask $f"; fi', "then :; fi"),
         (NC, '      die proc-keys-visible "$f lists keys inside the sandbox"', "      :")]),
+    "no-host-dev-hide": ("inside-host-dev-visible", [
+        (SB, "  for h in /usr/include /usr/local; do", "  for h in; do")]),
     # The nested user namespace checks must be live: with / left writable and
     # the direct assertions that would fire first disabled, only the nested
     # remount check is left to fail.
@@ -77,6 +79,11 @@ MUTATIONS = {
         (NC, '  [ -z "$found" ] || die rw-mount ', "  true || die rw-mount "),
         (NC, '    if writable "$f"; then die writable-outside', "    if false; then die writable-outside"),
         (NC, "then die remount-root ", "then true; fi; if false; then die remount-root ")]),
+}
+
+# Mutations that can only be caught where the host has what they expose.
+NEEDS = {
+    "no-host-dev-hide": lambda: any(os.scandir("/usr/include")) if os.path.isdir("/usr/include") else False,
 }
 
 LINE = re.compile(r"netns-check: (FAIL ([a-z0-9-]+) \(exit ([0-9]+)\)|PASS)")
@@ -135,6 +142,9 @@ def main():
     failures = 0
     for n in names:
         token, edits = MUTATIONS[n]
+        if n in NEEDS and not NEEDS[n]():
+            print(f"skip: {n}: not observable on this host")
+            continue
         got = run(base, edits)
         if got is None:
             print(f"FAIL: {n}: not applicable (the text to mutate is not in this tree)")

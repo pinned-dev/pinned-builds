@@ -63,7 +63,8 @@ INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
             proc-not-own host-pid-visible host-environ-readable
             nested-umount-proc ipc-ns ipc-visible seccomp keyctl-allowed
             add-key-allowed request-key-allowed host-keyring-reachable ctty
-            host-tty-writable x32-allowed i386-allowed proc-keys-visible)
+            host-tty-writable x32-allowed i386-allowed proc-keys-visible
+            host-dev-visible)
 SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
              [116]=workdir-rw [117]=check-not-run [118]=session-keyring
@@ -240,6 +241,19 @@ for line in open("/proc/self/mountinfo"):
         die host-keyring-reachable "the host keyring $s can be reached by serial ($f) inside the sandbox"
     done
   done
+  # The host's headers and /usr/local are hidden: /usr/include is empty, and
+  # under /usr/local there is nothing but the kept directories bound back.
+  found=$(python3 -I -c 'import os, sys
+keep = [os.path.realpath(k) for k in sys.argv[1:]]
+inside = lambda p: any(p == k or p.startswith(k + "/") for k in keep)
+above = lambda p: any(k.startswith(p + "/") for k in keep)
+for top in ("/usr/include", "/usr/local"):
+    for dirpath, dirs, files in os.walk(top):
+        dirs[:] = [d for d in dirs if not inside(os.path.join(dirpath, d))]
+        for n in files + [d for d in dirs if not above(os.path.join(dirpath, d))]:
+            print(os.path.join(dirpath, n))
+            sys.exit(0)' ${PB_SANDBOX_KEEP:-}) || die host-dev-visible "cannot scan /usr/include and /usr/local"
+  [ -z "$found" ] || die host-dev-visible "a host header or /usr/local file is visible inside the sandbox: $found"
   # Terminals: no controlling terminal (field 7 of stat), and no terminal
   # device (majors 4 and 5, and 136-143 for ptys) opens for writing.
   s=$(starttime_field 7 self) || s=''
@@ -278,7 +292,7 @@ for p in paths:
        "own PID namespace and /proc, no host process visible or its environ readable," \
        "own IPC namespace, /dev/shm and /dev/mqueue empty, keyring system calls refused (x32 and i386 too)," \
        "host keyrings unreachable, /proc/keys and /proc/key-users masked," \
-       "no controlling terminal, no terminal device writable"
+       "no controlling terminal, no terminal device writable, /usr/include and /usr/local hidden"
 }
 
 # sandbox_token <exit status of sandbox.sh>: the fixed token that names the
