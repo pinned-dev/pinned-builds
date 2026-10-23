@@ -33,7 +33,8 @@
 # host's session and user keyrings can be neither described nor linked by
 # serial number (sandbox.sh checks that the session keyring is a new, empty
 # one before the filter makes that impossible); keyctl through x32 is
-# refused and through int 0x80 kills the caller; there is no controlling
+# refused and through int 0x80 kills the caller; /proc/keys and
+# /proc/key-users list nothing; there is no controlling
 # terminal, and neither the probe pty, /dev/tty nor any other terminal
 # device under /dev opens for writing.
 #
@@ -61,7 +62,7 @@ INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
             proc-not-own host-pid-visible host-environ-readable
             nested-umount-proc ipc-ns ipc-visible seccomp keyctl-allowed
             add-key-allowed request-key-allowed host-keyring-reachable ctty
-            host-tty-writable x32-allowed i386-allowed)
+            host-tty-writable x32-allowed i386-allowed proc-keys-visible)
 SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
              [116]=workdir-rw [117]=check-not-run [118]=session-keyring
@@ -214,6 +215,11 @@ for line in open("/proc/self/mountinfo"):
   python3 -I "$HERE/deny-keyrings.py" --check x32 || die x32-allowed "keyctl through x32 is not refused inside the sandbox"
   python3 -I "$HERE/deny-keyrings.py" --check i386 2> /dev/null ||
     die i386-allowed "keyctl through int 0x80 is not killed inside the sandbox"
+  for f in /proc/keys /proc/key-users; do
+    if [ -e "$f" ] && [ -n "$(head -c 1 "$f" 2> /dev/null)" ]; then
+      die proc-keys-visible "$f lists keys inside the sandbox"
+    fi
+  done
   [ -n "${PB_HOST_USER_KEYRING:-}" ] || die host-info "sandbox.sh passed no host user keyring"
   for s in $PB_HOST_KEYRING $PB_HOST_USER_KEYRING; do
     [ "$s" != none ] || continue
@@ -259,7 +265,7 @@ for p in paths:
        "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused," \
        "own PID namespace and /proc, no host process visible or its environ readable," \
        "own IPC namespace, /dev/shm and /dev/mqueue empty, keyring system calls refused (x32 and i386 too)," \
-       "host keyrings unreachable," \
+       "host keyrings unreachable, /proc/keys and /proc/key-users masked," \
        "no controlling terminal, no terminal device writable"
 }
 

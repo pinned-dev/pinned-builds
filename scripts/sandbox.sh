@@ -46,11 +46,14 @@
 #            the mount propagation change or the /proc mount was refused,
 #            as under an AppArmor unprivileged_userns profile)
 #   64-99    an assertion of netns-check.sh inside failed (its own code)
-#   110      tmpfs over /run          114  bind the kept directories back
-#   111      keep the kept directories 115  make hidden $HOME, /var/tmp ro
-#   112      make / read-only          116  make the --rw directories writable
+#   110      tmpfs over /run
+#   111      keep the kept directories, or mask /proc/keys, /proc/key-users
+#   112      make / read-only
 #   113      tmpfs over /tmp, /var/tmp, $HOME, /dev/shm, /dev/mqueue,
 #            /dev/pts
+#   114      bind the kept directories back
+#   115      make the hidden $HOME, /var/tmp, ... read-only
+#   116      make the --rw directories writable
 #   117      netns-check.sh inside did not run (e.g. setpriv failed)
 #   118      no new session keyring
 #   119      the keyring system call filter could not be installed
@@ -105,6 +108,14 @@ if [ "$INSIDE" = 1 ]; then
   for i in "${!KEEP[@]}"; do
     mkdir "/run/keep/$i" || die 111 "cannot create /run/keep/$i"
     mount --rbind "${KEEP[$i]}" "/run/keep/$i" || die 111 "cannot bind ${KEEP[$i]}"
+  done
+  # 1b. Mask /proc/keys and /proc/key-users: the build's kernel uid is the
+  #     runner's, so they would list the runner's keys and keyrings (type,
+  #     description, serial, payload length). With them masked, this /proc is
+  #     no longer fully visible, so the kernel refuses a new proc mount in a
+  #     nested user namespace too.
+  for f in /proc/keys /proc/key-users; do
+    if [ -e "$f" ]; then mount --bind /dev/null "$f" || die 111 "cannot mask $f"; fi
   done
   # 2. Everything read-only, recursively (device nodes still work).
   python3 -I "$HERE/mount-setattr.py" ro / || die 112 "cannot make / read-only"
