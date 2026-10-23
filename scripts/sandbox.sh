@@ -13,8 +13,12 @@
 #   (docker, containerd, dbus, gpg-agent, ...), and the $HOME and /var/tmp
 #   ones are read-only too; the --ro and --rw directories are bound back in,
 #   and only the --rw directories and the scratch /tmp are writable;
-# - netns-check.sh inside proves this in the same namespaces before the
-#   command starts, and the command does not start if it fails.
+# - all capabilities are dropped (effective, permitted, inheritable, ambient
+#   and bounding sets) with no_new_privs, so the command cannot unmount or
+#   remount anything (uid 0 inside the user namespace stays, but powerless);
+# - netns-check.sh inside proves this in the same namespaces and under the
+#   same restrictions before the command starts, and the command does not
+#   start if it fails.
 #
 # The scripts directory is always kept (read-only). No kept directory may
 # live under /run, which is hidden first. Needs util-linux 2.39 or later
@@ -95,8 +99,13 @@ if [ "$INSIDE" = 1 ]; then
   for p in "${RW[@]}"; do
     mount -o remount,bind,rw=recursive "$p" || die "cannot make $p writable"
   done
-  PB_SANDBOX_RW="${RW[*]}" "$HERE/netns-check.sh" inside || die "the build sandbox is not isolated"
-  exec "$@"
+  # 5. Drop every capability for good (the mounts above are only as strong
+  #    as the build's inability to undo them), with no_new_privs, and run the
+  #    check under exactly the same restrictions as the command.
+  CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --)
+  PB_SANDBOX_RW="${RW[*]}" "${CONFINE[@]}" "$HERE/netns-check.sh" inside ||
+    die "the build sandbox is not isolated"
+  exec "${CONFINE[@]}" "$@"
 fi
 
 ARGS=()

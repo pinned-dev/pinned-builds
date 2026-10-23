@@ -17,7 +17,10 @@
 # socket at all under /run, /tmp, /var/tmp and $HOME; the probe file, the
 # GitHub Actions command files (GITHUB_ENV, GITHUB_PATH, GITHUB_OUTPUT,
 # GITHUB_STATE, GITHUB_STEP_SUMMARY, when set) and the scripts directory are
-# not writable; no descriptor above 2, and none of 0-2 is a socket.
+# not writable; no descriptor above 2, and none of 0-2 is a socket; every
+# capability set is empty and no_new_privs is set; unmounting $HOME,
+# remounting / or $HOME read-write, and doing either from a nested user
+# namespace all fail.
 #
 # On ubuntu-24.04 runners unprivileged user namespaces are blocked by AppArmor
 # until kernel.apparmor_restrict_unprivileged_userns is set to 0.
@@ -69,6 +72,20 @@ inside() {
     writable "$f/.netns-check-rw-probe" || die "the work directory $f is not writable"
     rm -f "$f/.netns-check-rw-probe"
   done
+  # No capabilities and no_new_privs, so nothing above can be undone.
+  for f in CapInh CapPrm CapEff CapBnd CapAmb; do
+    grep -qxE "$f:[[:space:]]+0+" /proc/self/status || die "$f is not empty inside the sandbox"
+  done
+  grep -qxE 'NoNewPrivs:[[:space:]]+1' /proc/self/status || die "no_new_privs is not set inside the sandbox"
+  if umount -l "$HOME" 2> /dev/null; then die "umount of \$HOME succeeded inside the sandbox"; fi
+  if mount -o remount,bind,rw / 2> /dev/null; then die "a read-write remount of / succeeded inside the sandbox"; fi
+  if mount -o remount,bind,rw "$HOME" 2> /dev/null; then die "a read-write remount of \$HOME succeeded inside the sandbox"; fi
+  if unshare --user --map-root-user --mount -- mount -o remount,bind,rw / 2> /dev/null; then
+    die "a nested user namespace could remount / read-write"
+  fi
+  if unshare --user --mount -- umount -l "$HOME" 2> /dev/null; then
+    die "a nested user namespace could unmount \$HOME"
+  fi
   for fd in "/proc/$$/fd"/*; do
     n=${fd##*/}
     [ -e "$fd" ] || continue # the descriptor the glob itself used, now closed
@@ -80,7 +97,8 @@ inside() {
   done
   echo "netns-check: inside: interfaces [${ifaces% }], $PROBE_URL unreachable, TCP by address refused," \
        "docker/containerd and probe sockets unreachable, no sockets under /run /tmp /var/tmp \$HOME," \
-       "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket"
+       "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket," \
+       "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused"
 }
 
 # (globals, because the EXIT trap runs after outside() has returned)

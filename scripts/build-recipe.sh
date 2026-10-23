@@ -32,7 +32,7 @@ fi
 TC=$(realpath -e "$TC_IN") || die "no toolchain at $TC_IN"
 if [ -e "$W_IN" ] || [ -L "$W_IN" ]; then die "work dir exists: $W_IN"; fi
 W_PARENT=$(realpath -e "$(dirname "$W_IN")") || die "the parent of $W_IN must exist"
-W=$W_PARENT/$(basename "$W_IN")
+W=$(realpath -m "$W_PARENT/$(basename "$W_IN")")
 # The build runs in the sandbox of sandbox.sh, which hides /run first; check
 # the resolved paths before anything is created or downloaded.
 for p in "$ROOT" "$TC" "$W"; do
