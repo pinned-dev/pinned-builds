@@ -78,6 +78,7 @@ def main():
                            "scripts/fetch-toolchain.sh", "scripts/netns-check.sh", "scripts/sandbox.sh",
                            "scripts/mount-setattr.py", "scripts/session-keyring.py",
                            "scripts/deny-keyrings.py", "scripts/nested-userns.py",
+                           "scripts/check-build-inputs.py",
                            "scripts/recipe-lib.sh", "scripts/write-manifest.py",
                            "toolchain.lock")]
 

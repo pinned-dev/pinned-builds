@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check: a recipe cannot link a library from the host's default linker
-search directories (known failure: exits 1 until the link is hermetic).
+search directories (was a known failure; fixed: the toolchain file passes
+-Wl,-nostdlib, so ld searches only the toolchain and the staged sysroot).
 
 The toolchain's ld was built without a sysroot, so its built-in search
 directories (/usr/lib, /usr/local/lib, /usr/x86_64-pc-linux-gnu/lib and

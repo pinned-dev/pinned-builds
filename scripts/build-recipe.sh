@@ -29,7 +29,9 @@
 # then inside the sandbox either the sandbox stage or assertion that failed
 # (sandbox-<id> or inside-<id>, as netns-check.sh names them) or the build
 # stage the recipe reached (recipe, configure, compile, install,
-# smoke-configure, smoke-compile, smoke-run), and last manifest.
+# smoke-configure, smoke-compile, smoke-run), then build-inputs (a compile
+# or link read a file outside the toolchain, the work directory and the
+# repository, by ninja's dependency log), and last manifest.
 set -euo pipefail
 export LC_ALL=C
 umask 022
@@ -47,7 +49,9 @@ summary() {
 finish() {
   local rc=$1 token=$STAGE got=''
   if [ "$rc" -eq 0 ]; then summary PASS; return; fi
-  if [ "$STAGE" = build ]; then
+  if [ "$STAGE" = build ] && [ -n "$BUILD_TOKEN" ]; then
+    token=$BUILD_TOKEN
+  elif [ "$STAGE" = build ]; then
     # The recipe writes its stage; only the known tokens are believed.
     # (a regular file only: the build could leave a FIFO or a symlink there)
     if [ -f "$W/.pb-stage" ] && [ ! -L "$W/.pb-stage" ]; then
@@ -134,24 +138,28 @@ for lib in libbfd-2.46.1.so libctf.so.0 libsframe.so.3 libgmp.so.10 libisl.so.23
   ln -s "$TC/sysroot/lib/$lib" "$W/hostlibs/$lib"
 done
 
-# Prove it: link a trivial program and require every libc, libm, libmvec,
-# libc_nonshared and loader input to come from the staged sysroot.
+# Prove it: link a trivial program, with the same linker flags as the
+# recipes, and require every input to come from the staged sysroot or the
+# toolchain (or be the program's own object, under the work directory).
 STAGE=toolchain-sysroot
 printf 'int main() { return 0; }\n' > "$W/tmp/pb-link-check.cc"
-LD_LIBRARY_PATH="$W/hostlibs" "$GXX" --sysroot="$W/sysroot" "$W/tmp/pb-link-check.cc" \
-  -o "$W/tmp/pb-link-check" -Wl,--trace > "$W/tmp/pb-link-check.trace" ||
+TMPDIR="$W/tmp" LD_LIBRARY_PATH="$W/hostlibs" "$GXX" --sysroot="$W/sysroot" "$W/tmp/pb-link-check.cc" \
+  -o "$W/tmp/pb-link-check" -Wl,-nostdlib -Wl,--trace > "$W/tmp/pb-link-check.trace" ||
   die "the toolchain cannot link a trivial program against the staged sysroot"
 while read -r input; do
-  case "${input##*/}" in
-    libc.so*|libm.so*|libmvec.so*|libc_nonshared.a|ld-linux-*.so*)
-      case "$input" in
-        "$W/sysroot/"*) ;;
-        *) die "the link took $input from outside the staged sysroot" ;;
-      esac ;;
+  case "$input" in
+    "$W/sysroot/"*|"$TC/"*|"$W/tmp/"*) ;;
+    *) die "the link took $input from outside the staged sysroot and the toolchain" ;;
   esac
 done < "$W/tmp/pb-link-check.trace"
 rm -f "$W/tmp/pb-link-check.cc" "$W/tmp/pb-link-check" "$W/tmp/pb-link-check.trace"
 
+# The toolchain's ld was built without a sysroot, so its built-in search
+# directories (/usr/lib, /usr/local/lib, ...) are host paths that --sysroot
+# does not prefix. -Wl,-nostdlib drops them: ld searches only the -L
+# directories, which the gcc driver sets to the toolchain and the staged
+# sysroot. CMAKE_LINK_DEPENDS_USE_LINKER makes ld record every link input
+# for the check after the build.
 cat > "$W/toolchain.cmake" <<EOF
 set(CMAKE_C_COMPILER "$GCC")
 set(CMAKE_CXX_COMPILER "$GXX")
@@ -166,6 +174,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_FIND_USE_PACKAGE_REGISTRY OFF)
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,-nostdlib")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-Wl,-nostdlib")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-Wl,-nostdlib")
+set(CMAKE_LINK_DEPENDS_USE_LINKER ON)
 EOF
 
 # Sources: verify the pinned SHA-256 before anything is unpacked.
@@ -214,7 +226,7 @@ STAGE=sandbox-check
 
 START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 # Until the recipe records a stage, a failure is the sandbox's own.
-STAGE=build RC=0
+STAGE=build RC=0 BUILD_TOKEN=''
 rm -f "$W/.pb-stage"
 set +e
 "$ROOT/scripts/sandbox.sh" --ro "$ROOT" --ro "$TC" --rw "$W" -- env -i \
@@ -227,6 +239,20 @@ set +e
   bash -euo pipefail "$RDIR/build.sh"
 RC=$?
 set -e
+# Every input the compile and link steps read (ninja's dependency log, fed by
+# the compiler and by ld --dependency-file) must lie in the toolchain, the
+# work directory or the repository.
+if [ "$RC" -eq 0 ]; then
+  dirs=()
+  for d in "$W/build"/*/; do
+    if [ -f "$d/build.ninja" ]; then dirs+=("${d%/}"); fi
+  done
+  if [ ${#dirs[@]} -gt 0 ] && ! LD_LIBRARY_PATH="$W/hostlibs" python3 -I "$ROOT/scripts/check-build-inputs.py" \
+       --ninja "$NINJA" --allow "$TC" --allow "$W" --allow "$ROOT" "${dirs[@]}"; then
+    echo "build-recipe: the build read an input from outside the toolchain and work trees" >&2
+    RC=1 BUILD_TOKEN=build-inputs
+  fi
+fi
 END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 STATUS=PASS
 [ "$RC" -eq 0 ] || STATUS=FAIL
