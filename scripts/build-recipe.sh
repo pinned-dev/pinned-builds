@@ -119,8 +119,9 @@ done < "$RDIR/sources.txt"
 # The build itself runs with no network in the sandbox of sandbox.sh: new
 # user, network, mount, PID and IPC namespaces, a new session keyring and
 # no keyring system calls, no inherited descriptors, the host filesystem
-# read-only, /run, /tmp, /var/tmp, $HOME, /dev/shm and /dev/mqueue hidden,
-# and only the work directory writable. netns-check.sh first runs its
+# read-only, /run, /tmp, /var/tmp, $HOME, /dev/shm, /dev/mqueue and
+# /dev/pts hidden, no controlling terminal, and only the work directory
+# writable. netns-check.sh first runs its
 # positive controls on the host, so that the sandbox's own check (run
 # inside, before build.sh starts) means something.
 "$ROOT/scripts/netns-check.sh" || die "no isolated sandbox for the build"

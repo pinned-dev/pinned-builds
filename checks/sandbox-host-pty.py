@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Check: the build sandbox cannot open the host's terminals (known failure:
-exits 1 until the sandbox is fixed).
+"""Check: the build sandbox cannot open the host's terminals (was a known
+failure; fixed).
 
 The host filesystem is read-only inside the sandbox, but a read-only mount
 does not stop a device node from being opened for writing, and the mapped
 root inside has the runner's kernel uid, which owns the runner's ptys. So
-the build can open the host's /dev/pts/<n> and, through /dev/tty, the
+the build could open the host's /dev/pts/<n> and, through /dev/tty, the
 terminal of the session that started it, and write to (or read from) them.
+sandbox.sh now hides /dev/pts under a read-only tmpfs and runs the build in
+a new session with no controlling terminal.
 
 The check opens a pty pair on the host and starts the sandbox in a new
 session with that pty as its controlling terminal, runs a probe through

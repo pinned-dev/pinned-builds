@@ -9,9 +9,9 @@
 # with no network (scripts/sandbox.sh: new user, network, mount, PID and IPC
 # namespaces, a new session keyring and no keyring system calls, no
 # inherited descriptors, docker stopped, the host filesystem read-only
-# except the work directory, and /run, /tmp, /var/tmp, $HOME, /dev/shm and
-# /dev/mqueue hidden), and scripts/netns-check.sh proves it per job and per
-# build.
+# except the work directory, /run, /tmp, /var/tmp, $HOME, /dev/shm,
+# /dev/mqueue and /dev/pts hidden, and no controlling terminal), and
+# scripts/netns-check.sh proves it per job and per build.
 # When that proof fails, netns-check.sh names the failed assertion with a
 # fixed token in the step summary (no paths, no environment), so a failure
 # can be diagnosed without reading raw logs.

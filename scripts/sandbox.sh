@@ -19,12 +19,16 @@
 #   over /run, /tmp, /var/tmp and $HOME hide the filesystem sockets there
 #   (docker, containerd, dbus, gpg-agent, ...), fresh tmpfs mounts over
 #   /dev/shm and /dev/mqueue hide the host's POSIX shared memory and message
-#   queues, and all of them but /tmp are read-only too; the --ro and --rw
+#   queues, one over /dev/pts hides the host's ptys (a read-only mount does
+#   not stop a device node from being opened for writing), and all of them
+#   but /tmp are read-only too; the --ro and --rw
 #   directories are bound back in,
 #   and only the --rw directories and the scratch /tmp are writable;
 # - all capabilities are dropped (effective, permitted, inheritable, ambient
 #   and bounding sets) with no_new_privs, so the command cannot unmount or
 #   remount anything (uid 0 inside the user namespace stays, but powerless);
+# - the command runs in a new session with no controlling terminal, so it
+#   cannot reach the terminal it was started from through /dev/tty;
 # - netns-check.sh inside proves this in the same namespaces and under the
 #   same restrictions before the command starts, and the command does not
 #   start if it fails.
@@ -45,7 +49,8 @@
 #   110      tmpfs over /run          114  bind the kept directories back
 #   111      keep the kept directories 115  make hidden $HOME, /var/tmp ro
 #   112      make / read-only          116  make the --rw directories writable
-#   113      tmpfs over /tmp, /var/tmp, $HOME, /dev/shm, /dev/mqueue
+#   113      tmpfs over /tmp, /var/tmp, $HOME, /dev/shm, /dev/mqueue,
+#            /dev/pts
 #   117      netns-check.sh inside did not run (e.g. setpriv failed)
 #   118      no new session keyring
 #   119      the keyring system call filter could not be installed
@@ -110,8 +115,9 @@ if [ "$INSIDE" = 1 ]; then
     hide+=("$home")
   fi
   # The host's POSIX shared memory and message queues (the new IPC namespace
-  # covers SysV IPC and mq_open(3), but these are plain mounts).
-  for h in /dev/shm /dev/mqueue; do
+  # covers SysV IPC and mq_open(3), but these are plain mounts), and the
+  # host's ptys (with them hidden, /dev/ptmx cannot make new ones either).
+  for h in /dev/shm /dev/mqueue /dev/pts; do
     if [ -d "$h" ]; then hide+=("$h"); fi
   done
   for h in "${hide[@]}"; do
@@ -124,8 +130,8 @@ if [ "$INSIDE" = 1 ]; then
     [ -d "$p" ] || mkdir -p "$p" || die 114 "cannot recreate $p"
     mount --rbind "/run/keep/$i" "$p" || die 114 "cannot bind back $p"
   done
-  # Nothing may write into the hidden $HOME, /var/tmp, /dev/shm and
-  # /dev/mqueue either (so a write to, say, a GitHub Actions command file
+  # Nothing may write into the hidden $HOME, /var/tmp, /dev/shm, /dev/mqueue
+  # and /dev/pts either (so a write to, say, a GitHub Actions command file
   # under $HOME fails rather than landing in the tmpfs); /tmp stays a
   # writable scratch tmpfs.
   for h in "${hide[@]:1}"; do
@@ -143,8 +149,9 @@ if [ "$INSIDE" = 1 ]; then
   read -r ks kn _ < <(python3 -I "$HERE/session-keyring.py" --show) || true
   [ -n "$ks" ] && [ "$ks" != "${PB_HOST_KEYRING:-}" ] && [ "$kn" = 0 ] ||
     die 118 "the session keyring is not a new, empty one"
+  #    setsid: a new session, with no controlling terminal.
   CONFINE=(setpriv --no-new-privs --bounding-set=-all --inh-caps=-all --ambient-caps=-all --
-           python3 -I "$HERE/deny-keyrings.py" 119)
+           setsid --wait -- python3 -I "$HERE/deny-keyrings.py" 119)
   # A failed assertion keeps its own code (64-99), and a filter that could
   # not be installed its own (119); anything else is 117.
   rc=0
@@ -189,11 +196,24 @@ close_fds
 set +e
 # --kill-child: if unshare is killed, so is the whole sandbox. The new
 # session keyring is joined before sandbox.sh --inside starts.
-unshare --user --map-root-user --net --mount --propagation private \
-  --pid --fork --kill-child --mount-proc --ipc -- \
-  python3 -I "$HERE/session-keyring.py" 118 "$HERE/sandbox.sh" --inside "${ARGS[@]}" -- "$@" \
-  < /dev/null > >(cat) 2> >(cat >&2)
-rc=$?
+#
+# The command is PID 1 of its namespace and in a session of its own, so
+# SIGINT, SIGTERM and SIGHUP sent to this process (or its process group)
+# would not reach it; they kill the whole sandbox instead. unshare runs in
+# the background for that, with SIGINT and SIGQUIT back to their defaults.
+( trap - INT QUIT
+  exec unshare --user --map-root-user --net --mount --propagation private \
+    --pid --fork --kill-child --mount-proc --ipc -- \
+    python3 -I "$HERE/session-keyring.py" 118 "$HERE/sandbox.sh" --inside "${ARGS[@]}" -- "$@" ) \
+  < /dev/null > >(cat) 2> >(cat >&2) &
+child=$!
+trap 'kill -KILL "$child" 2> /dev/null' INT TERM HUP
+while :; do
+  wait "$child"
+  rc=$?
+  kill -0 "$child" 2> /dev/null || break # (a trapped signal ended the wait)
+done
+trap - INT TERM HUP
 set -e
 wait
 exit "$rc"

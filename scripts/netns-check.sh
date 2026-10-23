@@ -12,7 +12,8 @@
 # Positive controls: https://github.com is reachable; a unix socket listening
 # under $HOME and one under /var/tmp accept connections; a probe file under
 # $HOME is writable; the environ of the probe socket processes is readable;
-# a probe file under /dev/shm exists (when /dev/shm is writable).
+# a probe file under /dev/shm exists (when /dev/shm is writable); a probe
+# pty opens for writing.
 #
 # The negative check requires: only lo; https and TCP by address fail; no
 # mount is writable except /tmp and the work directories; no docker or
@@ -31,7 +32,9 @@
 # place, keyctl, add_key and request_key are refused with EPERM, and the
 # host's session and user keyrings can be neither described nor linked by
 # serial number (sandbox.sh checks that the session keyring is a new, empty
-# one before the filter makes that impossible).
+# one before the filter makes that impossible); there is no controlling
+# terminal, and neither the probe pty, /dev/tty nor any other terminal
+# device under /dev opens for writing.
 #
 # On ubuntu-24.04 runners unprivileged user namespaces are blocked by AppArmor
 # until kernel.apparmor_restrict_unprivileged_userns is set to 0.
@@ -56,7 +59,8 @@ INSIDE_IDS=(ifaces https tcp socket-visible socket-accepts socket-under-hidden
             nested-umount-home inherited-fd fd-socket rw-mount host-info pid-ns
             proc-not-own host-pid-visible host-environ-readable
             nested-umount-proc ipc-ns ipc-visible seccomp keyctl-allowed
-            add-key-allowed request-key-allowed host-keyring-reachable)
+            add-key-allowed request-key-allowed host-keyring-reachable ctty
+            host-tty-writable)
 SANDBOX_IDS=([1]=unshare [110]=tmpfs-run [111]=keep-bind [112]=readonly-root
              [113]=hide-tmpfs [114]=bind-back [115]=hidden-readonly
              [116]=workdir-rw [117]=check-not-run [118]=session-keyring
@@ -112,14 +116,17 @@ except OSError:
 
 writable() { (: >> "$1") 2> /dev/null; }
 
-# starttime <pid>: the start time of a process (field 22 of its stat).
-starttime() {
-  local s
-  read -r s 2> /dev/null < "/proc/$1/stat" || return 1
+# starttime_field <n> <pid>: field <n> (3 or more) of a process's stat.
+starttime_field() {
+  local s n=$1
+  read -r s 2> /dev/null < "/proc/$2/stat" || return 1
   s=${s##*) }
   set -- $s
-  echo "${20}"
+  shift $((n - 3))
+  echo "$1"
 }
+# starttime <pid>: the start time of a process (field 22 of its stat).
+starttime() { starttime_field 22 "$1"; }
 
 inside() {
   local ifaces s f fd n p target found
@@ -211,6 +218,28 @@ for line in open("/proc/self/mountinfo"):
         die host-keyring-reachable "the host keyring $s can be reached by serial ($f) inside the sandbox"
     done
   done
+  # Terminals: no controlling terminal (field 7 of stat), and no terminal
+  # device (majors 4 and 5, and 136-143 for ptys) opens for writing.
+  s=$(starttime_field 7 self) || s=''
+  [ "$s" = 0 ] || die ctty "the sandbox has a controlling terminal"
+  found=$(python3 -I -c 'import os, stat, sys
+paths = sys.argv[1:] + ["/dev/tty"]
+for root, dirs, files in os.walk("/dev"):
+    paths += [os.path.join(root, f) for f in files]
+for p in paths:
+    try:
+        st = os.stat(p)
+    except OSError:
+        continue
+    if not stat.S_ISCHR(st.st_mode) or os.major(st.st_rdev) not in (4, 5, *range(136, 144)):
+        continue
+    try:
+        os.close(os.open(p, os.O_WRONLY | os.O_NOCTTY | os.O_NONBLOCK))
+    except OSError:
+        continue
+    print(p)
+    break' ${PB_PROBE_PTY:-}) || die host-tty-writable "cannot scan the terminal devices"
+  [ -z "$found" ] || die host-tty-writable "the terminal $found opens for writing inside the sandbox"
   for fd in "/proc/$$/fd"/*; do
     n=${fd##*/}
     [ -e "$fd" ] || continue # the descriptor the glob itself used, now closed
@@ -225,13 +254,14 @@ for line in open("/proc/self/mountinfo"):
        "probe file, GitHub command files and scripts read-only, work dirs writable, descriptors 0-2 only, none a socket," \
        "no capabilities, no_new_privs set, umount/remount/nested-namespace escapes refused," \
        "own PID namespace and /proc, no host process visible or its environ readable," \
-       "own IPC namespace, /dev/shm and /dev/mqueue empty, keyring system calls refused, host keyrings unreachable"
+       "own IPC namespace, /dev/shm and /dev/mqueue empty, keyring system calls refused, host keyrings unreachable," \
+       "no controlling terminal, no terminal device writable"
 }
 
 # (globals, because the EXIT trap runs after outside() has returned)
 h='' v='' shm='' pids=()
 outside() {
-  local s rc
+  local s rc pty
   host_userns
   curl --silent --show-error --max-time 30 -o /dev/null "$PROBE_URL" ||
     die host-https "positive control: $PROBE_URL is not reachable from the host"
@@ -243,7 +273,7 @@ outside() {
   v=$(mktemp -d /var/tmp/.netns-check.XXXXXX) || die host-var-tmp "cannot create a probe directory under /var/tmp"
   cleanup() {
     [ ${#pids[@]} -eq 0 ] || kill "${pids[@]}" 2> /dev/null || true
-    if [ -n "$h" ]; then rm -f "$h/s.sock" "$h/probe"; rmdir "$h" 2> /dev/null || true; fi
+    if [ -n "$h" ]; then rm -f "$h/s.sock" "$h/probe" "$h/pty"; rmdir "$h" 2> /dev/null || true; fi
     if [ -n "$v" ]; then rm -f "$v/s.sock"; rmdir "$v" 2> /dev/null || true; fi
     if [ -n "$shm" ]; then rm -f "$shm"; fi
   }
@@ -266,12 +296,24 @@ time.sleep(120)' "$s" &
     tr '\0' '\n' < "/proc/$s/environ" | grep -qx PB_NETNS_CHECK_ENVIRON_PROBE=1 ||
       die host-environ "positive control: the environ of probe process $s is not readable on the host"
   done
+  # A pty held open by a probe process (its name in $h/pty).
+  python3 -I -c 'import os, sys, time
+m, s = os.openpty()
+with open(sys.argv[1] + ".new", "w") as f:
+    f.write(os.ttyname(s) + "\n")
+os.rename(sys.argv[1] + ".new", sys.argv[1])
+time.sleep(120)' "$h/pty" &
+  pids+=($!)
+  for _ in 1 2 3 4 5 6 7 8 9 10; do [ -s "$h/pty" ] && break; sleep 0.2; done
+  pty=$(head -n 1 "$h/pty" 2> /dev/null || true)
+  case "$pty" in /dev/pts/[0-9]*) ;; *) die host-pty "positive control: no probe pty" ;; esac
+  writable "$pty" || die host-pty "positive control: the probe pty $pty is not writable on the host"
   if [ -d /dev/shm ] && [ -w /dev/shm ]; then
     shm=$(mktemp /dev/shm/.netns-check.XXXXXX) || die host-shm "cannot create a probe file under /dev/shm"
   fi
-  echo "netns-check: host reaches $PROBE_URL and the probe sockets; probe file writable; probe process environ readable"
+  echo "netns-check: host reaches $PROBE_URL and the probe sockets; probe file writable; probe process environ readable; probe pty writable"
   rc=0
-  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" PB_PROBE_PIDS="${pids[*]}" \
+  PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" PB_PROBE_PIDS="${pids[*]}" PB_PROBE_PTY="$pty" \
     "$HERE/sandbox.sh" -- true || rc=$?
   if [ "$rc" -ne 0 ]; then
     local id=sandbox-exit
