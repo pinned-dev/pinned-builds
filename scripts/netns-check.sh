@@ -8,6 +8,7 @@
 #                           has what the sandbox must not reach
 #   netns-check.sh inside   the negative check alone; sandbox.sh runs it in
 #                           the build's own namespaces before every build
+#   netns-check.sh token N  print the fixed token for sandbox.sh exit status N
 #
 # Positive controls: https://github.com is reachable; a unix socket listening
 # under $HOME and one under /var/tmp accept connections; a probe file under
@@ -273,6 +274,19 @@ for p in paths:
        "no controlling terminal, no terminal device writable"
 }
 
+# sandbox_token <exit status of sandbox.sh>: the fixed token that names the
+# failed sandbox stage or inside assertion, or sandbox-exit.
+sandbox_token() {
+  local rc=$1
+  if [ "$rc" -ge 64 ] && [ "$rc" -lt $((64 + ${#INSIDE_IDS[@]})) ]; then
+    echo "inside-${INSIDE_IDS[$((rc - 64))]}"
+  elif [ "$rc" -ge 0 ] && [ "$rc" -le 255 ] && [ -n "${SANDBOX_IDS[$rc]:-}" ]; then
+    echo "sandbox-${SANDBOX_IDS[$rc]}"
+  else
+    echo sandbox-exit
+  fi
+}
+
 # (globals, because the EXIT trap runs after outside() has returned)
 h='' v='' shm='' pids=()
 outside() {
@@ -335,13 +349,7 @@ time.sleep(120)' "$h/pty" &
   PB_PROBE_SOCKETS="$h/s.sock $v/s.sock" PB_PROBE_FILE="$h/probe" PB_PROBE_PIDS="${pids[*]}" PB_PROBE_PTY="$pty" \
     "$HERE/sandbox.sh" -- true || rc=$?
   if [ "$rc" -ne 0 ]; then
-    local id=sandbox-exit
-    if [ "$rc" -ge 64 ] && [ "$rc" -lt $((64 + ${#INSIDE_IDS[@]})) ]; then
-      id=inside-${INSIDE_IDS[$((rc - 64))]}
-    elif [ -n "${SANDBOX_IDS[$rc]:-}" ]; then
-      id=sandbox-${SANDBOX_IDS[$rc]}
-    fi
-    DIE_RC=$rc die "$id" "the sandbox check did not pass (sandbox exit $rc)"
+    DIE_RC=$rc die "$(sandbox_token "$rc")" "the sandbox check did not pass (sandbox exit $rc)"
   fi
   echo "netns-check: PASS"
   summary PASS
@@ -351,5 +359,7 @@ MODE=${1:-outside}
 case "${1:-}" in
   inside) inside ;;
   '') outside ;;
-  *) MODE=outside; die usage "usage: $0 [inside]" ;;
+  # (for build-recipe.sh: print the token of a sandbox.sh exit status)
+  token) [[ ${2:-} =~ ^[0-9]{1,3}$ ]] && sandbox_token "$2" || echo sandbox-exit ;;
+  *) MODE=outside; die usage "usage: $0 [inside | token <exit status>]" ;;
 esac

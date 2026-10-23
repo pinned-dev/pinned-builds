@@ -15,9 +15,54 @@
 #   PB_TOOLCHAIN_ARCHIVE_SHA256    digest of the archive <toolchain-dir> was
 #                                  installed from (recorded, not trusted for
 #                                  anything else)
+#   GITHUB_STEP_SUMMARY            if set to a writable file, gets one line
+#                                  "build-recipe: host: root=<0|1> cpus=<n>"
+#                                  and one line "build-recipe: PASS" or
+#                                  "build-recipe: FAIL <stage> (exit <n>)",
+#                                  where <stage> is a fixed token, and nothing
+#                                  else (no path, no environment, no output)
+#
+# Stages (the failure tokens): usage, toolchain, sources-download,
+# sources-verify, sources-unpack, sandbox-check (netns-check.sh on the host),
+# then inside the sandbox either the sandbox stage or assertion that failed
+# (sandbox-<id> or inside-<id>, as netns-check.sh names them) or the build
+# stage the recipe reached (recipe, configure, compile, install,
+# smoke-configure, smoke-compile, smoke-run), and last manifest.
 set -euo pipefail
 export LC_ALL=C
 umask 022
+
+STAGE=usage W=''
+BUILD_STAGES=" recipe configure compile install smoke-configure smoke-compile smoke-run "
+# summary <line>: one sanitized line for the GitHub step summary, if any.
+summary() {
+  [[ $1 =~ ^(FAIL\ [a-z0-9-]+\ \(exit\ [0-9]+\)|PASS|host:\ root=[01]\ cpus=[0-9]+)$ ]] || return 0
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -f "$GITHUB_STEP_SUMMARY" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    printf 'build-recipe: %s\n' "$1" >> "$GITHUB_STEP_SUMMARY" || true
+  fi
+}
+# finish <exit status>: the EXIT trap; name the failed stage.
+finish() {
+  local rc=$1 token=$STAGE got=''
+  if [ "$rc" -eq 0 ]; then summary PASS; return; fi
+  if [ "$STAGE" = build ]; then
+    # The recipe writes its stage; only the known tokens are believed.
+    # (a regular file only: the build could leave a FIFO or a symlink there)
+    if [ -f "$W/.pb-stage" ] && [ ! -L "$W/.pb-stage" ]; then
+      got=$(head -c 64 "$W/.pb-stage" 2> /dev/null | head -n 1) || got=''
+    fi
+    if [ -z "$got" ]; then
+      token=$("$ROOT/scripts/netns-check.sh" token "$RC" 2> /dev/null) || token=sandbox-exit
+    elif [[ $BUILD_STAGES == *" $got "* ]]; then
+      token=$got
+    else
+      token=recipe
+    fi
+  fi
+  summary "FAIL $token (exit $rc)"
+}
+trap 'finish $?' EXIT
+summary "host: root=$([ "$(id -u)" = 0 ] && echo 1 || echo 0) cpus=$(nproc)"
 
 die() { echo "build-recipe: $*" >&2; exit 2; }
 [ $# -eq 4 ] || die "usage: $0 <recipe> <toolchain-dir> <work-dir> <manifest-out>"
@@ -29,6 +74,7 @@ RDIR=$ROOT/recipes/$RECIPE
 if [ ! -f "$RDIR/sources.txt" ] || [ ! -f "$RDIR/build.sh" ]; then
   die "no recipe at $RDIR"
 fi
+STAGE=toolchain
 TC=$(realpath -e "$TC_IN") || die "no toolchain at $TC_IN"
 if [ -e "$W_IN" ] || [ -L "$W_IN" ]; then die "work dir exists: $W_IN"; fi
 W_PARENT=$(realpath -e "$(dirname "$W_IN")") || die "the parent of $W_IN must exist"
@@ -89,6 +135,7 @@ EOF
 
 # Sources: verify the pinned SHA-256 before anything is unpacked.
 # sources.txt columns: name sha256 top-level-dir spdx url
+STAGE=sources-download
 SOURCES_TSV=$W/sources.tsv
 : > "$SOURCES_TSV"
 while read -r name sha top spdx url; do
@@ -97,6 +144,7 @@ while read -r name sha top spdx url; do
   [[ $sha =~ ^[0-9a-f]{64}$ ]] || die "bad sha256 for $name"
   [[ $url == https://* ]] || die "source $name: only https URLs are allowed"
   [[ $top =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || die "bad top-level dir for $name"
+  STAGE=sources-download
   a=$W/dl/$sha
   if [ -n "${PB_SOURCE_CACHE:-}" ] && [ -f "$PB_SOURCE_CACHE/$sha" ]; then
     cp "$PB_SOURCE_CACHE/$sha" "$a"
@@ -104,8 +152,10 @@ while read -r name sha top spdx url; do
     curl --fail --silent --show-error --location --proto '=https' \
          --retry 3 --retry-delay 5 -o "$a" "$url" || die "download failed: $url"
   fi
+  STAGE=sources-verify
   got=$(sha256sum < "$a" | cut -c1-64)
   [ "$got" = "$sha" ] || die "source $name: sha256 mismatch: got $got, pinned $sha"
+  STAGE=sources-unpack
   mkdir "$W/src/.x-$name"
   tar -xzf "$a" -C "$W/src/.x-$name" --no-same-owner --no-same-permissions ||
     die "source $name: unpack failed"
@@ -124,9 +174,13 @@ done < "$RDIR/sources.txt"
 # writable. netns-check.sh first runs its
 # positive controls on the host, so that the sandbox's own check (run
 # inside, before build.sh starts) means something.
+STAGE=sandbox-check
 "$ROOT/scripts/netns-check.sh" || die "no isolated sandbox for the build"
 
 START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+# Until the recipe records a stage, a failure is the sandbox's own.
+STAGE=build RC=0
+rm -f "$W/.pb-stage"
 set +e
 "$ROOT/scripts/sandbox.sh" --ro "$ROOT" --ro "$TC" --rw "$W" -- env -i \
   PATH=/usr/bin:/bin HOME="$W/home" TMPDIR="$W/tmp" LC_ALL=C TZ=UTC \
@@ -143,6 +197,8 @@ STATUS=PASS
 [ "$RC" -eq 0 ] || STATUS=FAIL
 echo "build-recipe: $RECIPE $STATUS (exit $RC)"
 
+STAGE_BUILD=$STAGE
+STAGE=manifest
 mkdir -p "$(dirname "$MANIFEST_OUT")"
 python3 -I "$ROOT/scripts/write-manifest.py" \
   --recipe "$RECIPE" --recipe-dir "$RDIR" --repo-root "$ROOT" \
@@ -151,4 +207,6 @@ python3 -I "$ROOT/scripts/write-manifest.py" \
   --toolchain-archive-sha256 "${PB_TOOLCHAIN_ARCHIVE_SHA256:-}" \
   --started "$START" --finished "$END" --output "$MANIFEST_OUT"
 echo "build-recipe: manifest $MANIFEST_OUT"
+# The exit status is the build's; the summary names its stage.
+STAGE=$STAGE_BUILD
 exit "$RC"

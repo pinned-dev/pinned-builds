@@ -3,11 +3,21 @@
 # `env -i` with only the PB_* variables it documents; build.sh sources this
 # file through "$PB_LIB".
 
+# pb_stage <token>: record the build stage, so that build-recipe.sh can name
+# it in the step summary if the build fails. Only the tokens build-recipe.sh
+# knows are reported; anything else shows as "recipe".
+pb_stage() {
+  printf '%s\n' "$1" > "$PB_WORK/.pb-stage" 2> /dev/null || true
+}
+pb_stage recipe
+
 # pb_cmake <name> <source-dir> [cmake args...]
 #   Configure (Ninja, pinned toolchain) and build into $PB_BUILD/<name>.
 pb_cmake() {
-  local name=$1 src=$2
+  local name=$1 src=$2 pre=''
   shift 2
+  case "$name" in smoke-*) pre=smoke- ;; esac
+  pb_stage "${pre}configure"
   "$PB_CMAKE" -S "$src" -B "$PB_BUILD/$name" -G Ninja \
     -DCMAKE_MAKE_PROGRAM="$PB_NINJA" \
     -DCMAKE_TOOLCHAIN_FILE="$PB_TOOLCHAIN_FILE" \
@@ -16,6 +26,7 @@ pb_cmake() {
     -DCMAKE_PREFIX_PATH="$PB_PREFIX" \
     -DFETCHCONTENT_FULLY_DISCONNECTED=ON \
     "$@"
+  pb_stage "${pre}compile"
   "$PB_CMAKE" --build "$PB_BUILD/$name" --parallel "$PB_JOBS"
 }
 
@@ -26,6 +37,7 @@ pb_cmake() {
 #   on the work directory.
 pb_cmake_install() {
   pb_cmake "$@"
+  pb_stage install
   DESTDIR="$PB_OUT/root" "$PB_CMAKE" --install "$PB_BUILD/$1"
 }
 
@@ -44,5 +56,6 @@ pb_smoke() {
   pb_cmake "smoke-$name" "$src"
   mkdir -p "$PB_OUT/smoke"
   cp "$PB_BUILD/smoke-$name/$prog" "$PB_OUT/smoke/$name"
+  pb_stage smoke-run
   pb_exec "$PB_OUT/smoke/$name" "$@"
 }

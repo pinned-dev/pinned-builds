@@ -14,7 +14,9 @@
 # scripts/netns-check.sh proves it per job and per build.
 # When that proof fails, netns-check.sh names the failed assertion with a
 # fixed token in the step summary (no paths, no environment), so a failure
-# can be diagnosed without reading raw logs.
+# can be diagnosed without reading raw logs. build-recipe.sh does the same
+# for the build: the summary names the stage that failed (toolchain,
+# sources, sandbox, configure, compile, install, smoke test, manifest).
 name: build
 
 on:
