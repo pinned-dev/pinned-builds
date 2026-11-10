@@ -1,0 +1,1 @@
+assimp 300fd8614af364bc750706c2b33cb66dee2d99eeb5e10f38cc979ddc9b80051a assimp-c35200e38ea8f058812b83de2ef32c6093b0ece2 BSD-3-Clause https://codeload.github.com/assimp/assimp/tar.gz/c35200e38ea8f058812b83de2ef32c6093b0ece2

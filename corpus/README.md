@@ -1,6 +1,6 @@
 # Native CMake/Ninja capture pilot
 
-The catalog pins 200 public C/C++ projects to exact source commits and SHA-256
+The catalog pins 250 public C/C++ projects to exact source commits and SHA-256
 archives. The [single-package acceptance run](https://github.com/pinned-dev/pinned-builds/actions/runs/42795928218)
 passed for Catch2: download, integrity/privacy validation and graph comparison
 with a repeated local capture. It retained 31 files, 265 Ninja targets, 9 rules
@@ -8,9 +8,11 @@ and all four requested File API object kinds. An initial upload omission of
 hidden File API files was fixed and is covered by a regression check.
 
 The frozen pilot-50 and expansion-100 campaigns retain the first 100 projects.
-expansion-200 selects 100 additional projects; inventory-200 records the complete
-primary-project inventory. The representative PNG source-dependency profile is
-qualified before wider hosted fan-out. Campaign definitions alone make no PASS claim.
+expansion-200 selects the next 100 projects; inventory-200 records that historical
+primary-project inventory. expansion-250 adds 50 new primary projects and
+inventory-250 records all 250. The representative nanopb release-version profile
+completes round-trip qualification before the new campaign fan-out. Campaign
+definitions alone make no PASS claim.
 Campaign files and the selection are hashed into result manifests. No private product is used at any stage here.
 
 ## What is captured

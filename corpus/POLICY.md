@@ -67,3 +67,8 @@ Home-path detection applies to absolute filesystem roots and file:// home URIs.
 A nested scratch component such as native-work/home/.cmake is a CMake registry
 directory, not a personal home root. Real home/work paths and adjacent addresses
 remain blocked; this distinction does not alter any captured bytes.
+
+Typed upstream source versions immediately following a canonical GitHub repository
+field may contain four numeric components. This narrow version context does not
+exempt addresses in URLs/other fields, other repository hosts or adjacent secrets.
+The original version and source pin are retained; no capture bytes are rewritten.

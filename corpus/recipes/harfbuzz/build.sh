@@ -1,0 +1,11 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake harfbuzz "$PB_SRC/harfbuzz" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DHB_BUILD_UTILS=OFF \
+  -DHB_BUILD_SUBSET=ON \
+  -DHB_HAVE_FREETYPE=OFF \
+  -DHB_HAVE_GLIB=OFF \
+  -DHB_HAVE_ICU=OFF \
+  -DHB_HAVE_GOBJECT=OFF

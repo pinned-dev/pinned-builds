@@ -114,8 +114,8 @@ privacy validation and 14-day retention. These artifacts do not inherit
 results/CC0 licensing and contain neither source archives nor built libraries.
 Native success grants no Pinned verdict.
 
-The [native capture corpus](corpus/README.md) pins 200 public projects. It retains
-the two qualified 50-project campaigns and adds a reviewed 100-project expansion. Explicit campaign inventories
+The [native capture corpus](corpus/README.md) pins 250 public projects. It retains
+the earlier 200-project campaign inventories and adds 50 projects in expansion-250. Explicit campaign inventories
 and deterministic partitions support larger runs without count-only completeness. Per-package outcomes and aggregate metrics distinguish
 capture success, configure/source/infra errors and missing results.
 

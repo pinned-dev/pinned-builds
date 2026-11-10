@@ -20,6 +20,9 @@ INTERNAL_HOST = re.compile(r'\b[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:internal|lo
 # explicit version contexts; the same numeric text in addresses remains denied.
 _VERSION = r'(?P<version>[0-9]+(?:\.[0-9]+){3})'
 VERSION_CONTEXTS = [
+    # Canonical source metadata carries a typed release immediately after its
+    # GitHub repository. Other fields, hosts and adjacent addresses stay denied.
+    re.compile(r'"repository"\s*:\s*"https://github.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"\s*,\s*"version"\s*:\s*"'+_VERSION+r'"'),
     re.compile(r'(?:\b|-D)VERSION=(?:\\*")'+_VERSION+r'(?:\\*")'),
     re.compile(r'(?<![\w-])protoc-'+_VERSION+r'(?![0-9.])'),
     re.compile(r'^CMAKE_PROJECT_VERSION:STATIC='+_VERSION+r'\s*$',re.MULTILINE),

@@ -1,0 +1,1 @@
+uncrustify b08e20e34dfdffb191b89737913bc2beb41a74ab2a1d86bfd5baba0941da6bcf uncrustify-ac55c352a75de2263413cea1380c86e63e5e2646 GPL-2.0-or-later https://codeload.github.com/uncrustify/uncrustify/tar.gz/ac55c352a75de2263413cea1380c86e63e5e2646

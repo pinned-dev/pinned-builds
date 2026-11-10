@@ -1,0 +1,1 @@
+freetype 68ce87bb59ea209eb7350f41a94a27519ce16b37011b475a1e62d4abee154b66 freetype-42608f77f20749dd6ddc9e0536788eaad70ea4b5 FTL https://codeload.github.com/freetype/freetype/tar.gz/42608f77f20749dd6ddc9e0536788eaad70ea4b5

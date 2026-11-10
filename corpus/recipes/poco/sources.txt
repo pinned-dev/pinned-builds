@@ -1,0 +1,1 @@
+poco 544f9a0d2f465dd2077f68be72ab41a09beac28cde721fef7561ac4b8d5d9e4d poco-fee4dccb44396911e9559c6875e88146f64b7f55 BSL-1.0 https://codeload.github.com/pocoproject/poco/tar.gz/fee4dccb44396911e9559c6875e88146f64b7f55

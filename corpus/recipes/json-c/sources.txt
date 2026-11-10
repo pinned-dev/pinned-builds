@@ -1,0 +1,1 @@
+json-c a090046b2d24901eb8dca4d370c28991299e8c7cfb698b44e09ce809b1ff20b4 json-c-41a55cfcedb54d9c1874f2f0eb07b504091d7e37 MIT https://codeload.github.com/json-c/json-c/tar.gz/41a55cfcedb54d9c1874f2f0eb07b504091d7e37

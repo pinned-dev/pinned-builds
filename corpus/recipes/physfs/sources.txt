@@ -1,0 +1,1 @@
+physfs 148b6a1b48e73f29e304cb44d2c9192c0a6fc746211671b31327521988948ca7 physfs-eb3383b532c5f74bfeb42ec306ba2cf80eed988c Zlib https://codeload.github.com/icculus/physfs/tar.gz/eb3383b532c5f74bfeb42ec306ba2cf80eed988c

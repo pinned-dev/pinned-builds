@@ -1,0 +1,1 @@
+sleef 1c39b1fb0e3448273cc515598d13a184098048b1d36cd8e9f6942eaadc69e611 sleef-6ee14bcae5fe92c2ff8b000d5a01102dab08d774 BSL-1.0 https://codeload.github.com/shibatch/sleef/tar.gz/6ee14bcae5fe92c2ff8b000d5a01102dab08d774

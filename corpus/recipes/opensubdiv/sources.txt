@@ -1,0 +1,1 @@
+opensubdiv 1b3fa4ad160e8d6cb41f077e117f34c35d6d3b2b7a81eae23f4c04760f85f23a OpenSubdiv-7d0ab5530feef693ac0a920585b5c663b80773b3 Apache-2.0 https://codeload.github.com/PixarAnimationStudios/OpenSubdiv/tar.gz/7d0ab5530feef693ac0a920585b5c663b80773b3

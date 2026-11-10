@@ -1,0 +1,1 @@
+nanopb 10e5f014e91a540959cdb82ce486a25fb9a369cabefae128d9bda4ccb3598e30 nanopb-cad3c18ef15a663e30e3e43e3a752b66378adec1 Zlib https://codeload.github.com/nanopb/nanopb/tar.gz/cad3c18ef15a663e30e3e43e3a752b66378adec1

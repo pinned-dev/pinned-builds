@@ -1,0 +1,1 @@
+taglib 9528412503a5963dc58c964f55bef8f61669b7fd1762d3418e56cadaa7ea85e6 taglib-c840222a391439285478820b4477d5fa6b78d63d LGPL-2.1-only_OR_MPL-1.1 https://codeload.github.com/taglib/taglib/tar.gz/c840222a391439285478820b4477d5fa6b78d63d

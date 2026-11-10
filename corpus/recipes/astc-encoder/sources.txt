@@ -1,0 +1,1 @@
+astc-encoder 5621c92ebbf862c1bcd6597fa6e8df808f7279cf527b7ffd46e9546e35e1c7d1 astc-encoder-4a86301166014904afa8143a20f3b1223f7f392a Apache-2.0 https://codeload.github.com/ARM-software/astc-encoder/tar.gz/4a86301166014904afa8143a20f3b1223f7f392a

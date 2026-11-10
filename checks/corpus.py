@@ -27,6 +27,31 @@ class CorpusTests(unittest.TestCase):
         self.assertEqual(set(c.scope(campaign='expansion-100')['packages']) | set(c.scope(campaign='pilot-50')['packages']), set(c.scope(campaign='inventory-100')['packages']))
         self.assertFalse(set(c.scope(campaign='expansion-100')['packages']) & set(c.scope(campaign='pilot-50')['packages']))
 
+    def test_expansion_250_exact_disjoint_inventory(self):
+        old=set(c.scope(campaign='inventory-200')['packages'])
+        new=set(c.scope(campaign='expansion-250')['packages'])
+        self.assertEqual(len(new),50); self.assertFalse(old&new)
+        self.assertEqual(old|new,set(c.scope(campaign='inventory-250')['packages']))
+
+    def test_typed_upstream_release_version(self):
+        value={'repository':'https://github.com/nanopb/nanopb','version':'0.4.9.1'}
+        self.assertFalse(c.privacy.problems(json.dumps(value).encode()))
+
+    def test_untyped_version_still_rejected(self):
+        self.assertIn('ip-address',c.privacy.problems(b'{"version":"0.4.9.1"}'))
+
+    def test_version_under_other_host_still_rejected(self):
+        value={'repository':'https://example.org/project/source','version':'0.4.9.1'}
+        self.assertIn('ip-address',c.privacy.problems(json.dumps(value).encode()))
+
+    def test_address_adjacent_to_typed_version_still_rejected(self):
+        value={'repository':'https://github.com/nanopb/nanopb','version':'0.4.9.1','endpoint':'http://' + '.'.join(map(str,[192,168,1,7]))}
+        self.assertIn('ip-address',c.privacy.problems(json.dumps(value).encode()))
+
+    def test_typed_version_does_not_exempt_credentials(self):
+        value={'repository':'https://github.com/nanopb/nanopb','version':'0.4.9.1','password':'github_'+'pat_'+'x'*30}
+        self.assertIn('credential-pattern',c.privacy.problems(json.dumps(value).encode()))
+
     def mutated_catalog(self,mutate):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory); shutil.copytree(ROOT/'corpus',root/'corpus')

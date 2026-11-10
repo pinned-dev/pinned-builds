@@ -1,0 +1,1 @@
+spirv-cross ff848426a2eabfa0dfb5ee961440210f6cdec190883ed438ee7252ba595c9128 SPIRV-Cross-ebe2aa0cd80f5eb5cd8a605da604cacf72205f3b Apache-2.0 https://codeload.github.com/KhronosGroup/SPIRV-Cross/tar.gz/ebe2aa0cd80f5eb5cd8a605da604cacf72205f3b
