@@ -161,6 +161,19 @@ jobs:
           if [ -f "results/$RECIPE.json" ]; then
             jq '{recipe, status, mode, phases, build_input_check, outputs: .outputs.digest, toolchain: .toolchain.archive_sha256, runner}' \
               "results/$RECIPE.json"
+            jq -r '
+              "## Native recipe: \(.recipe)",
+              "",
+              "Result: **\(.status)**; mode: `\(.mode)`; input check: `\(.build_input_check)`.",
+              "",
+              (.phases | group_by(.status) | map("\(.[0].status): \(length)") | join(" · ")),
+              "",
+              "| Phase | Project | Status |",
+              "| --- | --- | --- |",
+              (.phases[] | "| \(.phase) | \(.project // "—") | \(.status) |"),
+              "",
+              "Upstream test suites count only when the test phase ran. Pinned product: NOT_RUN."
+            ' "results/$RECIPE.json" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "native result: INFRA_ERROR (manifest missing)" >> "$GITHUB_STEP_SUMMARY"
             exit 1
