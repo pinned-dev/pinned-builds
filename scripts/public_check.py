@@ -37,7 +37,7 @@ def problems(data, legal_notice=False):
             continue
         found.append('ip-address'); break
     # Full IPv6 literals, with optional brackets; C++ scope tokens are ignored.
-    for token in re.findall(r'(?<![\w:])\[?[0-9a-fA-F]*:[0-9a-fA-F:]+\]?(?![\w:])', text):
+    for token in re.findall(r'(?<![\w:@.-])\[?[0-9a-fA-F]*:[0-9a-fA-F:]+\]?(?![\w:@.-])', text):
         try:
             ipaddress.IPv6Address(token.strip('[]'))
         except ipaddress.AddressValueError:

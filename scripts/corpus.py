@@ -50,6 +50,10 @@ def catalog(root=ROOT):
         source=(recipe/'sources.txt').read_text().splitlines()[-1].split()
         if source[:3]!=[name,e['sha256'],e['archive_top']] or source[-1]!=e['url']: raise ValueError('recipe-source-drift')
         script=(recipe/'build.sh').read_text()
+        if e.get('cmake_hook'):
+            hook=e['cmake_hook']
+            if not safe_relative(hook) or not (recipe/hook).is_file() or (recipe/hook).is_symlink(): raise ValueError('catalog-hook')
+            if '-DCMAKE_PROJECT_INCLUDE="$PB_RECIPE_DIR/'+hook+'"' not in script: raise ValueError('recipe-hook-drift')
         # Option drift is an error, not a silent change in sample identity.
         if re.findall(r'-D([A-Za-z0-9_]+=[A-Za-z0-9_.:+/-]+)',script)!=e['defines']: raise ValueError('recipe-option-drift')
     return data
@@ -154,10 +158,13 @@ def capture(name,tc,work,output,local=False,timeout=600):
         text=log.read_text(errors='replace')
         if any(marker in text for marker in ('download failed:','sha256 mismatch:','unpack failed','unexpected top-level')):
             state='SOURCE_FAIL'; reason='source-preparation'
+    privacy_failure_counts={}
     publication='LOCAL_ONLY' if local else 'PENDING'
     if state=='CAPTURED' and not local:
         try:
-            if privacy.scan(reference)['findings']:
+            findings=privacy.scan(reference)['findings']
+            if findings:
+                privacy_failure_counts=dict(Counter(reason for finding in findings for reason in finding['reasons']))
                 state='CAPTURE_FAIL'; reason='privacy-check'
             else: publication='CHECKED'
         except (ValueError,OSError): state='CAPTURE_FAIL'; reason='privacy-check'
@@ -168,7 +175,7 @@ def capture(name,tc,work,output,local=False,timeout=600):
         else: shutil.rmtree(reference)
     result={'schema':'pinned-builds/capture-result/v1','package':name,'profile':'linux-x86_64-release-configure',
             'status':state,'reason':reason,'publication':publication if state=='CAPTURED' else 'RECEIPT_ONLY',
-            'returncode':rc,'duration_seconds':time.monotonic()-start,'source':{'repository':env.get('GITHUB_REPOSITORY'),'commit':env.get('GITHUB_SHA'),'ref':env.get('GITHUB_REF'),'run_id':env.get('GITHUB_RUN_ID'),'run_attempt':env.get('GITHUB_RUN_ATTEMPT')},
+            'privacy_failure_counts':privacy_failure_counts,'returncode':rc,'duration_seconds':time.monotonic()-start,'source':{'repository':env.get('GITHUB_REPOSITORY'),'commit':env.get('GITHUB_SHA'),'ref':env.get('GITHUB_REF'),'run_id':env.get('GITHUB_RUN_ID'),'run_attempt':env.get('GITHUB_RUN_ATTEMPT')},
             'upstream':{k:package[k] for k in ('repository','version','commit','sha256','license')},
             'declared_feature_tags':package['feature_tags'],'phases':phases,'capture':stats,
             'build_status':'NOT_RUN','test_status':'NOT_RUN','pinned_status':'NOT_RUN'}

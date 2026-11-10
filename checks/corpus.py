@@ -35,6 +35,9 @@ class CorpusTests(unittest.TestCase):
     def test_license_escape_rejected(self):
         self.mutated_catalog(lambda d:d['packages'][0].update(license_files=['../secret']))
 
+    def test_hook_path_escape_rejected(self):
+        self.mutated_catalog(lambda d:d['packages'][0].update(cmake_hook='../outside.cmake'))
+
     def test_source_url_drift_rejected(self):
         self.mutated_catalog(lambda d:d['packages'][0].update(url='https://example.org/archive'))
 
@@ -56,6 +59,10 @@ class CorpusTests(unittest.TestCase):
         self.assertIn('ip-address',c.privacy.problems(address.encode()))
         self.assertIn('internal-hostname',c.privacy.problems(('build'+'.internal').encode()))
         self.assertIn('ip-address',c.privacy.problems(('fd00'+':'*2+'1').encode()))
+
+    def test_cmake_target_ids_are_not_ip_addresses(self):
+        for value in ('curl-example-websocket-cb::@abc123','curl-generate-config.1::@abc123'):
+            self.assertNotIn('ip-address',c.privacy.problems(value.encode()))
 
     def test_email_rejected_but_license_preserved(self):
         address=('contact'+'@'+'example.org').encode()

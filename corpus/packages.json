@@ -600,13 +600,16 @@
         "CMAKE_POLICY_VERSION_MINIMUM=3.5",
         "WITH_SIMD=OFF",
         "WITH_TURBOJPEG=OFF",
-        "ENABLE_SHARED=OFF"
+        "ENABLE_SHARED=OFF",
+        "PKGEMAIL=https://github.com/libjpeg-turbo/libjpeg-turbo/issues"
       ],
       "feature_tags": [
         "c",
         "generated-config",
-        "compiler-probes"
-      ]
+        "compiler-probes",
+        "cmake-defer-hook"
+      ],
+      "cmake_hook": "public-metadata.cmake"
     },
     {
       "name": "libuv",
