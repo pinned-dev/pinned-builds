@@ -390,7 +390,8 @@
         "BUILD_EXAMPLES=OFF",
         "BUILD_TESTING=OFF",
         "BUILD_DOCS=OFF",
-        "WITH_ASM=OFF"
+        "WITH_ASM=OFF",
+        "INSTALL_MANPAGES=OFF"
       ],
       "feature_tags": [
         "c",

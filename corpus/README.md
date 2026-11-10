@@ -1,10 +1,14 @@
 # Native CMake/Ninja capture pilot
 
 The catalog pins 50 public C/C++ packages to exact source commits and SHA-256
-archives. The first hosted acceptance run captures Catch2 only. After download,
-integrity/privacy validation and a repeated local capture are checked, change
-selection.txt from catch2 to all to fan out to the 50-package matrix. The selection
-is hashed into result manifests. No private product is used at any stage here.
+archives. The [single-package acceptance run](https://github.com/pinned-dev/pinned-builds/actions/runs/42795928218)
+passed for Catch2: download, integrity/privacy validation and graph comparison
+with a repeated local capture. It retained 31 files, 265 Ninja targets, 9 rules
+and all four requested File API object kinds. An initial upload omission of
+hidden File API files was fixed and is covered by a regression check.
+
+The reviewed selection is now all 50 packages. The selection is hashed into
+result manifests. No private product is used at any stage here.
 
 ## What is captured
 
