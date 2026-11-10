@@ -1,6 +1,13 @@
 # pinned-builds
 Pinned builds
 
+This public repository uses public OSS sources and native build tools only.
+The private Pinned product source and binary must never be copied, downloaded,
+built or executed here or in its GitHub Actions jobs, artifacts or caches.
+Product testing happens exclusively in a separate private/local testlab;
+its outputs must never be published through this repository. The name
+`pinned-toolchain-v2` identifies the existing native toolchain, not the product.
+
 ## Recipes and CI
 
 Each directory under `recipes/` is one recipe: `sources.txt` pins every
