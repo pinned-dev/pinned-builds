@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+tabulate c7cbdbaa4d8d6d455d14b5a18d07fbd08f8d630489444918a62c9209b00c94f5 tabulate-b35db4cce50a4b296290b0ae827305cdeb23751e MIT https://codeload.github.com/p-ranav/tabulate/tar.gz/b35db4cce50a4b296290b0ae827305cdeb23751e

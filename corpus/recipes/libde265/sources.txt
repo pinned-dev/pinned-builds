@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libde265 9dedf12d5b5047c270d1fc54f5d92fc29d9ea21b94d3f2d998200258353189a0 libde265-7ba65889d3d6d8a0d99b5360b028243ba843be3a LGPL-3.0-or-later https://codeload.github.com/strukturag/libde265/tar.gz/7ba65889d3d6d8a0d99b5360b028243ba843be3a

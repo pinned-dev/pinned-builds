@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake pe-parse "$PB_SRC/pe-parse" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DPEPARSE_ENABLE_TESTING=OFF \
+  -DPEPARSE_ENABLE_EXAMPLES=OFF

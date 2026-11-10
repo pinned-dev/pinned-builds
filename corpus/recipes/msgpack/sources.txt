@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+msgpack d7118f4462fd3d845760ee801a17f0f4579159afc5b401a942094d80c86b5df9 msgpack-c-8c602e8579c7e7d65d6f9c6703c9699db3fb0488 BSL-1.0 https://codeload.github.com/msgpack/msgpack-c/tar.gz/8c602e8579c7e7d65d6f9c6703c9699db3fb0488

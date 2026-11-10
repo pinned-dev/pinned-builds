@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+alpaca 442f0c208ddebf270074c1d4bb8870796ed80463891ba85e5a794af50edbcb9f alpaca-cdfa51069b4459451a332467d2502362e4857f8a MIT https://codeload.github.com/p-ranav/alpaca/tar.gz/cdfa51069b4459451a332467d2502362e4857f8a

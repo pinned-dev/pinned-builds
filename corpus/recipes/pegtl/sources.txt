@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+pegtl 67ea24b2b01bbbe53e877971740dc10bcf4aed2443e715547ac31dd956a7a971 PEGTL-be527327653e94b02e711f7eff59285ad13e1db0 MIT https://codeload.github.com/taocpp/PEGTL/tar.gz/be527327653e94b02e711f7eff59285ad13e1db0

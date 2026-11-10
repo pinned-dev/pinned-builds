@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+antlr4-runtime 00719b5672a247213d20f38a0790ffba82cf9f6d0e61fe26eb2f6e9f58672b92 antlr4-cc82115a4e7f53d71d9d905caa2c2dfa4da58899 BSD-3-Clause https://codeload.github.com/antlr/antlr4/tar.gz/cc82115a4e7f53d71d9d905caa2c2dfa4da58899

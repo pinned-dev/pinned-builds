@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+utf8cpp 14de07149331d5f46d20e12519c6a1101d1982d67e4ae30097ae03375b0fa984 utfcpp-b26a5f718f4f370af1852a0d5c6ae8fa031ba7d0 BSL-1.0 https://codeload.github.com/nemtrif/utfcpp/tar.gz/b26a5f718f4f370af1852a0d5c6ae8fa031ba7d0

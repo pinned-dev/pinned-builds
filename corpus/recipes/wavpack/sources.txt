@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+wavpack 5478251ea01002490aeafc67e5ad87dd0383791b41bf78aff4a2741ed255447f WavPack-4827b9889665b937b6ed71b9c6c0123152cd7a02 BSD-3-Clause https://codeload.github.com/dbry/WavPack/tar.gz/4827b9889665b937b6ed71b9c6c0123152cd7a02

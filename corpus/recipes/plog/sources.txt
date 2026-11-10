@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+plog 658e037fe999036cca8b91a61ac07171980aeeaf2e3421b87c71454fdff07ce2 plog-e21baecd4753f14da64ede979c5a19302618b752 MIT https://codeload.github.com/SergiusTheBest/plog/tar.gz/e21baecd4753f14da64ede979c5a19302618b752

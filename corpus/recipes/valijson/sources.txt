@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+valijson e6d4634e6d472b889ec9f75eaaa558976f2fcec0dafbe84cbbc2d710559e6c41 valijson-4edda758546436462da479bb8c8514f8a95c35ad BSD-2-Clause https://codeload.github.com/tristanpenman/valijson/tar.gz/4edda758546436462da479bb8c8514f8a95c35ad

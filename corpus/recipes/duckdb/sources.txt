@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+duckdb e67b77d4bd44b0f75f692dd8b60b5e1ee742059b70cbb55dd1dc658c24aea007 duckdb-0b83e5d2f68bc02dfefde74b846bd039f078affa MIT https://codeload.github.com/duckdb/duckdb/tar.gz/0b83e5d2f68bc02dfefde74b846bd039f078affa

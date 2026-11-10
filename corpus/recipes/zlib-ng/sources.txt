@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+zlib-ng ba8f446a0bb26a194d7619fc0c1ffe58ac5a86dc2d6b61e24e9e09e3f56de4c1 zlib-ng-425439062b114a0f6cf625022c41d929c7e879f9 Zlib https://codeload.github.com/zlib-ng/zlib-ng/tar.gz/425439062b114a0f6cf625022c41d929c7e879f9

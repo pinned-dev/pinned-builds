@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake zlib-ng "$PB_SRC/zlib-ng" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DZLIB_ENABLE_TESTS=OFF \
+  -DZLIBNG_ENABLE_TESTS=OFF \
+  -DWITH_GTEST=OFF

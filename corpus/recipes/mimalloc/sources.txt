@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+mimalloc 083ea3a867ce85d0f552b2333f3629c10f86e29edfdaa944c35e3e0051375b99 mimalloc-fbd8b99c2b828428947d70fdc046bb55609be93e MIT https://codeload.github.com/microsoft/mimalloc/tar.gz/fbd8b99c2b828428947d70fdc046bb55609be93e

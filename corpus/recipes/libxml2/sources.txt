@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libxml2 a6b1c55ac8f7b5a446129e5f269148b551e114f105ca29072293cdcaf7c2d36e libxml2-74f3154320df8950eceae4951975cc9dfc3a254d MIT https://codeload.github.com/GNOME/libxml2/tar.gz/74f3154320df8950eceae4951975cc9dfc3a254d

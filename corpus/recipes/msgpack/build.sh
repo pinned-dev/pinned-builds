@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake msgpack "$PB_SRC/msgpack" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DMSGPACK_BUILD_TESTS=OFF \
+  -DMSGPACK_BUILD_EXAMPLES=OFF \
+  -DMSGPACK_USE_BOOST=OFF

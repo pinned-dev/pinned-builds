@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+mpark-variant 279b0389fdda1748746f2287566df97dfc46f96c98863eecbb334de4904c5cef variant-4988879a9f5a95d72308eca2b1779db6ed9b135d BSL-1.0 https://codeload.github.com/mpark/variant/tar.gz/4988879a9f5a95d72308eca2b1779db6ed9b135d

@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake zycore "$PB_SRC/zycore" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DZYCORE_BUILD_TESTS=OFF \
+  -DZYCORE_BUILD_EXAMPLES=OFF

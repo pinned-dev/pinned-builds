@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake libsndfile "$PB_SRC/libsndfile" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DENABLE_EXTERNAL_LIBS=OFF \
+  -DENABLE_MPEG=OFF \
+  -DBUILD_PROGRAMS=OFF \
+  -DBUILD_EXAMPLES=OFF

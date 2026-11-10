@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+oatpp abcea0e0b94780710475a12487bc755092cbcfa8df4b9b6cf2cd70befc61a123 oatpp-349d96114ae03ae6fd44dd2a398e5cdd9529fb48 Apache-2.0 https://codeload.github.com/oatpp/oatpp/tar.gz/349d96114ae03ae6fd44dd2a398e5cdd9529fb48

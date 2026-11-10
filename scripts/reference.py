@@ -126,11 +126,12 @@ def capture(work, repo, tc, output, result, visibility="local-only"):
     if recipe_set == 'corpus':
         catalog = json.loads((repo/'corpus/packages.json').read_text())
         package = next(e for e in catalog['packages'] if e['name'] == manifest['recipe'])
-        for rel in package['license_files']:
-            p = Path(rel)
-            if p.is_absolute() or '..' in p.parts or '\\' in rel:
-                raise ValueError('unsafe license path')
-            add(work/'src'/package['name']/p, 'licenses/upstream/'+package['name']+'/'+rel)
+        for dependency in [package]+package.get('extra_sources',[]):
+            for rel in dependency['license_files']:
+                p = Path(rel)
+                if p.is_absolute() or '..' in p.parts or '\\' in rel:
+                    raise ValueError('unsafe license path')
+                add(work/'src'/dependency['name']/p, 'licenses/upstream/'+dependency['name']+'/'+rel)
         add(repo/'LICENSE', 'licenses/repository/LICENSE')
         add(repo/'corpus/POLICY.md', 'PUBLIC-ARTIFACT-POLICY.md')
         add(repo/'corpus/packages.json', 'catalog.json')

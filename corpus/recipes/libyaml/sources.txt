@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libyaml 77987051b6f5bee8ba472f1efbe0053663a58d8d3e7a2f0f4a27d178adbf8844 libyaml-2c891fc7a770e8ba2fec34fc6b545c672beb37e6 MIT https://codeload.github.com/yaml/libyaml/tar.gz/2c891fc7a770e8ba2fec34fc6b545c672beb37e6

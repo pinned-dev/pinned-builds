@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+capnproto b421331a8869e1799b437049db4511a2589f119ec529407d1d09d1a03270633e capnproto-b34ec28cceaf15b1082b74b50f03f770873c3636 MIT https://codeload.github.com/capnproto/capnproto/tar.gz/b34ec28cceaf15b1082b74b50f03f770873c3636

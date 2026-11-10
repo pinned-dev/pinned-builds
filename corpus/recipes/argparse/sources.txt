@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+argparse 4eb07fc5472898df269b7d08d91db77ae41ce46f224283edbfd21a955168141c argparse-3eda91b2e1ce7d569f84ba295507c4cd8fd96910 MIT https://codeload.github.com/p-ranav/argparse/tar.gz/3eda91b2e1ce7d569f84ba295507c4cd8fd96910

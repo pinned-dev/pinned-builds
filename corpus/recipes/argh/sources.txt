@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+argh 03eeec68ee307718b0fc1194c5f06797334826779d916b076b80fd4934ec294f argh-d17062c870b5919f6d1eae7fe12879869a893b32 BSD-3-Clause https://codeload.github.com/adishavit/argh/tar.gz/d17062c870b5919f6d1eae7fe12879869a893b32

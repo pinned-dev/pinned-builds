@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+zopfli 09a9732e11975455921a7ec22cad75ca42ed3ea4c9cbe3ccff09750a77e03bcb zopfli-bd64b2f0553d4f1ef4e6627647c5d9fc8c71ffc0 Apache-2.0 https://codeload.github.com/google/zopfli/tar.gz/bd64b2f0553d4f1ef4e6627647c5d9fc8c71ffc0

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+nng 2f7b5341009f2fb649ddbfac2e035e69ed733bcefed495444b120169d92f50d2 nng-d98d3ec1e0c3230a6f9e60616180ac66f5791a5b MIT https://codeload.github.com/nanomsg/nng/tar.gz/d98d3ec1e0c3230a6f9e60616180ac66f5791a5b

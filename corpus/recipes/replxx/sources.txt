@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+replxx 5e767547bc3e10098ddc9b38afdd66f3f07c2a4bac6f5dcddd8569fc6bcac47d replxx-2b248467112cbbc16f63fde38230fd7c7ffc55f1 BSD-3-Clause https://codeload.github.com/AmokHuginnsson/replxx/tar.gz/2b248467112cbbc16f63fde38230fd7c7ffc55f1

@@ -1,0 +1,11 @@
+# This module resolves the real source target added by dependency-profile.cmake.
+if(NOT TARGET ZLIB::ZLIB)
+  message(FATAL_ERROR "Pinned native zlib source target missing")
+endif()
+set(ZLIB_FOUND TRUE)
+set(ZLIB_VERSION_STRING "1.3.1")
+set(ZLIB_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../zlib-native;${CMAKE_BINARY_DIR}/zlib-native")
+set(ZLIB_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../zlib-native")
+set(ZLIB_LIBRARIES ZLIB::ZLIB)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(ZLIB REQUIRED_VARS ZLIB_LIBRARIES ZLIB_INCLUDE_DIR VERSION_VAR ZLIB_VERSION_STRING)

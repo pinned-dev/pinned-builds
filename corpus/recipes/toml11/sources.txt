@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+toml11 5f08eaa5cd867192fa821cd0ec9b6c91629ff6247350d1f45f8d432c28b7fe5f toml11-be08ba2be2a964edcdb3d3e3ea8d100abc26f286 MIT https://codeload.github.com/ToruNiina/toml11/tar.gz/be08ba2be2a964edcdb3d3e3ea8d100abc26f286

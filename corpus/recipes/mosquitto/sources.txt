@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+mosquitto f959268b0da99557012b5182e25ab42c5a98257a4771be92989497a548cdb1e6 mosquitto-672ae3e57f8b4e086f6ce2dec836734cc38258c3 EPL-2.0 https://codeload.github.com/eclipse-mosquitto/mosquitto/tar.gz/672ae3e57f8b4e086f6ce2dec836734cc38258c3

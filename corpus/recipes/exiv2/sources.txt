@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+exiv2 94ca142feadae19f627ee16fe48bc9442f25f60438c6feed292703c4864167fc exiv2-907169fa643c2c74c14fd4106e55eaeee3634d9f GPL-2.0-or-later https://codeload.github.com/Exiv2/exiv2/tar.gz/907169fa643c2c74c14fd4106e55eaeee3634d9f

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+rocksdb 41d782ccb972a032425a5e5558dd44016efebac38bdeeb143a13a87d35e3a87d rocksdb-410c5623195ecbe4699b9b5a5f622c7325cec6fe Apache-2.0 https://codeload.github.com/facebook/rocksdb/tar.gz/410c5623195ecbe4699b9b5a5f622c7325cec6fe

@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake magic-enum "$PB_SRC/magic-enum" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DMAGIC_ENUM_OPT_BUILD_TESTS=OFF \
+  -DMAGIC_ENUM_OPT_BUILD_EXAMPLES=OFF

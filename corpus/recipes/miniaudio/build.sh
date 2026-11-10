@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake miniaudio "$PB_SRC/miniaudio" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DMINIAUDIO_BUILD_EXAMPLES=OFF \
+  -DMINIAUDIO_BUILD_TESTS=OFF

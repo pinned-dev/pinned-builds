@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libavif ac93983be0cc7188ecfc654ecb77f886243edb3d3827fd45cca14c50b2d813e3 libavif-1aadfad932c98c069a1204261b1856f81f3bc199 BSD-2-Clause https://codeload.github.com/AOMediaCodec/libavif/tar.gz/1aadfad932c98c069a1204261b1856f81f3bc199

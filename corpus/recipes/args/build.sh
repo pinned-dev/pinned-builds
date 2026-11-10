@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake args "$PB_SRC/args" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DARGS_BUILD_UNITTESTS=OFF \
+  -DARGS_BUILD_EXAMPLE=OFF

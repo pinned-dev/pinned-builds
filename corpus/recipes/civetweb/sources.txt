@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+civetweb d21a21f793fbe86f57dc15c788407b332582b6d4e5a22382143641f9dce77b35 civetweb-d7ba35bbb649209c66e582d5a0244ba988a15159 MIT https://codeload.github.com/civetweb/civetweb/tar.gz/d7ba35bbb649209c66e582d5a0244ba988a15159

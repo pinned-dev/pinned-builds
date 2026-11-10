@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake log4cplus "$PB_SRC/log4cplus" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DLOG4CPLUS_BUILD_TESTING=OFF \
+  -DLOG4CPLUS_BUILD_LOGGINGSERVER=OFF

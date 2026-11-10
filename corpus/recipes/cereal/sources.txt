@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+cereal ce52ae6abcdbda5fecd63abbaa7ab57e54b814b24d7cb6f5096f5753d1975d24 cereal-ebef1e929807629befafbb2918ea1a08c7194554 BSD-3-Clause https://codeload.github.com/USCiLab/cereal/tar.gz/ebef1e929807629befafbb2918ea1a08c7194554

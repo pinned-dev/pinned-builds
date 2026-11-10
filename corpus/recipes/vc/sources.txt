@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+vc 292ab99c2faed8cbc0c309874eb0f657fb539969539ea689c96e2283d00f9215 Vc-288454deb621be1fa71d2e85cc0d81f3ee7056ea BSD-3-Clause https://codeload.github.com/VcDevel/Vc/tar.gz/288454deb621be1fa71d2e85cc0d81f3ee7056ea

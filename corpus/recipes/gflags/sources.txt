@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+gflags b20f58e7f210ceb0e768eb1476073d0748af9b19dfbbf53f4fd16e3fb49c5ac8 gflags-e171aa2d15ed9eb17054558e0b3a6a413bb01067 BSD-3-Clause https://codeload.github.com/gflags/gflags/tar.gz/e171aa2d15ed9eb17054558e0b3a6a413bb01067

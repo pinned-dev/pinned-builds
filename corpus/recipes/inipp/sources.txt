@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+inipp 29b3b941eba3aa78f8a6f7aec0f2a671d1c4c6b42d56ea648eab38950af2ad26 inipp-3c1668812026f1a94471b85ac5ab11ab87c43607 MIT https://codeload.github.com/mcmtroffaes/inipp/tar.gz/3c1668812026f1a94471b85ac5ab11ab87c43607

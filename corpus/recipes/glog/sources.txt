@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+glog 9c48c7c631be5af3502a19d06ebdb5c2f67d8d0bf216f896848089c1792e6193 glog-7b134a5c82c0c0b5698bb6bf7a835b230c5638e4 BSD-3-Clause https://codeload.github.com/google/glog/tar.gz/7b134a5c82c0c0b5698bb6bf7a835b230c5638e4

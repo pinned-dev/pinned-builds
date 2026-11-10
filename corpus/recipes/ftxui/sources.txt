@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+ftxui 7a61f2b5519ce42840da9f035297c5e61e4ed8210b9ed990a0138bf31e48ba59 FTXUI-5cfed50702f52d51c1b189b5f97f8beaf5eaa2a6 MIT https://codeload.github.com/ArthurSonzogni/FTXUI/tar.gz/5cfed50702f52d51c1b189b5f97f8beaf5eaa2a6

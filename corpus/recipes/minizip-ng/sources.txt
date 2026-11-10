@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+minizip-ng ba85360985877b549cc6d672f5955601eac697a4a3489d8c7f9f413682d8f72c minizip-ng-f3ed731e27a97e30dffe076ed5e0537daae5c1bd Zlib https://codeload.github.com/zlib-ng/minizip-ng/tar.gz/f3ed731e27a97e30dffe076ed5e0537daae5c1bd

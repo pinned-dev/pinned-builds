@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+protobuf 9b3b36a71f997a5ad9cd685c00b66fde9c0f57acae00310f50a255e5fad6d2b5 protobuf-fe271ab76f2ad2b2b28c10443865d2af21e27e0e BSD-3-Clause https://codeload.github.com/protocolbuffers/protobuf/tar.gz/fe271ab76f2ad2b2b28c10443865d2af21e27e0e

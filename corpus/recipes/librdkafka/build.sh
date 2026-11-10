@@ -1,0 +1,12 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake librdkafka "$PB_SRC/librdkafka" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DRDKAFKA_BUILD_TESTS=OFF \
+  -DRDKAFKA_BUILD_EXAMPLES=OFF \
+  -DWITH_SSL=OFF \
+  -DWITH_SASL=OFF \
+  -DWITH_ZSTD=OFF \
+  -DWITH_ZLIB=OFF \
+  -DENABLE_LZ4_EXT=OFF

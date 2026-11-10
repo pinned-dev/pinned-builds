@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+jasper 7fe49decebb214d560d249e3803c4f6a3a535037baf1a185b0f294143e0b9b71 jasper-849888f0a6e76bb440581d5f8c0a947a39e92aa2 JasPer-2.0 https://codeload.github.com/jasper-software/jasper/tar.gz/849888f0a6e76bb440581d5f8c0a947a39e92aa2

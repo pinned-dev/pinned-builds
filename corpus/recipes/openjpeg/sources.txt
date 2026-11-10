@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+openjpeg a7e669f502ad14d93f374a850113a2857447bfbfd389c8e278888053b0e3abcc openjpeg-210a8a5690d0da66f02d49420d7176a21ef409dc BSD-2-Clause https://codeload.github.com/uclouvain/openjpeg/tar.gz/210a8a5690d0da66f02d49420d7176a21ef409dc

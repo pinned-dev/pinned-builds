@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+snappy 31c566ed653abfa68963232e52a97b9b89841d5255dad3c88bd9d74db3039d28 snappy-6af9287fbdb913f0794d0148c6aa43b58e63c8e3 BSD-3-Clause https://codeload.github.com/google/snappy/tar.gz/6af9287fbdb913f0794d0148c6aa43b58e63c8e3

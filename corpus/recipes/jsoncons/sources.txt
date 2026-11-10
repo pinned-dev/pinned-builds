@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+jsoncons edfc3ac58cf4765a662e69383c928a7bbcb7b3c50465149ec7554630049c2c66 jsoncons-64b9da1e9f15eeff4ec9d6bc856538db542118f2 BSL-1.0 https://codeload.github.com/danielaparker/jsoncons/tar.gz/64b9da1e9f15eeff4ec9d6bc856538db542118f2

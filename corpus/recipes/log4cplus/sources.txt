@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+log4cplus 21824b1f8f5e60bbb5de9730857f52d43200e1ffeafa4624d339af750c84a7a9 log4cplus-b11c9480ebb060866d2e25ce7179574b3d93385e Apache-2.0 https://codeload.github.com/log4cplus/log4cplus/tar.gz/b11c9480ebb060866d2e25ce7179574b3d93385e

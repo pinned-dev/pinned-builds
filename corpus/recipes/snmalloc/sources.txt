@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+snmalloc 28ebb6483d2414c9b4dea311824f328b2e2e5a814eb7bcc8dc5aa9871e7b1c62 snmalloc-564c88b07c53728ec90a88d7d34d0f74d3b0bfff MIT https://codeload.github.com/microsoft/snmalloc/tar.gz/564c88b07c53728ec90a88d7d34d0f74d3b0bfff

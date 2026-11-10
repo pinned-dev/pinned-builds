@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+trantor a45d2af5f3f441f00d81ef92d0bec801267d38770eec288536a47dbc79b2061c trantor-43fd79b2dbac59608a819ebba167e8fe2c079d90 BSD-3-Clause https://codeload.github.com/an-tao/trantor/tar.gz/43fd79b2dbac59608a819ebba167e8fe2c079d90

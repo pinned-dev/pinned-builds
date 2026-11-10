@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+bzip3 c0bd43da8777f80dec64e48a48bad309b1b22905e8d6988b36095a4d4c81c500 bzip3-a04acf6257f381fd76cb78dcfa868bc5aa330c67 LGPL-3.0-or-later https://codeload.github.com/kspalaiologos/bzip3/tar.gz/a04acf6257f381fd76cb78dcfa868bc5aa330c67

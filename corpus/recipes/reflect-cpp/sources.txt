@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+reflect-cpp b1d3d9e9f6c3a91054029b3dfb0be56c176f3b5ab4b1055b024b4648777031ab reflect-cpp-a70b4ecc7a3742594ff01beb43322d2f7ddfea20 MIT https://codeload.github.com/getml/reflect-cpp/tar.gz/a70b4ecc7a3742594ff01beb43322d2f7ddfea20

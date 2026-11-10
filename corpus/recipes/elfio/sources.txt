@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+elfio 71c1a72e3fac6c9db3d4126c8f9b84bbda902e8dfb563f6dfcbed454636fa1c5 ELFIO-8ae6cec5d60495822ecd57d736f66149da9b1830 MIT https://codeload.github.com/serge1/ELFIO/tar.gz/8ae6cec5d60495822ecd57d736f66149da9b1830

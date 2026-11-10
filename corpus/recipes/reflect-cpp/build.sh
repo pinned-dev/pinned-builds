@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake reflect-cpp "$PB_SRC/reflect-cpp" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DREFLECTCPP_BUILD_TESTS=OFF \
+  -DREFLECTCPP_BUILD_BENCHMARKS=OFF

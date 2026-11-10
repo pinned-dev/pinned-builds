@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake jasper "$PB_SRC/jasper" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DJAS_ENABLE_DOC=OFF \
+  -DJAS_ENABLE_PROGRAMS=OFF \
+  -DJAS_INCLUDE_JPG_CODEC=OFF \
+  -DJAS_ENABLE_OPENGL=OFF

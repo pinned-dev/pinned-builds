@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+sdl 4ae5eba49e7e346f742bea4c9966f4cc871face4b999513fcc1eb1f14d4dec30 SDL-96292a5b464258a2b926e0a3d72f8b98c2a81aa6 Zlib https://codeload.github.com/libsdl-org/SDL/tar.gz/96292a5b464258a2b926e0a3d72f8b98c2a81aa6

@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake libde265 "$PB_SRC/libde265" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DENABLE_SDL=OFF \
+  -DENABLE_DECODER=OFF \
+  -DENABLE_ENCODER=OFF

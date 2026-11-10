@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake simdutf "$PB_SRC/simdutf" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSIMDUTF_TESTS=OFF \
+  -DSIMDUTF_TOOLS=OFF \
+  -DSIMDUTF_BENCHMARKS=OFF \
+  -DSIMDUTF_ICONV=OFF

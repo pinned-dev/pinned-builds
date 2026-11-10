@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+sfml 6a203982ff5061cbda169f58531bf1942e87cd1394c195727797dcd285bd371e SFML-016bea9491ccafc3529019fe1d403885a8b3a6ae Zlib https://codeload.github.com/SFML/SFML/tar.gz/016bea9491ccafc3529019fe1d403885a8b3a6ae

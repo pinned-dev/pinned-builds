@@ -1,0 +1,12 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake mosquitto "$PB_SRC/mosquitto" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DWITH_BROKER=OFF \
+  -DWITH_APPS=OFF \
+  -DWITH_CLIENTS=OFF \
+  -DWITH_PLUGINS=OFF \
+  -DWITH_DOCS=OFF \
+  -DWITH_TLS=OFF \
+  -DDOCUMENTATION=OFF

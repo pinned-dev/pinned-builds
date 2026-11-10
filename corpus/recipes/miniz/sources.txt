@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+miniz 27d99216e9127d1678085639f3059f6907a02c044e8a38392a39f96163ddbbf0 miniz-293d4db1b7d0ffee9756d035b9ac6f7431ef8492 MIT https://codeload.github.com/richgel999/miniz/tar.gz/293d4db1b7d0ffee9756d035b9ac6f7431ef8492

@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake jsoncons "$PB_SRC/jsoncons" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DJSONCONS_BUILD_TESTS=OFF \
+  -DJSONCONS_BUILD_EXAMPLES=OFF

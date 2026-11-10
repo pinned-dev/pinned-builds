@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+hiredis 177abfe06031d4a6ca72c1d8395fac14d4344cdd1acde3c691c1afd22d35445d hiredis-ccad7ebaf99310957004661d1c5f82d2a33ebd10 BSD-3-Clause https://codeload.github.com/redis/hiredis/tar.gz/ccad7ebaf99310957004661d1c5f82d2a33ebd10

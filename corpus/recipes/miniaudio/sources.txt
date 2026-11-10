@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+miniaudio 28ab6d0d39c32a46d57b52d104046e8b3637bfc51d8bab07ec5ae5415dc8ee52 miniaudio-350784a9467a79d0fa65802132668e5afbcf3777 Unlicense https://codeload.github.com/mackron/miniaudio/tar.gz/350784a9467a79d0fa65802132668e5afbcf3777

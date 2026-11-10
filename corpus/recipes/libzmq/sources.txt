@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libzmq 65d021968f90d61fd50d8e50409bdd494b040602bfb043e1bd5647ab035db3b4 libzmq-622fc6dde99ee172ebaa9c8628d85a7a1995a21d MPL-2.0 https://codeload.github.com/zeromq/libzmq/tar.gz/622fc6dde99ee172ebaa9c8628d85a7a1995a21d

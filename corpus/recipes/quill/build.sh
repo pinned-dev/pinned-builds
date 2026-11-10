@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake quill "$PB_SRC/quill" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DQUILL_BUILD_TESTS=OFF \
+  -DQUILL_BUILD_EXAMPLES=OFF

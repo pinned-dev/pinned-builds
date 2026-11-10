@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libtiff 4fefe1d5adbeae1d0f54f573c1b795bd1dbe1229d85427d1fcd24998dcc11145 libtiff-9dff73bebc5661f2dace6f16e14cf9e857172f4e libtiff https://codeload.github.com/libsdl-org/libtiff/tar.gz/9dff73bebc5661f2dace6f16e14cf9e857172f4e

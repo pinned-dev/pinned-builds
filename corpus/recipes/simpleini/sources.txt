@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+simpleini f53b816e6c534942e63dce33b8c060c64d72d3877343b5d1fbf5c5a9571bb432 simpleini-09c21bda1dc1b578fa55f4a005d79b0afd481296 MIT https://codeload.github.com/brofield/simpleini/tar.gz/09c21bda1dc1b578fa55f4a005d79b0afd481296

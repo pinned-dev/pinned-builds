@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake bitsery "$PB_SRC/bitsery" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DBITSERY_BUILD_TESTS=OFF \
+  -DBITSERY_BUILD_EXAMPLES=OFF

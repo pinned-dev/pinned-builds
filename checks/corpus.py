@@ -23,8 +23,8 @@ class CorpusTests(unittest.TestCase):
         self.assertGreaterEqual(len(entries),50)
         self.assertEqual(len({e['repository'].lower() for e in entries}),len(entries))
         self.assertEqual(len(c.scope(campaign='pilot-50')['packages']),50)
-        self.assertEqual(c.scope(campaign='inventory-100')['packages'],sorted(e['name'] for e in entries))
-        self.assertEqual(set(c.scope(campaign='expansion-100')['packages']) | set(c.scope(campaign='pilot-50')['packages']), {e['name'] for e in entries})
+        self.assertEqual(c.scope(campaign=c.catalog()['inventory_campaign'])['packages'],sorted(e['name'] for e in entries))
+        self.assertEqual(set(c.scope(campaign='expansion-100')['packages']) | set(c.scope(campaign='pilot-50')['packages']), set(c.scope(campaign='inventory-100')['packages']))
         self.assertFalse(set(c.scope(campaign='expansion-100')['packages']) & set(c.scope(campaign='pilot-50')['packages']))
 
     def mutated_catalog(self,mutate):
@@ -233,5 +233,54 @@ class CorpusTests(unittest.TestCase):
             parts=[c.scope(only='all',batch=f'{i}/8')['packages'] for i in range(1,9)]
             self.assertEqual([len(part) for part in parts],[250]*8)
             self.assertEqual(len(set(n for part in parts for n in part)),2000)
+
+
+    def test_hyphenated_cmake_option_and_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);shutil.copytree(ROOT/'corpus',root/'corpus')
+            path=root/'corpus/packages.json';data=json.loads(path.read_text());entry=data['packages'][0]
+            entry['defines'].append('sample-option=OFF');path.write_text(json.dumps(data))
+            script=root/'corpus/recipes'/entry['name']/'build.sh'
+            script.write_text(script.read_text().rstrip()+' \\\n  -Dsample-option=OFF\n')
+            self.assertEqual(c.catalog(root)['packages'][0]['defines'][-1],'sample-option=OFF')
+            script.write_text(script.read_text().replace('-Dsample-option=OFF','-Dsample-option=ON'))
+            with self.assertRaises(ValueError):c.catalog(root)
+
+    def test_shell_metacharacter_option_rejected(self):
+        self.mutated_catalog(lambda value:value['packages'][0]['defines'].append('sample;command=OFF'))
+
+    def test_expansion_200_exact_disjoint_inventory(self):
+        old=set(c.scope(campaign='inventory-100')['packages']);new=set(c.scope(campaign='expansion-200')['packages'])
+        self.assertEqual(len(new),100);self.assertFalse(old&new)
+        self.assertEqual(old|new,set(c.scope(campaign='inventory-200')['packages']))
+
+
+    def test_declared_source_dependency_pins_and_notices(self):
+        entry=next(e for e in c.catalog()['packages'] if e['name']=='libpng')
+        self.assertEqual(entry['extra_sources'][0]['name'],'zlib-native')
+        self.assertTrue(entry['extra_sources'][0]['license_files'])
+    def test_source_dependency_url_tamper_rejected(self):
+        self.mutated_catalog(lambda d:next(e for e in d['packages'] if e['name']=='libpng')['extra_sources'][0].update(url='https://example.org/source'))
+    def test_source_dependency_alias_escape_rejected(self):
+        self.mutated_catalog(lambda d:next(e for e in d['packages'] if e['name']=='libpng')['extra_sources'][0].update(name='../escape'))
+    def test_source_dependency_missing_notice_rejected(self):
+        self.mutated_catalog(lambda d:next(e for e in d['packages'] if e['name']=='libpng')['extra_sources'][0].update(license_files=[]))
+    def test_source_dependency_omission_rejected(self):
+        self.mutated_catalog(lambda d:next(e for e in d['packages'] if e['name']=='libpng').pop('extra_sources'))
+
+
+    def test_four_component_versions_are_not_addresses(self):
+        cases=[b'-DVERSION=\\"0.5.7.34\\"',b'build protoc-3.20.3.0: LINK',b'CMAKE_PROJECT_VERSION:STATIC=1.5.2.0\n',b'{"name":"CMAKE_PROJECT_VERSION","properties":[{"name":"HELPSTRING","value":"Value Computed by CMake"}],"type":"STATIC","value":"1.5.2.0"}']
+        for data in cases:self.assertNotIn('ip-address',c.privacy.problems(data),data)
+    def test_version_values_as_addresses_still_rejected(self):
+        for value in ('0.5.7.34','3.20.3.0','1.5.2.0'):
+            self.assertIn('ip-address',c.privacy.problems(('https://'+value+'/').encode()))
+    def test_ip_beside_version_still_rejected(self):
+        self.assertIn('ip-address',c.privacy.problems(b'build protoc-3.20.3.0: LINK\nhost=1.5.2.0'))
+    def test_arbitrary_cache_string_not_version(self):
+        self.assertIn('ip-address',c.privacy.problems(b'HOST_ADDRESS:STRING=1.5.2.0'))
+        self.assertIn('ip-address',c.privacy.problems(b'{"name":"CMAKE_PROJECT_VERSION","properties":[{"name":"HELPSTRING","value":"Value Computed by CMake"}],"type":"STRING","value":"1.5.2.0"}'))
+    def test_secret_beside_version_still_rejected(self):
+        self.assertIn('credential-pattern',c.privacy.problems(b'build protoc-3.20.3.0: LINK\nAPI_'+b'TOKEN='+b'github_' + b'pat_'+b'a'*30))
 
 if __name__=='__main__': unittest.main()

@@ -45,17 +45,31 @@ def catalog(root=ROOT):
         if not re.fullmatch('[A-Za-z0-9][A-Za-z0-9._-]*',e['archive_top']): raise ValueError('catalog-archive-root')
         if e['cmake_subdir'] and not safe_relative(e['cmake_subdir']): raise ValueError('catalog-cmake-path')
         if not e['license_files'] or any(not safe_relative(p) for p in e['license_files']): raise ValueError('catalog-license-path')
-        if any(not re.fullmatch('[A-Za-z0-9_]+=[A-Za-z0-9_.:+/-]+',v) for v in e['defines']): raise ValueError('catalog-option')
+        if any(not re.fullmatch('[A-Za-z0-9_][A-Za-z0-9_-]*=[A-Za-z0-9_.:+/-]+',v) for v in e['defines']): raise ValueError('catalog-option')
         recipe=root/'corpus/recipes'/name
-        source=(recipe/'sources.txt').read_text().splitlines()[-1].split()
-        if source[:3]!=[name,e['sha256'],e['archive_top']] or source[-1]!=e['url']: raise ValueError('recipe-source-drift')
+        extras=e.get('extra_sources',[])
+        if not isinstance(extras,list): raise ValueError('catalog-extra-sources')
+        source_names={name}
+        for dep in extras:
+            depname=dep['name'];repository=dep['repository'].removeprefix('https://github.com/')
+            if not re.fullmatch('[a-z0-9][a-z0-9-]*',depname) or depname in source_names: raise ValueError('catalog-extra-name')
+            source_names.add(depname)
+            if not re.fullmatch('[0-9a-f]{40}',dep['commit']) or not re.fullmatch('[0-9a-f]{64}',dep['sha256']): raise ValueError('catalog-extra-digest')
+            if not re.fullmatch('[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repository) or dep['url']!=f"https://codeload.github.com/{repository}/tar.gz/{dep['commit']}": raise ValueError('catalog-extra-url')
+            if not re.fullmatch('[A-Za-z0-9][A-Za-z0-9._-]*',dep['archive_top']): raise ValueError('catalog-extra-root')
+            if not dep['license'] or not dep['license_files'] or any(not safe_relative(p) for p in dep['license_files']): raise ValueError('catalog-extra-license')
+        sources=[line.split() for line in (recipe/'sources.txt').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')]
+        expected=extras+[e]
+        if len(sources)!=len(expected): raise ValueError('recipe-source-count')
+        for source,dep in zip(sources,expected):
+            if len(source)!=5 or source[:3]!=[dep['name'],dep['sha256'],dep['archive_top']] or source[-1]!=dep['url']: raise ValueError('recipe-source-drift')
         script=(recipe/'build.sh').read_text()
         if e.get('cmake_hook'):
             hook=e['cmake_hook']
             if not safe_relative(hook) or not (recipe/hook).is_file() or (recipe/hook).is_symlink(): raise ValueError('catalog-hook')
             if '-DCMAKE_PROJECT_INCLUDE="$PB_RECIPE_DIR/'+hook+'"' not in script: raise ValueError('recipe-hook-drift')
         # Option drift is an error, not a silent change in sample identity.
-        if re.findall(r'-D([A-Za-z0-9_]+=[A-Za-z0-9_.:+/-]+)',script)!=e['defines']: raise ValueError('recipe-option-drift')
+        if re.findall(r'-D([A-Za-z0-9_][A-Za-z0-9_-]*=[A-Za-z0-9_.:+/-]+)',script)!=e['defines']: raise ValueError('recipe-option-drift')
     return data
 
 
