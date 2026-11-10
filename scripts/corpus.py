@@ -210,6 +210,13 @@ def summarize(root,expected,output):
     for path in sorted(root.rglob('capture.json')):
         r=json.loads(path.read_text())
         if r.get('schema')!='pinned-builds/capture-result/v1' or r['status'] not in STATES: raise ValueError('summary-receipt')
+        if r['status']=='CAPTURED':
+            try:
+                verify_capture(path.parent,public=True)
+            except (ValueError,KeyError,OSError,StopIteration,json.JSONDecodeError):
+                # Preserve the original receipt in the package artifact. The
+                # aggregate records a separate post-download validation failure.
+                r=dict(r,reported_status='CAPTURED',status='CAPTURE_FAIL',reason='downloaded-artifact-validation')
         results.append(r)
     selected={e['name'] for e in catalog()['packages']}
     by_name={r['package']:r for r in results}

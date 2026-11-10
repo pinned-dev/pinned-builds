@@ -101,6 +101,7 @@ class CorpusTests(unittest.TestCase):
     def reference_fixture(self,root):
         files={
             'build/test/build.ninja':b'build all: phony\n',
+            'result.json':json.dumps({'phases':[],'source':{}}).encode(),
             'reference/introspection/test/targets.txt':b'all: phony\n',
             'reference/introspection/test/rules.txt':b'phony\n',
             'build/test/.cmake/api/v1/reply/model.json':b'{"configurations":[]}',
@@ -111,7 +112,7 @@ class CorpusTests(unittest.TestCase):
         for rel,data in files.items():
             p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_bytes(data)
             entries.append({'path':rel,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()})
-        m={'schema':'pinned-builds/native-reference/v1','recipe':'test','native_status':'PASS','pinned_status':'NOT_RUN','roots':{'work':'/sample/work','repository':'/sample/repo','toolchain':'/sample/tools'},'files':entries,'introspection':[{'project':'test','tool':tool,'rows':1} for tool in ('targets','rules')]}
+        m={'schema':'pinned-builds/native-reference/v1','recipe':'test','native_status':'PASS','pinned_status':'NOT_RUN','visibility':'public-native','phases':[],'roots':{'work':'/sample/work','repository':'/sample/repo','toolchain':'/sample/tools'},'files':entries,'introspection':[{'project':'test','tool':tool,'rows':1} for tool in ('targets','rules')]}
         (root/'reference.json').write_text(json.dumps(m))
         return m
 
@@ -137,6 +138,23 @@ class CorpusTests(unittest.TestCase):
             root=Path(d); m=self.reference_fixture(root); m['introspection'][0]['rows']=100
             (root/'reference.json').write_text(json.dumps(m))
             with self.assertRaises(ValueError): c.inspect_reference(root,'test')
+
+    def test_download_missing_hidden_file_api_fails_summary(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); package=root/'test'; reference=package/'reference'; reference.mkdir(parents=True)
+            self.reference_fixture(reference)
+            stats=c.inspect_reference(reference,'test')
+            upstream={'repository':'https://github.com/example/public','version':'v1','commit':'a'*40,'sha256':'b'*64,'license':'MIT'}
+            receipt={'schema':'pinned-builds/capture-result/v1','package':'test','status':'CAPTURED','publication':'CHECKED','build_status':'NOT_RUN','test_status':'NOT_RUN','pinned_status':'NOT_RUN','upstream':upstream,'capture':stats,'phases':[],'source':{},'declared_feature_tags':['c']}
+            (package/'capture.json').write_text(json.dumps(receipt))
+            with mock.patch.object(c,'catalog',return_value={'packages':[dict(upstream,name='test')]}):
+                self.assertTrue(c.verify_capture(package,public=True)['valid'])
+                shutil.rmtree(reference/'build/test/.cmake')
+                self.assertEqual(c.summarize(root,1,root/'summary'),1)
+            metrics=json.loads((root/'summary/metrics.json').read_text())
+            self.assertEqual(metrics['counts']['CAPTURE_FAIL'],1)
+            self.assertEqual(metrics['results'][0]['reported_status'],'CAPTURED')
+            self.assertEqual(metrics['results'][0]['reason'],'downloaded-artifact-validation')
 
     def test_missing_receipts_fail_summary(self):
         with tempfile.TemporaryDirectory() as d:

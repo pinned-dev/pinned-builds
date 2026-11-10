@@ -48,7 +48,8 @@ The native-capture workflow runs the reviewed selection on PR/main pushes, with
 six jobs maximum in parallel. After integration, manual runs can select a package
 or all. Each package produces capture-NAME, including a failure receipt on error.
 The native-capture-summary artifact contains metrics.json and summary.md for every
-expected package. Missing receipts fail the summary. Artifact retention is 14 days.
+expected package. Missing receipts fail the summary. The summary also validates each downloaded
+bundle, so an upload that drops hidden File API files cannot pass. Artifact retention is 14 days.
 
 Validate a downloaded hosted artifact without executing its graph or recipe:
 

@@ -116,6 +116,7 @@ jobs:
         with:
           name: capture-${{ matrix.package }}
           path: ${{ runner.temp }}/capture/
+          include-hidden-files: true
           retention-days: 14
           compression-level: 6
           if-no-files-found: error
