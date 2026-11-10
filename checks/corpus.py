@@ -283,4 +283,15 @@ class CorpusTests(unittest.TestCase):
     def test_secret_beside_version_still_rejected(self):
         self.assertIn('credential-pattern',c.privacy.problems(b'build protoc-3.20.3.0: LINK\nAPI_'+b'TOKEN='+b'github_' + b'pat_'+b'a'*30))
 
+
+    def test_nested_home_registry_is_not_user_home(self):
+        self.assertNotIn('personal-home-path',c.privacy.problems(b'/sample/native-work/home/.cmake/packages/gflags'))
+    def test_file_uri_home_paths_still_rejected(self):
+        for value in ('file:///home/test-user/src','file:///Users/test-user/src'):
+            self.assertIn('personal-home-path',c.privacy.problems(value.encode()))
+    def test_actual_home_beside_registry_still_rejected(self):
+        self.assertIn('personal-home-path',c.privacy.problems(b'/sample/native-work/home/.cmake /home/test-user/src'))
+    def test_private_work_beside_registry_still_rejected(self):
+        self.assertIn('private-work-path',c.privacy.problems(b'/sample/native-work/home/.cmake /work/private-fixture'))
+
 if __name__=='__main__': unittest.main()

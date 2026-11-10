@@ -9,7 +9,7 @@ from pathlib import Path
 BOT_NAME = 'Native Corpus Bot'
 BOT_EMAIL = 'native-corpus-bot@users.noreply.github.com'
 SECRET = re.compile(r'github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[A-Z0-9]{16}|-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----|https?://[^/\s:]+:[^@\s]+@')
-HOME_PATH = re.compile(r'/(?:home|Users)/[A-Za-z0-9._-]+')
+HOME_PATH = re.compile(r'(?:(?<![\w/])|(?<=file://))/(?:home|Users)/[A-Za-z0-9._-]+')
 PRIVATE_ROOT = re.compile(r'(?<![\w/])/(?:work|root|private)/[A-Za-z0-9]')
 EMAIL = re.compile(r'[A-Za-z0-9.!#$%&*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}')
 IPV4 = re.compile(r'(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])')
