@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+sparse-map 048e60d8a9103dce17e80a09180e1ff4775c17b1b6c7b2a7eb265238e6803dc9 sparse-map-d71e6fd75f4970f07f4f1fe67438055be70d0945 MIT https://codeload.github.com/Tessil/sparse-map/tar.gz/d71e6fd75f4970f07f4f1fe67438055be70d0945

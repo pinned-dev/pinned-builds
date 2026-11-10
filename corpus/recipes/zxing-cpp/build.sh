@@ -1,0 +1,10 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake zxing-cpp "$PB_SRC/zxing-cpp" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DZXING_READERS=ON \
+  -DZXING_WRITERS=OFF \
+  -DZXING_EXAMPLES=OFF \
+  -DZXING_BLACKBOX_TESTS=OFF \
+  -DZXING_UNIT_TESTS=OFF

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+hopscotch-map 257d84149a047954a1ef8e638abb9e28fdf304ea6b675bd715881400cfaa94ed hopscotch-map-9415490f2fb2a7127d2b72e5472c11dfc12f6463 MIT https://codeload.github.com/Tessil/hopscotch-map/tar.gz/9415490f2fb2a7127d2b72e5472c11dfc12f6463

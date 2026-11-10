@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+glfw 169d49096e339caabbc12e1762273c5cb9130a535a282ba46cf5c14ab6e55694 glfw-7b6aead9fb88b3623e3b3725ebb42670cbe4c579 Zlib https://codeload.github.com/glfw/glfw/tar.gz/7b6aead9fb88b3623e3b3725ebb42670cbe4c579

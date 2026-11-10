@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake abseil "$PB_SRC/abseil" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DABSL_BUILD_TESTING=OFF \
+  -DABSL_USE_GOOGLETEST_HEAD=OFF \
+  -DCMAKE_CXX_STANDARD=17

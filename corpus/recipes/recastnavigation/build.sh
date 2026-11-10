@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake recastnavigation "$PB_SRC/recastnavigation" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DRECASTNAVIGATION_DEMO=OFF \
+  -DRECASTNAVIGATION_TESTS=OFF \
+  -DRECASTNAVIGATION_EXAMPLES=OFF

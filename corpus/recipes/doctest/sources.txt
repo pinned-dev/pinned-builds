@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+doctest 3ffeeefdd63fa4978a9a835b6007dcbe8d28de45411665285516b3490ca253df doctest-1da23a3e8119ec5cce4f9388e91b065e20bf06f5 MIT https://codeload.github.com/doctest/doctest/tar.gz/1da23a3e8119ec5cce4f9388e91b065e20bf06f5

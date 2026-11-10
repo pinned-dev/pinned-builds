@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+brotli aaa739962a45b508b2e783b915e6b2b57ed3b12bd4b0feac73acfb144dffa54f brotli-ed738e842d2fbdf2d6459e39267a633c4a9b2f5d MIT https://codeload.github.com/google/brotli/tar.gz/ed738e842d2fbdf2d6459e39267a633c4a9b2f5d

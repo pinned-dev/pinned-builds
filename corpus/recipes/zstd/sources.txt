@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+zstd 4b0bd1f0cfb25e61b9103c35f27395530ff5b4c0d2513a00fd745849e85ea52c zstd-f8745da6ff1ad1e7bab384bd1f9d742439278e99 BSD-3-Clause https://codeload.github.com/facebook/zstd/tar.gz/f8745da6ff1ad1e7bab384bd1f9d742439278e99

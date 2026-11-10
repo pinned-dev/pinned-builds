@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+cjson 88be7eb146a320e255212cf1ec77e393846979ce1d2579917c5ae87c2d4ce3dd cJSON-acc76239bee01d8e9c858ae2cab296704e52d916 MIT https://codeload.github.com/DaveGamble/cJSON/tar.gz/acc76239bee01d8e9c858ae2cab296704e52d916

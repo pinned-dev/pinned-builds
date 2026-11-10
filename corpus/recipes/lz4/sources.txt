@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+lz4 eb1a93e934d4fd29df6e2061ba0bf447568561764d758f4a5662c0e29370ffa9 lz4-ebb370ca83af193212df4dcbadcc5d87bc0de2f0 BSD-2-Clause https://codeload.github.com/lz4/lz4/tar.gz/ebb370ca83af193212df4dcbadcc5d87bc0de2f0

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+simdjson 4d585e0ea682d431bb697e6422cf72f96b49a6533349b4a776aa6d91dd3d88a2 simdjson-7382dc2be88e53fbc35cb50369b831855656f0fd Apache-2.0 https://codeload.github.com/simdjson/simdjson/tar.gz/7382dc2be88e53fbc35cb50369b831855656f0fd

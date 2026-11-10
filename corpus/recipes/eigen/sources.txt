@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+eigen 0c8c490764f9c2a793133491adca0cd073b73e0bde965c68cbe58d91b5ed4261 eigen-3147391d946bb4b6c68edd901f2add6ac1f31f8c MPL-2.0 https://codeload.github.com/eigen-mirror/eigen/tar.gz/3147391d946bb4b6c68edd901f2add6ac1f31f8c

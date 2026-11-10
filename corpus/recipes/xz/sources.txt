@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+xz d85e28de5141805efc8ee3b50fffef0b83c81a630a85bbc77ea69791fa1ff712 xz-a522a226545730551f7e7c2685fab27cf567746c 0BSD https://codeload.github.com/tukaani-project/xz/tar.gz/a522a226545730551f7e7c2685fab27cf567746c

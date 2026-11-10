@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+zxing-cpp 67a58db28ba01234f9692d89f1c7c67cf4cb1cbc6d3c3784352951cdabee5847 zxing-cpp-d6068bcebeb8fd9f0d35a99b00d202be86a14dbe Apache-2.0 https://codeload.github.com/zxing-cpp/zxing-cpp/tar.gz/d6068bcebeb8fd9f0d35a99b00d202be86a14dbe

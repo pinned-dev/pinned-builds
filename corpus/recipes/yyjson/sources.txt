@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+yyjson 94e9c90f8f12d8329f2c0756782d21e5c278729023cd2c5fe47e323a35947ed6 yyjson-8b4a38dc994a110abaec8a400615567bd996105f MIT https://codeload.github.com/ibireme/yyjson/tar.gz/8b4a38dc994a110abaec8a400615567bd996105f

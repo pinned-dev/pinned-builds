@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake pcre2 "$PB_SRC/pcre2" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DPCRE2_BUILD_TESTS=OFF \
+  -DPCRE2_BUILD_PCRE2GREP=OFF

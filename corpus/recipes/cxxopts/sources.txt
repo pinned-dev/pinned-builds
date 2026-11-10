@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+cxxopts 022c823236b96a5136b59eff12e7434cdbbdaab03969a3b71f25ff94e36307e2 cxxopts-44380e5a44706ab7347f400698c703eb2a196202 MIT https://codeload.github.com/jarro2783/cxxopts/tar.gz/44380e5a44706ab7347f400698c703eb2a196202

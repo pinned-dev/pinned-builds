@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+glad 33dbeae44d8315ece57e14eba4b1b4a02ac5406d1c4f49cd20048c91522a6b9a glad-73db193f853e2ee079bf3ca8a64aa2eaf6459043 MIT https://codeload.github.com/Dav1dde/glad/tar.gz/73db193f853e2ee079bf3ca8a64aa2eaf6459043

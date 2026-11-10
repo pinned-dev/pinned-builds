@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake span-lite "$PB_SRC/span-lite" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSPAN_LITE_OPT_BUILD_TESTS=OFF \
+  -DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF

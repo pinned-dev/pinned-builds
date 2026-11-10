@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake paho-mqtt-c "$PB_SRC/paho-mqtt-c" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DPAHO_WITH_SSL=OFF \
+  -DPAHO_BUILD_SAMPLES=OFF \
+  -DPAHO_ENABLE_TESTING=OFF \
+  -DPAHO_BUILD_DOCUMENTATION=OFF

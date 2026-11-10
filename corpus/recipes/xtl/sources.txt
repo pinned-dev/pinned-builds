@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+xtl f90ab9a7da5321ab5571636736b712e261b5743f03822b9a1ad58e7b504b54c9 xtl-a7c1c5444dfc57f76620391af4c94785ff82c8d6 BSD-3-Clause https://codeload.github.com/xtensor-stack/xtl/tar.gz/a7c1c5444dfc57f76620391af4c94785ff82c8d6

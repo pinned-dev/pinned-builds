@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+fmt 992216a0605e03f0373984ecad11158f42d8569782f1b2c84035272da10f0ff1 fmt-40626af88bd7df9a5fb80be7b25ac85b122d6c21 MIT https://codeload.github.com/fmtlib/fmt/tar.gz/40626af88bd7df9a5fb80be7b25ac85b122d6c21

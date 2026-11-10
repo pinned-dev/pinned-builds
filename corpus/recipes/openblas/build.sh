@@ -1,0 +1,10 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake openblas "$PB_SRC/openblas" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DNOFORTRAN=ON \
+  -DDYNAMIC_ARCH=OFF \
+  -DTARGET=CORE2 \
+  -DBUILD_STATIC_LIBS=ON \
+  -DBUILD_SHARED_LIBS=OFF

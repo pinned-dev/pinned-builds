@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake opus "$PB_SRC/opus" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DOPUS_BUILD_TESTING=OFF \
+  -DOPUS_BUILD_PROGRAMS=OFF

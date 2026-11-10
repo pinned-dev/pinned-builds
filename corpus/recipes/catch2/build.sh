@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake catch2 "$PB_SRC/catch2" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DCATCH_BUILD_TESTING=OFF \
+  -DCATCH_INSTALL_DOCS=OFF

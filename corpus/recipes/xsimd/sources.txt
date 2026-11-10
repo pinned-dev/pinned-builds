@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+xsimd 65b05061930289ee7dd12108bd897700f5fedba608768d1a664ac5fe453075fd xsimd-1f8dd9c8e162968d9b4ff0251c56d431b8777f36 BSD-3-Clause https://codeload.github.com/xtensor-stack/xsimd/tar.gz/1f8dd9c8e162968d9b4ff0251c56d431b8777f36

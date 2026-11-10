@@ -1,0 +1,11 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake nlopt "$PB_SRC/nlopt" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DNLOPT_PYTHON=OFF \
+  -DNLOPT_OCTAVE=OFF \
+  -DNLOPT_MATLAB=OFF \
+  -DNLOPT_GUILE=OFF \
+  -DNLOPT_SWIG=OFF \
+  -DNLOPT_TESTS=OFF

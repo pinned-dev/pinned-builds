@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+rapidjson 4a76453d36770c9628d7d175a2e9baccbfbd2169ced44f0cb72e86c5f5f2f7cd rapidjson-f54b0e47a08782a6131cc3d60f94d038fa6e0a51 MIT https://codeload.github.com/Tencent/rapidjson/tar.gz/f54b0e47a08782a6131cc3d60f94d038fa6e0a51

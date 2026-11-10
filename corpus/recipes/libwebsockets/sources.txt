@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+libwebsockets ae5b24ecbcc7da00f40078703c5c8af7b352588bd4e435d85db04f944609ac8b libwebsockets-ab9df9cfc39de7a49967f18387b6b76310947442 MIT https://codeload.github.com/warmcat/libwebsockets/tar.gz/ab9df9cfc39de7a49967f18387b6b76310947442

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+ixwebsocket df061a0a255c938b680d4c738e2b3da74ee9dd5340bf636118061e1e0092170d IXWebSocket-2efe037c9cc96fd536774f17bdb5215161ee5087 BSD-3-Clause https://codeload.github.com/machinezone/IXWebSocket/tar.gz/2efe037c9cc96fd536774f17bdb5215161ee5087

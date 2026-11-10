@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+libjpeg-turbo b439b373685be152f105f9fdd109f62a68aff7d098d670e79186024acb6379eb libjpeg-turbo-20ade4dea9589515a69793e447a6c6220b464535 LicenseRef-libjpeg-turbo https://codeload.github.com/libjpeg-turbo/libjpeg-turbo/tar.gz/20ade4dea9589515a69793e447a6c6220b464535

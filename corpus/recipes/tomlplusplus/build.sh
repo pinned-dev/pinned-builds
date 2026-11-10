@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake tomlplusplus "$PB_SRC/tomlplusplus" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DTOMLPLUSPLUS_BUILD_TESTS=OFF \
+  -DTOMLPLUSPLUS_BUILD_EXAMPLES=OFF

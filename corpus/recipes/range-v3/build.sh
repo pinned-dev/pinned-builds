@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake range-v3 "$PB_SRC/range-v3" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DRANGE_V3_TESTS=OFF \
+  -DRANGE_V3_EXAMPLES=OFF \
+  -DRANGE_V3_PERF=OFF \
+  -DRANGE_V3_DOCS=OFF

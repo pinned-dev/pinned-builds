@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+libuv eeb2cdd529d0de964dccb479afb37427cdf001288786c51babe12c79c9cc8eac libuv-5152db2cbfeb5582e9c27c5ea1dba2cd9e10759b MIT https://codeload.github.com/libuv/libuv/tar.gz/5152db2cbfeb5582e9c27c5ea1dba2cd9e10759b

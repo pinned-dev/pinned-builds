@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake simdjson "$PB_SRC/simdjson" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSIMDJSON_DEVELOPER_MODE=OFF \
+  -DSIMDJSON_BUILD_STATIC_TESTS=OFF

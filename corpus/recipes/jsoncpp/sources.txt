@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+jsoncpp fbdcd9beff428968710f339b15ae3911e295a5a71da0cbadbdd631d7a5aeaaee jsoncpp-89e2973c754a9c02a49974d839779b151e95afd6 MIT https://codeload.github.com/open-source-parsers/jsoncpp/tar.gz/89e2973c754a9c02a49974d839779b151e95afd6

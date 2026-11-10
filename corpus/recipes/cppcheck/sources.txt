@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+cppcheck 8e754b450e37705a2dd6ba277749985c8e0faa3d7086acad10e016f70c331f2b cppcheck-bd62c8ca7be207583c60002a5af50e5f1d12660b GPL-3.0-or-later https://codeload.github.com/danmar/cppcheck/tar.gz/bd62c8ca7be207583c60002a5af50e5f1d12660b

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+backward-cpp 78ae9ed54186d1654a1afd947d8b494e8bce7a5b036d0eaaec840a950c994cb9 backward-cpp-3bb9240cb15459768adb3e7d963a20e1523a6294 MIT https://codeload.github.com/bombela/backward-cpp/tar.gz/3bb9240cb15459768adb3e7d963a20e1523a6294

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+nlohmann-json 67f4cdd9ca930c9c1e130af4a437c7fc98fab77a2846fc2d2a14b4943831f8ef json-55f93686c01528224f448c19128836e7df245f72 MIT https://codeload.github.com/nlohmann/json/tar.gz/55f93686c01528224f448c19128836e7df245f72

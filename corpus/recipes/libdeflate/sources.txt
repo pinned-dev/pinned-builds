@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+libdeflate d8167b09554b36b9b0e77c05746c53e33e83759c992ad9c710fcf19bc7d6c761 libdeflate-96836d7d9d10e3e0d53e6edb54eb908514e336c4 MIT https://codeload.github.com/ebiggers/libdeflate/tar.gz/96836d7d9d10e3e0d53e6edb54eb908514e336c4

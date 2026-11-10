@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+robin-map 4968947bd2e908854481519ec422823af4161a286ff1e16943293b753e80cb3f robin-map-4ec1bf19c6a96125ea22062f38c2cf5b958e448e MIT https://codeload.github.com/Tessil/robin-map/tar.gz/4ec1bf19c6a96125ea22062f38c2cf5b958e448e

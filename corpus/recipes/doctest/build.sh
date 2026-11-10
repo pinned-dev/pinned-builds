@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake doctest "$PB_SRC/doctest" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DDOCTEST_WITH_TESTS=OFF \
+  -DDOCTEST_WITH_MAIN_IN_STATIC_LIB=OFF

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+jansson 8ad1a17988cc3a2831d0443e7ca15e2d9e70c3f511aa55d721c4c8cd65459d06 jansson-ed5cae4ed0621ef409510f94270c9f8f263736d0 MIT https://codeload.github.com/akheron/jansson/tar.gz/ed5cae4ed0621ef409510f94270c9f8f263736d0

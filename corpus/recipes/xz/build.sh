@@ -1,0 +1,10 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake xz "$PB_SRC/xz" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DXZ_TOOL_XZ=OFF \
+  -DXZ_TOOL_XZDEC=OFF \
+  -DXZ_TOOL_LZMADEC=OFF \
+  -DXZ_TOOL_LZMAINFO=OFF \
+  -DCMAKE_PROJECT_INCLUDE="$PB_RECIPE_DIR/public-metadata.cmake"

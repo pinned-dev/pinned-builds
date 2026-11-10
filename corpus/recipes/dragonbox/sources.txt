@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+dragonbox a58851a6da4cfd8ef14ef9c57e0bb18f1b272814373e16ebc04c87e251657840 dragonbox-3053a74ac81099591a12a55341a203d9688fbb92 LicenseRef-dragonbox https://codeload.github.com/jk-jeon/dragonbox/tar.gz/3053a74ac81099591a12a55341a203d9688fbb92

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+pcre2 59a20ebc6f848f77cea0cb745a4f269b9f415bd088372b4e1b802edce6ba4e55 pcre2-2dce7761b1831fd3f82a9c2bd5476259d945da4d BSD-3-Clause https://codeload.github.com/PCRE2Project/pcre2/tar.gz/2dce7761b1831fd3f82a9c2bd5476259d945da4d

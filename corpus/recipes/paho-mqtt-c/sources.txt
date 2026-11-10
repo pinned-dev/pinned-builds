@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+paho-mqtt-c cee70c79c34311f2c62891442d633c7b823dc8149275e113e24325187353c15d paho.mqtt.c-62782406bcf511ee8e22bc34e826f8c6b8254c7c EPL-2.0 https://codeload.github.com/eclipse-paho/paho.mqtt.c/tar.gz/62782406bcf511ee8e22bc34e826f8c6b8254c7c

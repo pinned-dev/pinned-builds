@@ -21,7 +21,7 @@ import sys
 sys.dont_write_bytecode = True
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-RUNNERS = [".github/workflows/build.yml", "scripts/build-recipe.sh", "scripts/sandbox.sh",
+RUNNERS = [".github/workflows/build.yml", ".github/workflows/capture.yml", "scripts/build-recipe.sh", "scripts/sandbox.sh",
            "scripts/netns-check.sh", "scripts/recipe-lib.sh"]
 REF = re.compile(r'(?:\$HERE/|\$ROOT/scripts/|\$\{HERE\}/|(?<![\w/.$-])scripts/)([A-Za-z0-9][A-Za-z0-9._-]*)')
 

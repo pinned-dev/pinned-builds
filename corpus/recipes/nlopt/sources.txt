@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+nlopt 2cdc0f64e24e02ce0fcd3aff94f0e6b9ac419f961388a8740dfcff98174bf5b7 nlopt-7d04da19236148f9ae9d8dfa470a2264f5d2aa33 LGPL-2.1-or-later https://codeload.github.com/stevengj/nlopt/tar.gz/7d04da19236148f9ae9d8dfa470a2264f5d2aa33

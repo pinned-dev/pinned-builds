@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+tomlplusplus 291254ffe7f2433f90deef878d0d9335534a350a958ea23ecf511b7b2277bf7f tomlplusplus-30172438cee64926dc41fdd9c11fb3ba5b2ba9de MIT https://codeload.github.com/marzer/tomlplusplus/tar.gz/30172438cee64926dc41fdd9c11fb3ba5b2ba9de

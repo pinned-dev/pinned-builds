@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+ade 9a9b08b893407428daa934c86bdaa009079261d4c52961ab1caa9a6c14cce343 ade-ffc83ad372d72b16732f201d8a9d1d80dd16515b Apache-2.0 https://codeload.github.com/opencv/ade/tar.gz/ffc83ad372d72b16732f201d8a9d1d80dd16515b

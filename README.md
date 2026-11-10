@@ -1,6 +1,13 @@
 # pinned-builds
 Pinned builds
 
+This public repository uses public OSS sources and native build tools only.
+The private Pinned product source and binary must never be copied, downloaded,
+built or executed here or in its GitHub Actions jobs, artifacts or caches.
+Product testing happens exclusively in a separate private/local testlab;
+its outputs must never be published through this repository. The name
+`pinned-toolchain-v2` identifies the existing native toolchain, not the product.
+
 ## Recipes and CI
 
 Each directory under `recipes/` is one recipe: `sources.txt` pins every
@@ -68,3 +75,49 @@ scripts/build-recipe.sh catch2 pinned-toolchain-v2 work-catch2 results/catch2.js
 - The third-party libraries that the recipes build keep their own licenses,
   which apply to any artifacts built from them. This repository does not
   redistribute those built artifacts.
+
+## Native CMake/Ninja references
+
+The helpers record each configure/compile/install/consumer invocation separately.
+Result manifests retain their v1 schema and add `mode`, `phases` and
+`build_input_check`. A phase that did not execute is `NOT_RUN`; a started phase
+without a finish event is `INCOMPLETE`. `test` is NOT_RUN unless explicitly run
+with `pb_run test <project> <test-command> ...`; a consumer success is separate.
+Commands, environment values and raw output are not included in public manifests.
+
+`PB_MODE=configure` stops after the **first project** configures successfully.
+For cmake-chain this means fmt only: spdlog needs fmt built/installed first.
+That mode does not perform the post-build compiler/linker input check and marks
+it NOT_RUN. `PB_MODE=full` is the default. Manual Actions runs can select a mode;
+push/PR runs keep the full mode.
+
+Set `PB_REFERENCE_OUT` to a new local directory to retain a reference package:
+
+```sh
+PB_MODE=full PB_REFERENCE_OUT="$PWD/catch2-reference" \
+  scripts/build-recipe.sh catch2 pinned-toolchain-v2 work-catch2 results/catch2.json
+```
+
+The package contains raw generated `*.ninja` fragments, available compilation
+database/File API replies, configure and phase argv, the recipe files, toolchain
+configuration, tool identities and a hashed file inventory. File API queries are
+created before configure. Graphs can contain absolute local paths; replay needs
+sources and a new configure, not a path substitution in raw Ninja bytes.
+Reference capture is size bounded and rejects symlinks in captured file paths.
+A capture error fails the invocation even when the native build passed.
+
+Local `PB_REFERENCE_OUT` packages stay local by default. The existing build
+workflow uploads safe result manifests only. A separate native-capture workflow
+publishes the curated configure-only corpus under [its explicit artifact and
+license policy](corpus/POLICY.md), with bounded inventories, license notices,
+privacy validation and 14-day retention. These artifacts do not inherit
+results/CC0 licensing and contain neither source archives nor built libraries.
+Native success grants no Pinned verdict.
+
+The [native capture corpus](corpus/README.md) retains the qualified 50-project
+pilot and adds a second reviewed 50-project campaign. Explicit campaign inventories
+and deterministic partitions support larger runs without count-only completeness. Per-package outcomes and aggregate metrics distinguish
+capture success, configure/source/infra errors and missing results.
+
+Checks: `python3 -I checks/native-reference.py` and
+`python3 -I checks/manifest-completeness.py`.

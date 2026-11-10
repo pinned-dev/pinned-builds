@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+openblas 568fc199ac74379e2cc359d2e20c6e6fbcb61f9b2c20fae0897217acdc6f2947 OpenBLAS-993fad6aebbce34a97d3f8c34d6d79d35b64cc48 BSD-3-Clause https://codeload.github.com/OpenMathLib/OpenBLAS/tar.gz/993fad6aebbce34a97d3f8c34d6d79d35b64cc48

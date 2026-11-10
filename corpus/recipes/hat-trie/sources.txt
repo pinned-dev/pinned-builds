@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+hat-trie 20392d7640f47eaf91c0cc3966a058ed2fa5863f1e1c0d0f7a2ee19456bb936a hat-trie-f1380d704eccf753db5f9df175789fff8ff353e0 MIT https://codeload.github.com/Tessil/hat-trie/tar.gz/f1380d704eccf753db5f9df175789fff8ff353e0

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+catch2 1ee1c9045bfc55510e2e97965b72aafce256ce478a8c863fa62337470b988714 Catch2-4e8d92bf02f7d1c8006a0e7a5ecabd8e62d98502 BSL-1.0 https://codeload.github.com/catchorg/Catch2/tar.gz/4e8d92bf02f7d1c8006a0e7a5ecabd8e62d98502

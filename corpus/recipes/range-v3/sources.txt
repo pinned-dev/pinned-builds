@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+range-v3 612b5d89f58a578240b28a1304ffb0d085686ebe0137adf175ed0e3382b7ed58 range-v3-a81477931a8aa2ad025c6bda0609f38e09e4d7ec BSL-1.0 https://codeload.github.com/ericniebler/range-v3/tar.gz/a81477931a8aa2ad025c6bda0609f38e09e4d7ec

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+highway 5124b0501c98d9930dbb065bfa1a5bbbd59ce0f12facb7e1e33aaef01a5f1f1a highway-457c891775a7397bdb0376bb1031e6e027af1c48 Apache-2.0 https://codeload.github.com/google/highway/tar.gz/457c891775a7397bdb0376bb1031e6e027af1c48

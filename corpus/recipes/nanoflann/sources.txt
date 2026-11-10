@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+nanoflann 4054d5f78e94384ce6b2e0377aa55c75eb1adc263eace986bf380c034b963167 nanoflann-9a653cb243db6a09c94f833b28732b62f033e2b5 BSD-2-Clause https://codeload.github.com/jlblancoc/nanoflann/tar.gz/9a653cb243db6a09c94f833b28732b62f033e2b5

@@ -7,9 +7,17 @@ dump, no absolute paths of the build machine.
 import argparse
 import hashlib
 import json
+import pathlib
 import os
 import platform
 import sys
+sys.dont_write_bytecode = True
+from pathlib import Path
+# Loaded explicitly because this script is invoked with isolated Python (-I).
+import importlib.util
+spec = importlib.util.spec_from_file_location("pb_reference", Path(__file__).with_name("reference.py"))
+reference = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(reference)
 
 SCHEMA = "pinned-builds/result-manifest/v1"
 
@@ -79,8 +87,12 @@ def main():
                            "scripts/mount-setattr.py", "scripts/session-keyring.py",
                            "scripts/deny-keyrings.py", "scripts/nested-userns.py",
                            "scripts/check-build-inputs.py",
-                           "scripts/recipe-lib.sh", "scripts/write-manifest.py",
-                           "toolchain.lock")]
+                           "scripts/recipe-lib.sh", "scripts/write-manifest.py", "scripts/reference.py",
+                           "toolchain.lock", "scripts/corpus.py", "scripts/public_check.py",
+                           ".github/workflows/capture.yml", "corpus/packages.json", "corpus/selection.txt", "corpus/POLICY.md")]
+
+    scripts += [{"path": str(path.relative_to(a.repo_root)), "sha256": sha256_file(path)}
+                for path in sorted(pathlib.Path(a.repo_root).glob('corpus/campaigns/*.json'))]
 
     lock = lock_values(a.toolchain_lock)
     toolchain = {
@@ -100,7 +112,11 @@ def main():
         "schema": SCHEMA,
         "evidence_class": "public-corpus",
         "recipe": a.recipe,
+        "recipe_set": env.get("PB_RECIPE_SET", "recipes"),
         "status": a.status,
+        "mode": env.get("PB_MODE", "full"),
+        "build_input_check": "NOT_RUN" if env.get("PB_MODE") == "configure" else ("PASS" if a.status == "PASS" else "NOT_ESTABLISHED"),
+        "phases": reference.phase_summary(Path(a.out_dir).parent),
         "started": a.started,
         "finished": a.finished,
         "source": {
