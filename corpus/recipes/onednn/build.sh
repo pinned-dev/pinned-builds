@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake onednn "$PB_SRC/onednn" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DDNNL_CPU_RUNTIME=SEQ \
+  -DDNNL_BUILD_TESTS=OFF \
+  -DDNNL_BUILD_EXAMPLES=OFF \
+  -DDNNL_GPU_RUNTIME=NONE

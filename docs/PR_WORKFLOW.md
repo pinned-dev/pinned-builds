@@ -50,6 +50,9 @@ Immediately before integration, re-read the PR head/base, state, draft status,
 mergeability, required reviews and check runs. All required/relevant checks must
 pass for that exact HEAD: native build/capture summaries, CodeQL when triggered,
 and repository requirements. Pending/failing/missing checks do not count as green.
+Read every page of check runs, jobs and artifacts; compare received counts with
+total_count and check classic commit statuses. The first CLI/GraphQL rollup may
+truncate a large matrix. Verify all relevant workflow conclusions for the exact HEAD.
 If head/base changes, reassess the diff and rerun only checks made stale by it.
 Retain exact source checkpoints and necessary validated proof before retirement.
 

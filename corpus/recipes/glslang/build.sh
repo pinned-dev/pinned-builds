@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake glslang "$PB_SRC/glslang" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DENABLE_OPT=OFF \
+  -DGLSLANG_TESTS=OFF \
+  -DALLOW_EXTERNAL_SPIRV_TOOLS=OFF

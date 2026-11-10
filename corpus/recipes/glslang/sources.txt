@@ -1,0 +1,1 @@
+glslang 46a05bba7675a3ab1912a0908183b9eee8daa06bb8047943bac54a6f0de2cfce glslang-1062752a891c95b2bfeed9e356562d88f9df84ac BSD-3-Clause https://codeload.github.com/KhronosGroup/glslang/tar.gz/1062752a891c95b2bfeed9e356562d88f9df84ac

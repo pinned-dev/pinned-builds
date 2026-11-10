@@ -1,0 +1,1 @@
+lerc ef70e516e81f7e2309395a2f25ecac65edfbabc6a06d8c3c3ab1088a981d88bd lerc-fbeb481120b79d05163f8544c645e9975920526f Apache-2.0 https://codeload.github.com/Esri/lerc/tar.gz/fbeb481120b79d05163f8544c645e9975920526f

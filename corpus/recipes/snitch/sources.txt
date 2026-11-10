@@ -1,0 +1,1 @@
+snitch 12dd4132e5e61a81af7664b9016108eac725d573330167dfbddf797d56db3ea1 snitch-86d18cbf4bc4c3b766080bb3eeb136d9904a06b7 BSL-1.0 https://codeload.github.com/snitch-org/snitch/tar.gz/86d18cbf4bc4c3b766080bb3eeb136d9904a06b7

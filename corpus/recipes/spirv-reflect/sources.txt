@@ -1,0 +1,1 @@
+spirv-reflect 027b6b9ef5b96fcd67ddfe1fe1b3f07c8526973a9cfa363e8eb1560d16d6aa22 SPIRV-Reflect-281b55edb67b1f2e61e1dc92fdc42a650da05d83 Apache-2.0 https://codeload.github.com/KhronosGroup/SPIRV-Reflect/tar.gz/281b55edb67b1f2e61e1dc92fdc42a650da05d83

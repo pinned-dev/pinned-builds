@@ -1,0 +1,1 @@
+harfbuzz 818ac15af42769d5806d5f53077664976790264a8fd9161e135904b92ca9a923 harfbuzz-7b27c8edd46c674e01dd226fa9e1aa7549f5c436 MIT https://codeload.github.com/harfbuzz/harfbuzz/tar.gz/7b27c8edd46c674e01dd226fa9e1aa7549f5c436

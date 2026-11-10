@@ -1,0 +1,1 @@
+vulkan-memory-allocator 618dc35e4f571a508575fc1fc914eb15ab513e4443986509aff08dfb8844ba24 VulkanMemoryAllocator-3bab6924988e5f19bf36586a496156cf72f70d9f MIT https://codeload.github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/tar.gz/3bab6924988e5f19bf36586a496156cf72f70d9f

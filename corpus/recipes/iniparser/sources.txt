@@ -1,0 +1,1 @@
+iniparser 46344fbbc7d32d9813e4f2482b9c0a2fd68092eec3157e6fe62a0f7d7da8ba93 iniparser-4bef811283e0ec1658c60e09950bd5a1ddc92e4b MIT https://codeload.github.com/ndevilla/iniparser/tar.gz/4bef811283e0ec1658c60e09950bd5a1ddc92e4b

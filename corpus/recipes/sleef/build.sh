@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake sleef "$PB_SRC/sleef" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSLEEF_BUILD_TESTS=OFF \
+  -DSLEEF_BUILD_DFT=OFF \
+  -DSLEEF_BUILD_GNUABI_LIBS=OFF

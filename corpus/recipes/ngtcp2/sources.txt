@@ -1,0 +1,1 @@
+ngtcp2 303028e60a201abc9ca669f108f8e4317a0dc38ae017a59d75ca5b94c9947f49 ngtcp2-2372cdee861db68cabcb0e80c92adb535b0ad1b5 MIT https://codeload.github.com/ngtcp2/ngtcp2/tar.gz/2372cdee861db68cabcb0e80c92adb535b0ad1b5

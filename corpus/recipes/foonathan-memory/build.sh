@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake foonathan-memory "$PB_SRC/foonathan-memory" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DFOONATHAN_MEMORY_BUILD_TESTS=OFF \
+  -DFOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
+  -DFOONATHAN_MEMORY_BUILD_TOOLS=OFF

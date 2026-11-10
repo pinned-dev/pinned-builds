@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake celero "$PB_SRC/celero" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DCELERO_ENABLE_EXPERIMENTS=OFF \
+  -DCELERO_ENABLE_TESTS=OFF

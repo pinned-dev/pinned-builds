@@ -1,0 +1,1 @@
+onednn 2cc2da9a9ba6d01df22cc603dc80846d03ee7099ef1fe001fd7d2e287d24f147 oneDNN-5e9224036021433d2577548ed0539fe9a53256bc Apache-2.0 https://codeload.github.com/oneapi-src/oneDNN/tar.gz/5e9224036021433d2577548ed0539fe9a53256bc

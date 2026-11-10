@@ -1,0 +1,1 @@
+libbson 0ffe94a96e0dcde71c792137e78af761de31a3f273d0ea0b9078f6636fa4c76d mongo-c-driver-97f166d8d784d6096d48ba288f98b48028cdfe8b Apache-2.0 https://codeload.github.com/mongodb/mongo-c-driver/tar.gz/97f166d8d784d6096d48ba288f98b48028cdfe8b

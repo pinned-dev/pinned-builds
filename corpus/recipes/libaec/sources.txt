@@ -1,0 +1,1 @@
+libaec a05c8139ca217871f99b6c287e8941e0ee9cb77cfb309e5f4b54f456ce64fd9b libaec-58677dbbf080bac17bbb8717d32e63feb4e20115 BSD-2-Clause https://codeload.github.com/MathisRosenhauer/libaec/tar.gz/58677dbbf080bac17bbb8717d32e63feb4e20115

@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake pffft "$PB_SRC/pffft" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DPFFFT_BUILD_TESTS=OFF \
+  -DPFFFT_BUILD_BENCHMARKS=OFF \
+  -DPFFFT_BUILD_EXAMPLES=OFF

@@ -1,0 +1,1 @@
+quickjs-ng 4c875fae3c1df5764d135898c2d4bef4501a34d018cfac466c46bd61fa888def quickjs-670492dd342dace0bb7bd6fbfbde8f0bc5651224 MIT https://codeload.github.com/quickjs-ng/quickjs/tar.gz/670492dd342dace0bb7bd6fbfbde8f0bc5651224
