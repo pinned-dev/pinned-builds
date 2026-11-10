@@ -29,6 +29,11 @@ on:
         description: "Build only this recipe (empty: all recipes)"
         required: false
         default: ""
+      mode:
+        description: "full recipe or configure the first project only"
+        type: choice
+        options: [full, configure]
+        default: full
 
 permissions:
   contents: read
@@ -51,6 +56,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Check reference helpers
+        run: |
+          python3 -I checks/native-reference.py
+          python3 -I checks/manifest-completeness.py
 
       - name: Download and verify the toolchain (anonymous, fail closed)
         run: |
@@ -137,6 +147,7 @@ jobs:
       - name: Build ${{ matrix.recipe }}
         env:
           RECIPE: ${{ matrix.recipe }}
+          PB_MODE: ${{ inputs.mode || 'full' }}
         run: |
           PB_TOOLCHAIN_ARCHIVE_SHA256=$(grep -E '^TOOLCHAIN_SHA256=' toolchain.lock | cut -d= -f2) \
             scripts/build-recipe.sh "$RECIPE" "$RUNNER_TEMP/pinned-toolchain-v2" \
@@ -148,8 +159,11 @@ jobs:
           RECIPE: ${{ matrix.recipe }}
         run: |
           if [ -f "results/$RECIPE.json" ]; then
-            jq '{recipe, status, outputs: .outputs.digest, toolchain: .toolchain.archive_sha256, runner}' \
+            jq '{recipe, status, mode, phases, build_input_check, outputs: .outputs.digest, toolchain: .toolchain.archive_sha256, runner}' \
               "results/$RECIPE.json"
+          else
+            echo "native result: INFRA_ERROR (manifest missing)" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
