@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+parson 9ca55b19539a019dd86234543a965be4533be600a8d2539d0046322888df4a41 parson-ec53fb6528b45811df9db0db22cab96a94a96a11 MIT https://codeload.github.com/kgabis/parson/tar.gz/ec53fb6528b45811df9db0db22cab96a94a96a11

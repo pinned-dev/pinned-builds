@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+recastnavigation f565cc91b85df95a656cfc672e41c02e8aa44ba2363905aa8277ce20ea87491d recastnavigation-6dc1667f580357e8a2154c28b7867bea7e8ad3a7 Zlib https://codeload.github.com/recastnavigation/recastnavigation/tar.gz/6dc1667f580357e8a2154c28b7867bea7e8ad3a7

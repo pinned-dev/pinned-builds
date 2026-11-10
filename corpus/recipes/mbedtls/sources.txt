@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+mbedtls ffa596d4837f8668c5bc07f36c8bfdb5f4ace3a2cdc4e0f096ad27a9e3d58684 mbedtls-2fc8413bfcb51354c8e679141b17b3f1a5942561 Apache-2.0 https://codeload.github.com/Mbed-TLS/mbedtls/tar.gz/2fc8413bfcb51354c8e679141b17b3f1a5942561

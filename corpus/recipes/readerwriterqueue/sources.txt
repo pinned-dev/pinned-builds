@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+readerwriterqueue cce1ad69d2e0fdbfed9fab6f60f62bbd1f521317e0af5e205159e056d8cf47cd readerwriterqueue-8e7627d18c2108aca178888d88514179899a044f BSD-2-Clause https://codeload.github.com/cameron314/readerwriterqueue/tar.gz/8e7627d18c2108aca178888d88514179899a044f

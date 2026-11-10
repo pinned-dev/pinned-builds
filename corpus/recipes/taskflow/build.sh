@@ -1,0 +1,10 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake taskflow "$PB_SRC/taskflow" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DTF_BUILD_TESTS=OFF \
+  -DTF_BUILD_EXAMPLES=OFF \
+  -DTF_BUILD_BENCHMARKS=OFF \
+  -DTF_BUILD_CUDA=OFF \
+  -DTF_BUILD_SYCL=OFF

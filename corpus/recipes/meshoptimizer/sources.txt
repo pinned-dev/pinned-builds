@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+meshoptimizer e0f95438f820366b11fd108f659209fdf1f3ed4185c287f6d34bb5630c8d257f meshoptimizer-3e9d1ff3135794f519f3237515277c8d9a3fd3f2 MIT https://codeload.github.com/zeux/meshoptimizer/tar.gz/3e9d1ff3135794f519f3237515277c8d9a3fd3f2

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+dlib 63f54779a6effd213918f7a9bb317ce7d020321491b5253530ca094e5bb657eb dlib-2e0b3846b4dcd0953951a9c0172503c666975229 BSL-1.0 https://codeload.github.com/davisking/dlib/tar.gz/2e0b3846b4dcd0953951a9c0172503c666975229

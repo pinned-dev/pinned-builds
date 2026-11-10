@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+tinyobjloader 988cc315f69c9319499fcb20e4feb54e058ea99d1b69d18e9a05984ce884f49c tinyobjloader-2945a967c5303b2c8c14174117c45f3302591150 MIT https://codeload.github.com/tinyobjloader/tinyobjloader/tar.gz/2945a967c5303b2c8c14174117c45f3302591150

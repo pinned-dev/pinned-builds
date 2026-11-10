@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+wslay 1f52b66cb429b3d8c143c38464efe6cdd777b9a063113f2ec5926f79fd2ee3a9 wslay-c9a84aa6df8512584c77c8cd15be9536b89c35aa MIT https://codeload.github.com/tatsuhiro-t/wslay/tar.gz/c9a84aa6df8512584c77c8cd15be9536b89c35aa

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+cpp-httplib fca6ed4b31c37e4ed457d807447e125c5de4fb82bea2fc93b7fe40eaa4c101c7 cpp-httplib-ca5fe354fb83194bc72a676c4cc4136fca5316d0 MIT https://codeload.github.com/yhirose/cpp-httplib/tar.gz/ca5fe354fb83194bc72a676c4cc4136fca5316d0

@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake earcut "$PB_SRC/earcut" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DEARCUT_BUILD_TESTS=OFF \
+  -DEARCUT_BUILD_BENCH=OFF \
+  -DEARCUT_BUILD_VIZ=OFF

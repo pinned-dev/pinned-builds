@@ -12,12 +12,20 @@ on:
         description: 'One package or all; empty uses the reviewed selection file'
         required: false
         default: ''
+      campaign:
+        description: 'Reviewed campaign name; mutually exclusive with package'
+        required: false
+        default: ''
+      batch:
+        description: 'Stable partition I/N, such as 1/4'
+        required: false
+        default: ''
 
 permissions:
   contents: read
 
 concurrency:
-  group: native-capture-${{ github.ref }}
+  group: native-capture-${{ github.ref }}-${{ inputs.campaign }}-${{ inputs.package }}-${{ inputs.batch }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 defaults:
@@ -31,6 +39,7 @@ jobs:
     outputs:
       packages: ${{ steps.plan.outputs.packages }}
       count: ${{ steps.plan.outputs.count }}
+      scope: ${{ steps.plan.outputs.scope }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -44,10 +53,13 @@ jobs:
         id: plan
         env:
           ONLY: ${{ inputs.package }}
+          CAMPAIGN: ${{ inputs.campaign }}
+          BATCH: ${{ inputs.batch }}
         run: |
-          packages=$(python3 -I scripts/corpus.py plan --only "$ONLY")
+          packages=$(python3 -I scripts/corpus.py plan --only "$ONLY" --campaign "$CAMPAIGN" --batch "$BATCH" --scope-output "$RUNNER_TEMP/scope.json")
           echo "packages=$packages" >> "$GITHUB_OUTPUT"
           echo "count=$(jq length <<< "$packages")" >> "$GITHUB_OUTPUT"
+          echo "scope=$(jq -c . "$RUNNER_TEMP/scope.json")" >> "$GITHUB_OUTPUT"
       - name: Download and verify native toolchain
         run: |
           mkdir -p "$RUNNER_TEMP/toolchain"
@@ -137,9 +149,12 @@ jobs:
       - name: Summarize all expected captures
         env:
           EXPECTED: ${{ needs.plan.outputs.count }}
+          SCOPE: ${{ needs.plan.outputs.scope }}
         run: |
+          mkdir -p "$RUNNER_TEMP/summary"
+          printf '%s\n' "$SCOPE" > "$RUNNER_TEMP/summary/scope.json"
           python3 -I scripts/corpus.py summarize "$RUNNER_TEMP/captures" \
-            --expected "$EXPECTED" --output "$RUNNER_TEMP/summary"
+            --expected "$EXPECTED" --scope "$RUNNER_TEMP/summary/scope.json" --output "$RUNNER_TEMP/summary"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

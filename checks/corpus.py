@@ -18,10 +18,11 @@ c=importlib.util.module_from_spec(spec); spec.loader.exec_module(c)
 
 
 class CorpusTests(unittest.TestCase):
-    def test_inventory_is_50_unique_pinned_packages(self):
+    def test_inventory_covers_reviewed_unique_projects(self):
         entries=c.catalog()['packages']
-        self.assertEqual(len(entries),50)
-        self.assertEqual(len({e['repository'] for e in entries}),50)
+        self.assertGreaterEqual(len(entries),50)
+        self.assertEqual(len({e['repository'].lower() for e in entries}),len(entries))
+        self.assertEqual(len(c.scope(campaign='pilot-50')['packages']),50)
 
     def mutated_catalog(self,mutate):
         with tempfile.TemporaryDirectory() as directory:
@@ -166,7 +167,43 @@ class CorpusTests(unittest.TestCase):
     def test_missing_receipts_fail_summary(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); output=root/'summary'
-            self.assertEqual(c.summarize(root,50,output),1)
-            self.assertEqual(json.loads((output/'metrics.json').read_text())['counts']['MISSING'],50)
+            self.assertEqual(c.summarize(root,len(c.catalog()['packages']),output),1)
+            self.assertEqual(json.loads((output/'metrics.json').read_text())['counts']['MISSING'],len(c.catalog()['packages']))
+
+
+    def test_batch_partition_is_complete_disjoint_and_repeatable(self):
+        full=c.scope(campaign='pilot-50')['packages']
+        parts=[c.scope(campaign='pilot-50',batch=f'{i}/3')['packages'] for i in range(1,4)]
+        self.assertEqual(sorted(n for part in parts for n in part),full)
+        self.assertEqual(len(set(n for part in parts for n in part)),len(full))
+        self.assertEqual(parts[0],c.scope(campaign='pilot-50',batch='1/3')['packages'])
+
+    def test_scope_tamper_rejected(self):
+        for field,value in [('catalog_sha256','0'*64),('packages',['fmt']),('batch','9/9')]:
+            scope=c.scope(campaign='pilot-50'); scope[field]=value
+            with self.assertRaises(ValueError):c.validate_scope(scope)
+
+    def test_bad_batch_or_selection_rejected(self):
+        for batch in ('0/2','3/2','1/0','1/999','../2','1/2/3'):
+            with self.assertRaises(ValueError):c.scope(campaign='pilot-50',batch=batch)
+        with self.assertRaises(ValueError):c.scope(only='fmt',campaign='pilot-50')
+        with self.assertRaises(ValueError):c.scope(campaign='../outside')
+
+    def test_wrong_batch_member_cannot_replace_missing_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'wrong').mkdir()
+            (root/'wrong/capture.json').write_text(json.dumps({'schema':'pinned-builds/capture-result/v1','package':'zstd','status':'SOURCE_FAIL'}))
+            selected=c.scope(only='fmt')
+            with self.assertRaises(ValueError):c.summarize(root,1,root/'out',selected)
+
+    def test_count_without_matching_inventory_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ValueError):c.summarize(Path(directory),1,Path(directory)/'out')
+
+    def test_mixed_run_receipt_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'fmt').mkdir()
+            (root/'fmt/capture.json').write_text(json.dumps({'schema':'pinned-builds/capture-result/v1','package':'fmt','status':'SOURCE_FAIL','source':{'run_id':'wrong'}}))
+            with self.assertRaises(ValueError):c.summarize(root,1,root/'out',c.scope(only='fmt'),{'run_id':'expected'})
 
 if __name__=='__main__': unittest.main()

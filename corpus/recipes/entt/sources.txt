@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+entt 9a6c0e1a7049615d40bbe56443d42a27703c6251a5be862de8e952b0f0f84f36 entt-d4014c74dc3793aba95ae354d6e23a026c2796db MIT https://codeload.github.com/skypjack/entt/tar.gz/d4014c74dc3793aba95ae354d6e23a026c2796db

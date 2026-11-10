@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+onetbb f588cbd1635ebe2dbc1ac4a82e7bcf9aa90be40c98259b237bb7ae288fac269e oneTBB-06ce6212da6710f4bb2d20a1904b018aa44069bf Apache-2.0 https://codeload.github.com/uxlfoundation/oneTBB/tar.gz/06ce6212da6710f4bb2d20a1904b018aa44069bf

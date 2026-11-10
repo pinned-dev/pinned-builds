@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake box2d "$PB_SRC/box2d" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DBOX2D_SAMPLES=OFF \
+  -DBOX2D_UNIT_TESTS=OFF \
+  -DBOX2D_BENCHMARKS=OFF

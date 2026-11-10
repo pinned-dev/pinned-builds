@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+vulkan-headers e3865307e665f6a4ac4f7bbca7b3ba95e4191c7f8adf9f04b084ef514a2454e9 Vulkan-Headers-2cd90f9d20df57eac214c148f3aed885372ddcfe Apache-2.0 https://codeload.github.com/KhronosGroup/Vulkan-Headers/tar.gz/2cd90f9d20df57eac214c148f3aed885372ddcfe

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+earcut 312dc29d1bfb0bf2246f82aa8154be7ce0ff771455ea703dd2d6c1b236c9a7bd earcut.hpp-4811a2b69b91f6127a75e780de6e2113609ddabb ISC https://codeload.github.com/mapbox/earcut.hpp/tar.gz/4811a2b69b91f6127a75e780de6e2113609ddabb

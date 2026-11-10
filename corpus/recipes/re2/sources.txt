@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+re2 b955c9a793f1de650eeea922be3eb148733b5e380337f1fad3de4bc0306fe93b re2-5723bb8950318135ed9cf4fc76bed988a087f536 BSD-3-Clause https://codeload.github.com/google/re2/tar.gz/5723bb8950318135ed9cf4fc76bed988a087f536

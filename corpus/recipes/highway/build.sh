@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake highway "$PB_SRC/highway" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DHWY_ENABLE_TESTS=OFF \
+  -DHWY_ENABLE_EXAMPLES=OFF \
+  -DHWY_ENABLE_CONTRIB=OFF

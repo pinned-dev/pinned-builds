@@ -1,14 +1,16 @@
 # Native CMake/Ninja capture pilot
 
-The catalog pins 50 public C/C++ packages to exact source commits and SHA-256
+The catalog pins 100 public C/C++ projects to exact source commits and SHA-256
 archives. The [single-package acceptance run](https://github.com/pinned-dev/pinned-builds/actions/runs/42795928218)
 passed for Catch2: download, integrity/privacy validation and graph comparison
 with a repeated local capture. It retained 31 files, 265 Ninja targets, 9 rules
 and all four requested File API object kinds. An initial upload omission of
 hidden File API files was fixed and is covered by a regression check.
 
-The reviewed selection is now all 50 packages. The selection is hashed into
-result manifests. No private product is used at any stage here.
+The frozen pilot-50 campaign retains the original 50 projects. expansion-100
+selects 50 additional projects; inventory-100 is their union. The initial
+reviewed selection is re2 for a complete hosted round trip before expansion.
+Campaign files and the selection are hashed into result manifests. No private product is used at any stage here.
 
 ## What is captured
 
@@ -27,11 +29,12 @@ Header-only projects may produce no compilation database or compiled targets.
 
 ## Commands
 
-List the reviewed default selection or all 50 packages:
+List the reviewed selection, a campaign, or a deterministic partition:
 
 ```sh
 python3 -I scripts/corpus.py plan
-python3 -I scripts/corpus.py plan --only all
+python3 -I scripts/corpus.py plan --campaign expansion-100
+python3 -I scripts/corpus.py plan --campaign expansion-100 --batch 1/2 --scope-output scope.json
 ```
 
 For a local capture, choose an installed native toolchain and a task-owned absolute
@@ -50,7 +53,7 @@ Local paths are retained in raw metadata; local captures are never approved for
 public upload. Hosted captures pass an additional privacy check before upload.
 The native-capture workflow runs the reviewed selection on PR/main pushes, with
 six jobs maximum in parallel. After integration, manual runs can select a package
-or all. Each package produces capture-NAME, including a failure receipt on error.
+or a reviewed campaign and optional I/N partition. Each package produces capture-NAME, including a failure receipt on error.
 The native-capture-summary artifact contains metrics.json and summary.md for every
 expected package. Missing receipts fail the summary. The summary also validates each downloaded
 bundle, so an upload that drops hidden File API files cannot pass. Artifact retention is 14 days.
@@ -81,3 +84,23 @@ New packages add catalog provenance/options/notices and a small recipe directory
 Do not count repeated configurations as new packages. After the graph pilot,
 select diverse graphs for full native/private-lab execution and incremental edits;
 reduce discovered differences to small regression cases.
+
+## Campaign scope
+
+`plan --only NAME` selects one project; `--only all` selects the catalog.
+`--campaign NAME` selects an explicit reviewed JSON inventory in campaigns/.
+The two selectors are mutually exclusive. With neither, selection.txt is used.
+`--batch I/N` takes the I-th partition of sorted project names, without overlaps
+or omissions across all N partitions. Empty or malformed partitions fail closed.
+The planner limits a run to 250 captures, below the hosted matrix limit; use more
+partitions for a larger catalog. The workflow retains max-parallel 6.
+
+The planner emits a scope with exact package names and catalog SHA-256. Summary
+revalidates this scope against the same checkout, rejects duplicates or receipts
+from other batches/runs, and lists missing package names. A count alone cannot
+prove a subset complete. Summary artifacts retain scope.json alongside metrics.
+Declared campaigns are source definitions, not claims that all projects passed.
+
+The private consumer must select the same campaign/partition and preserve the
+original run, attempt, source and profile identities. A new campaign does not
+rewrite or merge old receipts. One project with several profiles is one project.

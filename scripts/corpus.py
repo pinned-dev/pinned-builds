@@ -59,6 +59,50 @@ def catalog(root=ROOT):
     return data
 
 
+
+def scope(only='', campaign='', batch='', root=None):
+    """Resolve a reviewed immutable set, never an expected-count approximation."""
+    root=ROOT if root is None else root
+    names=sorted(e['name'] for e in catalog(root)['packages'])
+    if only and campaign: raise ValueError('conflicting-selection')
+    selection=only or campaign or (root/'corpus/selection.txt').read_text().strip()
+    if selection=='all': selected=names
+    elif only or selection in names:
+        if selection not in names: raise ValueError('unknown-package')
+        selected=[selection]
+    else:
+        if not re.fullmatch('[a-z0-9][a-z0-9-]*',selection): raise ValueError('campaign-name')
+        path=root/'corpus/campaigns'/f'{selection}.json'
+        if path.is_symlink(): raise ValueError('campaign-path')
+        value=json.loads(path.read_text())
+        selected=value['packages']
+        if value.get('schema')!='pinned-builds/capture-campaign/v1' or value.get('name')!=selection:
+            raise ValueError('campaign-identity')
+        if not isinstance(selected,list) or not selected or any(not isinstance(n,str) for n in selected): raise ValueError('campaign-packages')
+        if len(set(selected))!=len(selected) or not set(selected)<=set(names): raise ValueError('campaign-inventory')
+        selected=sorted(selected)
+    partition=None
+    if batch:
+        if not re.fullmatch('[1-9][0-9]*/[1-9][0-9]*',batch): raise ValueError('batch-format')
+        number,total=map(int,batch.split('/'))
+        if number>total or total>len(selected): raise ValueError('batch-range')
+        selected=selected[number-1::total]; partition=batch
+    if not selected or len(selected)>250: raise ValueError('matrix-size-use-batches')
+    return {'schema':'pinned-builds/capture-scope/v1','selection':selection,'batch':partition,
+            'catalog_sha256':hashlib.sha256((root/'corpus/packages.json').read_bytes()).hexdigest(),
+            'packages':selected}
+
+
+def validate_scope(value):
+    selection=value['selection']
+    known={e['name'] for e in catalog()['packages']}
+    expected=scope(only=selection if selection in known or selection=='all' else '',
+                   campaign='' if selection in known or selection=='all' else selection,
+                   batch=value.get('batch') or '')
+    if value!=expected: raise ValueError('scope-mismatch')
+    return expected
+
+
 def inspect_reference(reference, package):
     refpath=reference/'reference.json'
     if refpath.is_symlink() or refpath.resolve()!=refpath.absolute() or refpath.stat().st_size>4*1024*1024: raise ValueError('reference-manifest')
@@ -212,7 +256,12 @@ def verify_capture(output, expected_sha=None, public=False):
     return {'package':result['package'],'valid':True,'capture_sha256':actual_sha,'origin_anchored':bool(expected_sha),'capture':stats}
 
 
-def summarize(root,expected,output):
+def summarize(root,expected,output,scope_value=None,source=None):
+    selected={e['name'] for e in catalog()['packages']}
+    if scope_value is not None:
+        scope_value=validate_scope(scope_value)
+        selected=set(scope_value['packages'])
+    if expected!=len(selected): raise ValueError('summary-scope-count')
     results=[]
     for path in sorted(root.rglob('capture.json')):
         r=json.loads(path.read_text())
@@ -225,13 +274,15 @@ def summarize(root,expected,output):
                 # aggregate records a separate post-download validation failure.
                 r=dict(r,reported_status='CAPTURED',status='CAPTURE_FAIL',reason='downloaded-artifact-validation')
         results.append(r)
-    selected={e['name'] for e in catalog()['packages']}
     by_name={r['package']:r for r in results}
     if len(by_name)!=len(results) or not set(by_name)<=selected: raise ValueError('summary-duplicate-or-unknown')
+    if source is not None and any(r.get('source')!=source for r in results): raise ValueError('summary-source-mismatch')
+    if any(r.get('profile') is not None and r['profile']!=catalog().get('profile') for r in results): raise ValueError('summary-profile-mismatch')
+    missing=sorted(selected-set(by_name))
     counts=Counter(r['status'] for r in results)
-    counts.update({'MISSING':max(0,expected-len(results))})
+    counts.update({'MISSING':len(missing)})
     tags=Counter(t for r in results if r['status']=='CAPTURED' for t in r['declared_feature_tags'])
-    metrics={'schema':'pinned-builds/capture-summary/v1','expected':expected,'received':len(results),'counts':dict(counts),'declared_feature_tags_captured':dict(sorted(tags.items())),
+    metrics={'schema':'pinned-builds/capture-summary/v1','expected':expected,'expected_packages':sorted(selected),'missing_packages':missing,'scope':scope_value,'received':len(results),'counts':dict(counts),'declared_feature_tags_captured':dict(sorted(tags.items())),
              'captured_bytes':sum(r['capture'].get('bytes',0) for r in results if r['status']=='CAPTURED'),
              'ninja_targets':sum(r['capture'].get('ninja_targets',0) for r in results if r['status']=='CAPTURED'),
              'builds_executed':0,'tests_executed':0,'pinned_executions':0,'results':results}
@@ -240,6 +291,7 @@ def summarize(root,expected,output):
           ' · '.join(f'{key}: {value}' for key,value in sorted(counts.items())), '',
           '| Package | Status | Ninja targets | Files |','| --- | --- | ---: | ---: |']
     rows += [f"| {r['package']} | {r['status']} | {r['capture'].get('ninja_targets',0)} | {r['capture'].get('files',0)} |" for r in results]
+    rows += [f'| {name} | MISSING | 0 | 0 |' for name in missing]
     rows+=['','Declared tags are not semantic coverage. Build/test/Pinned: NOT_RUN.']
     text='\n'.join(rows)+'\n'; (output/'summary.md').write_text(text)
     if os.environ.get('GITHUB_STEP_SUMMARY'):
@@ -249,21 +301,22 @@ def summarize(root,expected,output):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest='action',required=True)
-    plan=sub.add_parser('plan'); plan.add_argument('--only',default='')
+    plan=sub.add_parser('plan'); plan.add_argument('--only',default=''); plan.add_argument('--campaign',default=''); plan.add_argument('--batch',default=''); plan.add_argument('--scope-output',type=Path)
     run=sub.add_parser('run'); run.add_argument('package'); run.add_argument('toolchain',type=Path); run.add_argument('work',type=Path); run.add_argument('output',type=Path); run.add_argument('--local',dest='local_only',action='store_true'); run.add_argument('--timeout',type=int,default=600)
-    summ=sub.add_parser('summarize'); summ.add_argument('root',type=Path); summ.add_argument('--expected',type=int,required=True); summ.add_argument('--output',type=Path,required=True)
+    summ=sub.add_parser('summarize'); summ.add_argument('root',type=Path); summ.add_argument('--expected',type=int); summ.add_argument('--scope',type=Path); summ.add_argument('--output',type=Path,required=True)
     verify=sub.add_parser('verify'); verify.add_argument('root',type=Path); verify.add_argument('--sha256'); verify.add_argument('--public',action='store_true')
     args=p.parse_args()
     if args.action=='plan':
-        names=[e['name'] for e in catalog()['packages']]
-        selection=args.only or (ROOT/'corpus/selection.txt').read_text().strip()
-        if selection!='all':
-            if selection not in names: raise ValueError('unknown-package')
-            names=[selection]
-        print(json.dumps(names)); return 0
+        value=scope(args.only,args.campaign,args.batch)
+        if args.scope_output: write(args.scope_output,value)
+        print(json.dumps(value['packages'])); return 0
     if args.action=='verify':
         print(json.dumps(verify_capture(args.root,args.sha256,args.public))); return 0
     if args.action=='run': return capture(args.package,args.toolchain,args.work,args.output,args.local_only,args.timeout)
-    return summarize(args.root,args.expected,args.output)
+    value=json.loads(args.scope.read_text()) if args.scope else None
+    expected=len(value['packages']) if value else args.expected
+    if args.expected is not None and args.expected!=expected: raise ValueError('summary-scope-count')
+    source={k:os.environ.get(v) for k,v in (('repository','GITHUB_REPOSITORY'),('commit','GITHUB_SHA'),('ref','GITHUB_REF'),('run_id','GITHUB_RUN_ID'),('run_attempt','GITHUB_RUN_ATTEMPT'))} if os.environ.get('GITHUB_RUN_ID') else None
+    return summarize(args.root,expected,args.output,value,source)
 
 if __name__=='__main__': raise SystemExit(main())

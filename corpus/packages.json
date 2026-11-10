@@ -29,6 +29,53 @@
       ]
     },
     {
+      "name": "ade",
+      "repository": "https://github.com/opencv/ade",
+      "version": "v0.1.2e",
+      "commit": "ffc83ad372d72b16732f201d8a9d1d80dd16515b",
+      "url": "https://codeload.github.com/opencv/ade/tar.gz/ffc83ad372d72b16732f201d8a9d1d80dd16515b",
+      "sha256": "9a9b08b893407428daa934c86bdaa009079261d4c52961ab1caa9a6c14cce343",
+      "archive_top": "ade-ffc83ad372d72b16732f201d8a9d1d80dd16515b",
+      "license": "Apache-2.0",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "install-export"
+      ]
+    },
+    {
+      "name": "backward-cpp",
+      "repository": "https://github.com/bombela/backward-cpp",
+      "version": "v1.6",
+      "commit": "3bb9240cb15459768adb3e7d963a20e1523a6294",
+      "url": "https://codeload.github.com/bombela/backward-cpp/tar.gz/3bb9240cb15459768adb3e7d963a20e1523a6294",
+      "sha256": "78ae9ed54186d1654a1afd947d8b494e8bce7a5b036d0eaaec840a950c994cb9",
+      "archive_top": "backward-cpp-3bb9240cb15459768adb3e7d963a20e1523a6294",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "BACKWARD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "compiler-probes"
+      ]
+    },
+    {
       "name": "benchmark",
       "repository": "https://github.com/google/benchmark",
       "version": "v1.9.4",
@@ -51,6 +98,32 @@
         "cxx",
         "compiler-probes",
         "threads"
+      ]
+    },
+    {
+      "name": "box2d",
+      "repository": "https://github.com/erincatto/box2d",
+      "version": "v3.1.1",
+      "commit": "8c661469c9507d3ad6fbd2fea3f1aa71669c2fe3",
+      "url": "https://codeload.github.com/erincatto/box2d/tar.gz/8c661469c9507d3ad6fbd2fea3f1aa71669c2fe3",
+      "sha256": "dee7bcf0f50b3dcccf67678ce14ffe3ce02583b51b8b03e447ab30a84c3436ef",
+      "archive_top": "box2d-8c661469c9507d3ad6fbd2fea3f1aa71669c2fe3",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "BOX2D_SAMPLES=OFF",
+        "BOX2D_UNIT_TESTS=OFF",
+        "BOX2D_BENCHMARKS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "simd"
       ]
     },
     {
@@ -179,6 +252,83 @@
       ]
     },
     {
+      "name": "concurrentqueue",
+      "repository": "https://github.com/cameron314/concurrentqueue",
+      "version": "v1.0.4",
+      "commit": "6dd38b8a1dbaa7863aa907045f32308a56a6ff5d",
+      "url": "https://codeload.github.com/cameron314/concurrentqueue/tar.gz/6dd38b8a1dbaa7863aa907045f32308a56a6ff5d",
+      "sha256": "7d702475761ad37c2e4c288b93514754e5dba2dc8758a5fa29b13808006ea2bc",
+      "archive_top": "concurrentqueue-6dd38b8a1dbaa7863aa907045f32308a56a6ff5d",
+      "license": "BSD-2-Clause OR BSL-1.0",
+      "license_files": [
+        "LICENSE.md"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "cpp-httplib",
+      "repository": "https://github.com/yhirose/cpp-httplib",
+      "version": "v0.23.1",
+      "commit": "ca5fe354fb83194bc72a676c4cc4136fca5316d0",
+      "url": "https://codeload.github.com/yhirose/cpp-httplib/tar.gz/ca5fe354fb83194bc72a676c4cc4136fca5316d0",
+      "sha256": "fca6ed4b31c37e4ed457d807447e125c5de4fb82bea2fc93b7fe40eaa4c101c7",
+      "archive_top": "cpp-httplib-ca5fe354fb83194bc72a676c4cc4136fca5316d0",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "HTTPLIB_USE_OPENSSL_IF_AVAILABLE=OFF",
+        "HTTPLIB_USE_ZLIB_IF_AVAILABLE=OFF",
+        "HTTPLIB_USE_BROTLI_IF_AVAILABLE=OFF",
+        "HTTPLIB_TEST=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "network"
+      ]
+    },
+    {
+      "name": "cppcheck",
+      "repository": "https://github.com/danmar/cppcheck",
+      "version": "2.18.0",
+      "commit": "bd62c8ca7be207583c60002a5af50e5f1d12660b",
+      "url": "https://codeload.github.com/danmar/cppcheck/tar.gz/bd62c8ca7be207583c60002a5af50e5f1d12660b",
+      "sha256": "8e754b450e37705a2dd6ba277749985c8e0faa3d7086acad10e016f70c331f2b",
+      "archive_top": "cppcheck-bd62c8ca7be207583c60002a5af50e5f1d12660b",
+      "license": "GPL-3.0-or-later",
+      "license_files": [
+        "COPYING"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "BUILD_GUI=OFF",
+        "BUILD_TESTS=OFF",
+        "USE_MATCHCOMPILER=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "multi-target",
+        "executable"
+      ]
+    },
+    {
       "name": "curl",
       "repository": "https://github.com/curl/curl",
       "version": "curl-8_13_0",
@@ -235,6 +385,38 @@
         "cxx",
         "header-only",
         "install-export"
+      ]
+    },
+    {
+      "name": "dlib",
+      "repository": "https://github.com/davisking/dlib",
+      "version": "v20.0",
+      "commit": "2e0b3846b4dcd0953951a9c0172503c666975229",
+      "url": "https://codeload.github.com/davisking/dlib/tar.gz/2e0b3846b4dcd0953951a9c0172503c666975229",
+      "sha256": "63f54779a6effd213918f7a9bb317ce7d020321491b5253530ca094e5bb657eb",
+      "archive_top": "dlib-2e0b3846b4dcd0953951a9c0172503c666975229",
+      "license": "BSL-1.0",
+      "license_files": [
+        "LICENSE.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "DLIB_NO_GUI_SUPPORT=ON",
+        "DLIB_USE_CUDA=OFF",
+        "DLIB_USE_BLAS=OFF",
+        "DLIB_USE_LAPACK=OFF",
+        "DLIB_JPEG_SUPPORT=OFF",
+        "DLIB_PNG_SUPPORT=OFF",
+        "DLIB_GIF_SUPPORT=OFF",
+        "DLIB_WEBP_SUPPORT=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "compiler-probes",
+        "multi-target"
       ]
     },
     {
@@ -305,6 +487,88 @@
         "BUILD_TESTING=OFF",
         "CMAKE_POLICY_VERSION_MINIMUM=3.5",
         "BUILD_TESTING=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "earcut",
+      "repository": "https://github.com/mapbox/earcut.hpp",
+      "version": "v2.2.4",
+      "commit": "4811a2b69b91f6127a75e780de6e2113609ddabb",
+      "url": "https://codeload.github.com/mapbox/earcut.hpp/tar.gz/4811a2b69b91f6127a75e780de6e2113609ddabb",
+      "sha256": "312dc29d1bfb0bf2246f82aa8154be7ce0ff771455ea703dd2d6c1b236c9a7bd",
+      "archive_top": "earcut.hpp-4811a2b69b91f6127a75e780de6e2113609ddabb",
+      "license": "ISC",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "EARCUT_BUILD_TESTS=OFF",
+        "EARCUT_BUILD_BENCH=OFF",
+        "EARCUT_BUILD_VIZ=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "eigen",
+      "repository": "https://github.com/eigen-mirror/eigen",
+      "version": "3.4.0",
+      "commit": "3147391d946bb4b6c68edd901f2add6ac1f31f8c",
+      "url": "https://codeload.github.com/eigen-mirror/eigen/tar.gz/3147391d946bb4b6c68edd901f2add6ac1f31f8c",
+      "sha256": "0c8c490764f9c2a793133491adca0cd073b73e0bde965c68cbe58d91b5ed4261",
+      "archive_top": "eigen-3147391d946bb4b6c68edd901f2add6ac1f31f8c",
+      "license": "MPL-2.0",
+      "license_files": [
+        "COPYING.APACHE",
+        "COPYING.BSD",
+        "COPYING.GPL",
+        "COPYING.LGPL",
+        "COPYING.MINPACK",
+        "COPYING.MPL2",
+        "COPYING.README"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "EIGEN_BUILD_DOC=OFF",
+        "EIGEN_BUILD_TESTING=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "entt",
+      "repository": "https://github.com/skypjack/entt",
+      "version": "v3.15.0",
+      "commit": "d4014c74dc3793aba95ae354d6e23a026c2796db",
+      "url": "https://codeload.github.com/skypjack/entt/tar.gz/d4014c74dc3793aba95ae354d6e23a026c2796db",
+      "sha256": "9a6c0e1a7049615d40bbe56443d42a27703c6251a5be862de8e952b0f0f84f36",
+      "archive_top": "entt-d4014c74dc3793aba95ae354d6e23a026c2796db",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "ENTT_BUILD_TESTING=OFF",
+        "ENTT_BUILD_EXAMPLE=OFF"
       ],
       "feature_tags": [
         "cxx",
@@ -400,6 +664,30 @@
       ]
     },
     {
+      "name": "flecs",
+      "repository": "https://github.com/SanderMertens/flecs",
+      "version": "v4.1.0",
+      "commit": "9e06477db0fdf9317bf583ff4b1318622283165f",
+      "url": "https://codeload.github.com/SanderMertens/flecs/tar.gz/9e06477db0fdf9317bf583ff4b1318622283165f",
+      "sha256": "56e5613799c5456150c2a27104f5fe4e04453c5b1b2681f935cf089203da94db",
+      "archive_top": "flecs-9e06477db0fdf9317bf583ff4b1318622283165f",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "FLECS_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "install-export"
+      ]
+    },
+    {
       "name": "fmt",
       "repository": "https://github.com/fmtlib/fmt",
       "version": "11.2.0",
@@ -449,6 +737,81 @@
       ]
     },
     {
+      "name": "glad",
+      "repository": "https://github.com/Dav1dde/glad",
+      "version": "v2.0.8",
+      "commit": "73db193f853e2ee079bf3ca8a64aa2eaf6459043",
+      "url": "https://codeload.github.com/Dav1dde/glad/tar.gz/73db193f853e2ee079bf3ca8a64aa2eaf6459043",
+      "sha256": "33dbeae44d8315ece57e14eba4b1b4a02ac5406d1c4f49cd20048c91522a6b9a",
+      "archive_top": "glad-73db193f853e2ee079bf3ca8a64aa2eaf6459043",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "cmake",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "generator-config"
+      ]
+    },
+    {
+      "name": "glfw",
+      "repository": "https://github.com/glfw/glfw",
+      "version": "3.4",
+      "commit": "7b6aead9fb88b3623e3b3725ebb42670cbe4c579",
+      "url": "https://codeload.github.com/glfw/glfw/tar.gz/7b6aead9fb88b3623e3b3725ebb42670cbe4c579",
+      "sha256": "169d49096e339caabbc12e1762273c5cb9130a535a282ba46cf5c14ab6e55694",
+      "archive_top": "glfw-7b6aead9fb88b3623e3b3725ebb42670cbe4c579",
+      "license": "Zlib",
+      "license_files": [
+        "LICENSE.md"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "GLFW_BUILD_EXAMPLES=OFF",
+        "GLFW_BUILD_TESTS=OFF",
+        "GLFW_BUILD_DOCS=OFF",
+        "GLFW_BUILD_X11=OFF",
+        "GLFW_BUILD_WAYLAND=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "platform-selection"
+      ]
+    },
+    {
+      "name": "glm",
+      "repository": "https://github.com/g-truc/glm",
+      "version": "1.0.1",
+      "commit": "0af55ccecd98d4e5a8d1fad7de25ba429d60e863",
+      "url": "https://codeload.github.com/g-truc/glm/tar.gz/0af55ccecd98d4e5a8d1fad7de25ba429d60e863",
+      "sha256": "e7f187d83523f505eb38dd25d297ea6c0d4ed856d733e808f18253f5a8fa88a0",
+      "archive_top": "glm-0af55ccecd98d4e5a8d1fad7de25ba429d60e863",
+      "license": "MIT",
+      "license_files": [
+        "copying.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "GLM_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
       "name": "googletest",
       "repository": "https://github.com/google/googletest",
       "version": "v1.17.0",
@@ -471,6 +834,107 @@
         "cxx",
         "multi-target",
         "install-export"
+      ]
+    },
+    {
+      "name": "hat-trie",
+      "repository": "https://github.com/Tessil/hat-trie",
+      "version": "v0.7.1",
+      "commit": "f1380d704eccf753db5f9df175789fff8ff353e0",
+      "url": "https://codeload.github.com/Tessil/hat-trie/tar.gz/f1380d704eccf753db5f9df175789fff8ff353e0",
+      "sha256": "20392d7640f47eaf91c0cc3966a058ed2fa5863f1e1c0d0f7a2ee19456bb936a",
+      "archive_top": "hat-trie-f1380d704eccf753db5f9df175789fff8ff353e0",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TSL_HAT_TRIE_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "highway",
+      "repository": "https://github.com/google/highway",
+      "version": "1.2.0",
+      "commit": "457c891775a7397bdb0376bb1031e6e027af1c48",
+      "url": "https://codeload.github.com/google/highway/tar.gz/457c891775a7397bdb0376bb1031e6e027af1c48",
+      "sha256": "5124b0501c98d9930dbb065bfa1a5bbbd59ce0f12facb7e1e33aaef01a5f1f1a",
+      "archive_top": "highway-457c891775a7397bdb0376bb1031e6e027af1c48",
+      "license": "Apache-2.0",
+      "license_files": [
+        "LICENSE",
+        "LICENSE-BSD3"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "HWY_ENABLE_TESTS=OFF",
+        "HWY_ENABLE_EXAMPLES=OFF",
+        "HWY_ENABLE_CONTRIB=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "simd"
+      ]
+    },
+    {
+      "name": "hopscotch-map",
+      "repository": "https://github.com/Tessil/hopscotch-map",
+      "version": "v2.3.1",
+      "commit": "9415490f2fb2a7127d2b72e5472c11dfc12f6463",
+      "url": "https://codeload.github.com/Tessil/hopscotch-map/tar.gz/9415490f2fb2a7127d2b72e5472c11dfc12f6463",
+      "sha256": "257d84149a047954a1ef8e638abb9e28fdf304ea6b675bd715881400cfaa94ed",
+      "archive_top": "hopscotch-map-9415490f2fb2a7127d2b72e5472c11dfc12f6463",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TSL_HOPSCOTCH_MAP_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "ixwebsocket",
+      "repository": "https://github.com/machinezone/IXWebSocket",
+      "version": "v11.4.6",
+      "commit": "2efe037c9cc96fd536774f17bdb5215161ee5087",
+      "url": "https://codeload.github.com/machinezone/IXWebSocket/tar.gz/2efe037c9cc96fd536774f17bdb5215161ee5087",
+      "sha256": "df061a0a255c938b680d4c738e2b3da74ee9dd5340bf636118061e1e0092170d",
+      "archive_top": "IXWebSocket-2efe037c9cc96fd536774f17bdb5215161ee5087",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "LICENSE.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "USE_TLS=OFF",
+        "USE_ZLIB=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "network",
+        "threads"
       ]
     },
     {
@@ -671,6 +1135,65 @@
       ]
     },
     {
+      "name": "libwebsockets",
+      "repository": "https://github.com/warmcat/libwebsockets",
+      "version": "v4.3.5",
+      "commit": "ab9df9cfc39de7a49967f18387b6b76310947442",
+      "url": "https://codeload.github.com/warmcat/libwebsockets/tar.gz/ab9df9cfc39de7a49967f18387b6b76310947442",
+      "sha256": "ae5b24ecbcc7da00f40078703c5c8af7b352588bd4e435d85db04f944609ac8b",
+      "archive_top": "libwebsockets-ab9df9cfc39de7a49967f18387b6b76310947442",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "LWS_WITH_SSL=OFF",
+        "LWS_WITHOUT_TESTAPPS=ON",
+        "LWS_WITH_ZLIB=OFF",
+        "LWS_WITH_LIBUV=OFF",
+        "LWS_WITH_LIBEVENT=OFF",
+        "LWS_WITHOUT_CLIENT=OFF",
+        "LWS_WITHOUT_EXTENSIONS=ON",
+        "LWS_WITH_HTTP_STREAM_COMPRESSION=OFF",
+        "LWS_WITHOUT_TEST_SERVER=ON",
+        "LWS_WITHOUT_TEST_CLIENT=ON",
+        "LWS_WITHOUT_TEST_PING=ON"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "compiler-probes",
+        "network"
+      ]
+    },
+    {
+      "name": "libyuv",
+      "repository": "https://github.com/lemenkov/libyuv",
+      "version": "commit-60bf2b782302",
+      "commit": "60bf2b782302f6f3210fc885ae11a3444da0cbe4",
+      "url": "https://codeload.github.com/lemenkov/libyuv/tar.gz/60bf2b782302f6f3210fc885ae11a3444da0cbe4",
+      "sha256": "d8eb6074e3ea18ab4f248f07fa07fe174ba2b0af90bd50849df0c9e633be8110",
+      "archive_top": "libyuv-60bf2b782302f6f3210fc885ae11a3444da0cbe4",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "UNIT_TEST=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "simd"
+      ]
+    },
+    {
       "name": "lz4",
       "repository": "https://github.com/lz4/lz4",
       "version": "v1.10.0",
@@ -700,6 +1223,57 @@
       ]
     },
     {
+      "name": "mbedtls",
+      "repository": "https://github.com/Mbed-TLS/mbedtls",
+      "version": "v2.28.10",
+      "commit": "2fc8413bfcb51354c8e679141b17b3f1a5942561",
+      "url": "https://codeload.github.com/Mbed-TLS/mbedtls/tar.gz/2fc8413bfcb51354c8e679141b17b3f1a5942561",
+      "sha256": "ffa596d4837f8668c5bc07f36c8bfdb5f4ace3a2cdc4e0f096ad27a9e3d58684",
+      "archive_top": "mbedtls-2fc8413bfcb51354c8e679141b17b3f1a5942561",
+      "license": "Apache-2.0 OR GPL-2.0-or-later",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "ENABLE_TESTING=OFF",
+        "ENABLE_PROGRAMS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "crypto",
+        "multi-target"
+      ]
+    },
+    {
+      "name": "meshoptimizer",
+      "repository": "https://github.com/zeux/meshoptimizer",
+      "version": "v0.23",
+      "commit": "3e9d1ff3135794f519f3237515277c8d9a3fd3f2",
+      "url": "https://codeload.github.com/zeux/meshoptimizer/tar.gz/3e9d1ff3135794f519f3237515277c8d9a3fd3f2",
+      "sha256": "e0f95438f820366b11fd108f659209fdf1f3ed4185c287f6d34bb5630c8d257f",
+      "archive_top": "meshoptimizer-3e9d1ff3135794f519f3237515277c8d9a3fd3f2",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE.md"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "MESHOPT_BUILD_DEMO=OFF",
+        "MESHOPT_BUILD_GLTFPACK=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "simd"
+      ]
+    },
+    {
       "name": "ms-gsl",
       "repository": "https://github.com/microsoft/GSL",
       "version": "v4.2.0",
@@ -716,6 +1290,81 @@
         "BUILD_TESTING=OFF",
         "CMAKE_POLICY_VERSION_MINIMUM=3.5",
         "GSL_TEST=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "muparser",
+      "repository": "https://github.com/beltoforion/muparser",
+      "version": "v2.3.5",
+      "commit": "fbafd7f8774af2b53f4d2de07c57353fcfc09216",
+      "url": "https://codeload.github.com/beltoforion/muparser/tar.gz/fbafd7f8774af2b53f4d2de07c57353fcfc09216",
+      "sha256": "acb94ea8f4d947e18e39859b8d1db766e84f1b2bbbfc72a977e666f9934c6625",
+      "archive_top": "muparser-fbafd7f8774af2b53f4d2de07c57353fcfc09216",
+      "license": "BSD-2-Clause",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "ENABLE_SAMPLES=OFF",
+        "ENABLE_OPENMP=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "install-export"
+      ]
+    },
+    {
+      "name": "nanobench",
+      "repository": "https://github.com/martinus/nanobench",
+      "version": "v4.3.11",
+      "commit": "a5a50c2b33eea2ff1fcb355cacdface43eb42b25",
+      "url": "https://codeload.github.com/martinus/nanobench/tar.gz/a5a50c2b33eea2ff1fcb355cacdface43eb42b25",
+      "sha256": "be2de6cbe83924ed751737ef40cfe4796c28aa92733808a7ebcd8ff553e3a5e8",
+      "archive_top": "nanobench-a5a50c2b33eea2ff1fcb355cacdface43eb42b25",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "NANOBENCH_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "nanoflann",
+      "repository": "https://github.com/jlblancoc/nanoflann",
+      "version": "v1.7.1",
+      "commit": "9a653cb243db6a09c94f833b28732b62f033e2b5",
+      "url": "https://codeload.github.com/jlblancoc/nanoflann/tar.gz/9a653cb243db6a09c94f833b28732b62f033e2b5",
+      "sha256": "4054d5f78e94384ce6b2e0377aa55c75eb1adc263eace986bf380c034b963167",
+      "archive_top": "nanoflann-9a653cb243db6a09c94f833b28732b62f033e2b5",
+      "license": "BSD-2-Clause",
+      "license_files": [
+        "COPYING"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "NANOFLANN_BUILD_EXAMPLES=OFF",
+        "NANOFLANN_BUILD_TESTS=OFF",
+        "NANOFLANN_BUILD_BENCHMARKS=OFF"
       ],
       "feature_tags": [
         "cxx",
@@ -777,6 +1426,37 @@
       ]
     },
     {
+      "name": "nlopt",
+      "repository": "https://github.com/stevengj/nlopt",
+      "version": "v2.10.0",
+      "commit": "7d04da19236148f9ae9d8dfa470a2264f5d2aa33",
+      "url": "https://codeload.github.com/stevengj/nlopt/tar.gz/7d04da19236148f9ae9d8dfa470a2264f5d2aa33",
+      "sha256": "2cdc0f64e24e02ce0fcd3aff94f0e6b9ac419f961388a8740dfcff98174bf5b7",
+      "archive_top": "nlopt-7d04da19236148f9ae9d8dfa470a2264f5d2aa33",
+      "license": "LGPL-2.1-or-later",
+      "license_files": [
+        "COPYING",
+        "COPYRIGHT"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "NLOPT_PYTHON=OFF",
+        "NLOPT_OCTAVE=OFF",
+        "NLOPT_MATLAB=OFF",
+        "NLOPT_GUILE=OFF",
+        "NLOPT_SWIG=OFF",
+        "NLOPT_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "numerical",
+        "generated-source"
+      ]
+    },
+    {
       "name": "ogg",
       "repository": "https://github.com/xiph/ogg",
       "version": "v1.3.6",
@@ -798,6 +1478,63 @@
         "c",
         "generated-config",
         "install-export"
+      ]
+    },
+    {
+      "name": "onetbb",
+      "repository": "https://github.com/uxlfoundation/oneTBB",
+      "version": "v2022.2.0",
+      "commit": "06ce6212da6710f4bb2d20a1904b018aa44069bf",
+      "url": "https://codeload.github.com/uxlfoundation/oneTBB/tar.gz/06ce6212da6710f4bb2d20a1904b018aa44069bf",
+      "sha256": "f588cbd1635ebe2dbc1ac4a82e7bcf9aa90be40c98259b237bb7ae288fac269e",
+      "archive_top": "oneTBB-06ce6212da6710f4bb2d20a1904b018aa44069bf",
+      "license": "Apache-2.0",
+      "license_files": [
+        "LICENSE.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TBB_TEST=OFF",
+        "TBB_EXAMPLES=OFF",
+        "TBB_STRICT=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "threads",
+        "shared"
+      ]
+    },
+    {
+      "name": "openblas",
+      "repository": "https://github.com/OpenMathLib/OpenBLAS",
+      "version": "v0.3.30",
+      "commit": "993fad6aebbce34a97d3f8c34d6d79d35b64cc48",
+      "url": "https://codeload.github.com/OpenMathLib/OpenBLAS/tar.gz/993fad6aebbce34a97d3f8c34d6d79d35b64cc48",
+      "sha256": "568fc199ac74379e2cc359d2e20c6e6fbcb61f9b2c20fae0897217acdc6f2947",
+      "archive_top": "OpenBLAS-993fad6aebbce34a97d3f8c34d6d79d35b64cc48",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "NOFORTRAN=ON",
+        "DYNAMIC_ARCH=OFF",
+        "TARGET=CORE2",
+        "BUILD_STATIC_LIBS=ON",
+        "BUILD_SHARED_LIBS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "generated-source",
+        "compiler-probes",
+        "numerical"
       ]
     },
     {
@@ -824,6 +1561,108 @@
         "c",
         "asm",
         "compiler-probes"
+      ]
+    },
+    {
+      "name": "ordered-map",
+      "repository": "https://github.com/Tessil/ordered-map",
+      "version": "v1.1.0",
+      "commit": "eba0b81b89c42232e8a937389be303a33f34a527",
+      "url": "https://codeload.github.com/Tessil/ordered-map/tar.gz/eba0b81b89c42232e8a937389be303a33f34a527",
+      "sha256": "bc6c8ca6916f3a74a9d421d10e986897f602f3faa89b331cdd39f4b32feadd44",
+      "archive_top": "ordered-map-eba0b81b89c42232e8a937389be303a33f34a527",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TSL_ORDERED_MAP_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "paho-mqtt-c",
+      "repository": "https://github.com/eclipse-paho/paho.mqtt.c",
+      "version": "v1.3.15",
+      "commit": "62782406bcf511ee8e22bc34e826f8c6b8254c7c",
+      "url": "https://codeload.github.com/eclipse-paho/paho.mqtt.c/tar.gz/62782406bcf511ee8e22bc34e826f8c6b8254c7c",
+      "sha256": "cee70c79c34311f2c62891442d633c7b823dc8149275e113e24325187353c15d",
+      "archive_top": "paho.mqtt.c-62782406bcf511ee8e22bc34e826f8c6b8254c7c",
+      "license": "EPL-2.0 OR BSD-3-Clause",
+      "license_files": [
+        "LICENSE",
+        "NOTICE",
+        "notice.html"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "PAHO_WITH_SSL=OFF",
+        "PAHO_BUILD_SAMPLES=OFF",
+        "PAHO_ENABLE_TESTING=OFF",
+        "PAHO_BUILD_DOCUMENTATION=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "network",
+        "shared"
+      ]
+    },
+    {
+      "name": "parallel-hashmap",
+      "repository": "https://github.com/greg7mdp/parallel-hashmap",
+      "version": "v2.0.0",
+      "commit": "2ec799017610ef831f4dc29c21fb3cce7e4a19b9",
+      "url": "https://codeload.github.com/greg7mdp/parallel-hashmap/tar.gz/2ec799017610ef831f4dc29c21fb3cce7e4a19b9",
+      "sha256": "11f42dd45abe08ad0c93d5509bfb24bc3877efdd11ce678e07b71b7d7fd74921",
+      "archive_top": "parallel-hashmap-2ec799017610ef831f4dc29c21fb3cce7e4a19b9",
+      "license": "Apache-2.0",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "PHMAP_BUILD_TESTS=OFF",
+        "PHMAP_BUILD_EXAMPLES=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "parson",
+      "repository": "https://github.com/kgabis/parson",
+      "version": "commit-ec53fb6528b4",
+      "commit": "ec53fb6528b45811df9db0db22cab96a94a96a11",
+      "url": "https://codeload.github.com/kgabis/parson/tar.gz/ec53fb6528b45811df9db0db22cab96a94a96a11",
+      "sha256": "9ca55b19539a019dd86234543a965be4533be600a8d2539d0046322888df4a41",
+      "archive_top": "parson-ec53fb6528b45811df9db0db22cab96a94a96a11",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "install-export"
       ]
     },
     {
@@ -931,6 +1770,128 @@
       ]
     },
     {
+      "name": "re2",
+      "repository": "https://github.com/google/re2",
+      "version": "2022-06-01",
+      "commit": "5723bb8950318135ed9cf4fc76bed988a087f536",
+      "url": "https://codeload.github.com/google/re2/tar.gz/5723bb8950318135ed9cf4fc76bed988a087f536",
+      "sha256": "b955c9a793f1de650eeea922be3eb148733b5e380337f1fad3de4bc0306fe93b",
+      "archive_top": "re2-5723bb8950318135ed9cf4fc76bed988a087f536",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "RE2_BUILD_TESTING=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "parser"
+      ]
+    },
+    {
+      "name": "readerwriterqueue",
+      "repository": "https://github.com/cameron314/readerwriterqueue",
+      "version": "v1.0.6",
+      "commit": "8e7627d18c2108aca178888d88514179899a044f",
+      "url": "https://codeload.github.com/cameron314/readerwriterqueue/tar.gz/8e7627d18c2108aca178888d88514179899a044f",
+      "sha256": "cce1ad69d2e0fdbfed9fab6f60f62bbd1f521317e0af5e205159e056d8cf47cd",
+      "archive_top": "readerwriterqueue-8e7627d18c2108aca178888d88514179899a044f",
+      "license": "BSD-2-Clause OR BSL-1.0",
+      "license_files": [
+        "LICENSE.md"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "recastnavigation",
+      "repository": "https://github.com/recastnavigation/recastnavigation",
+      "version": "v1.6.0",
+      "commit": "6dc1667f580357e8a2154c28b7867bea7e8ad3a7",
+      "url": "https://codeload.github.com/recastnavigation/recastnavigation/tar.gz/6dc1667f580357e8a2154c28b7867bea7e8ad3a7",
+      "sha256": "f565cc91b85df95a656cfc672e41c02e8aa44ba2363905aa8277ce20ea87491d",
+      "archive_top": "recastnavigation-6dc1667f580357e8a2154c28b7867bea7e8ad3a7",
+      "license": "Zlib",
+      "license_files": [
+        "License.txt"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "RECASTNAVIGATION_DEMO=OFF",
+        "RECASTNAVIGATION_TESTS=OFF",
+        "RECASTNAVIGATION_EXAMPLES=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "multi-target"
+      ]
+    },
+    {
+      "name": "robin-hood",
+      "repository": "https://github.com/martinus/robin-hood-hashing",
+      "version": "3.11.5",
+      "commit": "9145f963d80d6a02f0f96a47758050a89184a3ed",
+      "url": "https://codeload.github.com/martinus/robin-hood-hashing/tar.gz/9145f963d80d6a02f0f96a47758050a89184a3ed",
+      "sha256": "2ec51a99f9446cb60843391e05c9bf8a1e040a7f5e67e5db9e78fc9e9dc87f9b",
+      "archive_top": "robin-hood-hashing-9145f963d80d6a02f0f96a47758050a89184a3ed",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "RH_STANDALONE_PROJECT=OFF",
+        "RH_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "robin-map",
+      "repository": "https://github.com/Tessil/robin-map",
+      "version": "v1.4.0",
+      "commit": "4ec1bf19c6a96125ea22062f38c2cf5b958e448e",
+      "url": "https://codeload.github.com/Tessil/robin-map/tar.gz/4ec1bf19c6a96125ea22062f38c2cf5b958e448e",
+      "sha256": "4968947bd2e908854481519ec422823af4161a286ff1e16943293b753e80cb3f",
+      "archive_top": "robin-map-4ec1bf19c6a96125ea22062f38c2cf5b958e448e",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TSL_ROBIN_MAP_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
       "name": "simdjson",
       "repository": "https://github.com/simdjson/simdjson",
       "version": "v3.12.3",
@@ -982,6 +1943,30 @@
       ]
     },
     {
+      "name": "sparse-map",
+      "repository": "https://github.com/Tessil/sparse-map",
+      "version": "v0.6.2",
+      "commit": "d71e6fd75f4970f07f4f1fe67438055be70d0945",
+      "url": "https://codeload.github.com/Tessil/sparse-map/tar.gz/d71e6fd75f4970f07f4f1fe67438055be70d0945",
+      "sha256": "048e60d8a9103dce17e80a09180e1ff4775c17b1b6c7b2a7eb265238e6803dc9",
+      "archive_top": "sparse-map-d71e6fd75f4970f07f4f1fe67438055be70d0945",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TSL_SPARSE_MAP_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
       "name": "spdlog",
       "repository": "https://github.com/gabime/spdlog",
       "version": "v1.15.3",
@@ -1003,6 +1988,31 @@
       "feature_tags": [
         "cxx",
         "bundled-dependency",
+        "install-export"
+      ]
+    },
+    {
+      "name": "spirv-headers",
+      "repository": "https://github.com/KhronosGroup/SPIRV-Headers",
+      "version": "vulkan-sdk-1.4.321.0",
+      "commit": "2a611a970fdbc41ac2e3e328802aed9985352dca",
+      "url": "https://codeload.github.com/KhronosGroup/SPIRV-Headers/tar.gz/2a611a970fdbc41ac2e3e328802aed9985352dca",
+      "sha256": "c2225a49c3d7efa5c4f4ce4a6b42081e6ea3daca376f3353d9d7c2722d77a28a",
+      "archive_top": "SPIRV-Headers-2a611a970fdbc41ac2e3e328802aed9985352dca",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "SPIRV_HEADERS_ENABLE_TESTS=OFF",
+        "SPIRV_HEADERS_ENABLE_EXAMPLES=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
         "install-export"
       ]
     },
@@ -1029,6 +2039,86 @@
         "cxx",
         "header-only",
         "install-export"
+      ]
+    },
+    {
+      "name": "taskflow",
+      "repository": "https://github.com/taskflow/taskflow",
+      "version": "v3.10.0",
+      "commit": "2dfa50a567d48b8439807f5da8a041ba64d4fb63",
+      "url": "https://codeload.github.com/taskflow/taskflow/tar.gz/2dfa50a567d48b8439807f5da8a041ba64d4fb63",
+      "sha256": "7ae3df13252d2022a9dc2da7a5265e03a5a9682cd41cd90c1bc9596440d7e934",
+      "archive_top": "taskflow-2dfa50a567d48b8439807f5da8a041ba64d4fb63",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TF_BUILD_TESTS=OFF",
+        "TF_BUILD_EXAMPLES=OFF",
+        "TF_BUILD_BENCHMARKS=OFF",
+        "TF_BUILD_CUDA=OFF",
+        "TF_BUILD_SYCL=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "threads",
+        "multi-target"
+      ]
+    },
+    {
+      "name": "tinygltf",
+      "repository": "https://github.com/syoyo/tinygltf",
+      "version": "v2.9.6",
+      "commit": "26422192e2908a562b641175dde18489824e609e",
+      "url": "https://codeload.github.com/syoyo/tinygltf/tar.gz/26422192e2908a562b641175dde18489824e609e",
+      "sha256": "7bf24c199e3ac553b276d3248da23820386630431bfe2539338d51c963f5765f",
+      "archive_top": "tinygltf-26422192e2908a562b641175dde18489824e609e",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TINYGLTF_BUILD_LOADER_EXAMPLE=OFF",
+        "TINYGLTF_BUILD_GL_EXAMPLES=OFF",
+        "TINYGLTF_BUILD_VALIDATOR_EXAMPLE=OFF",
+        "TINYGLTF_BUILD_BUILDER_EXAMPLE=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "vendored-dependencies"
+      ]
+    },
+    {
+      "name": "tinyobjloader",
+      "repository": "https://github.com/tinyobjloader/tinyobjloader",
+      "version": "v2.0.0rc13",
+      "commit": "2945a967c5303b2c8c14174117c45f3302591150",
+      "url": "https://codeload.github.com/tinyobjloader/tinyobjloader/tar.gz/2945a967c5303b2c8c14174117c45f3302591150",
+      "sha256": "988cc315f69c9319499fcb20e4feb54e058ea99d1b69d18e9a05984ce884f49c",
+      "archive_top": "tinyobjloader-2945a967c5303b2c8c14174117c45f3302591150",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "TINYOBJLOADER_BUILD_TEST_LOADER=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "parser"
       ]
     },
     {
@@ -1129,6 +2219,30 @@
       ]
     },
     {
+      "name": "unordered-dense",
+      "repository": "https://github.com/martinus/unordered_dense",
+      "version": "v4.5.0",
+      "commit": "73f3cbb237e84d483afafc743f1f14ec53e12314",
+      "url": "https://codeload.github.com/martinus/unordered_dense/tar.gz/73f3cbb237e84d483afafc743f1f14ec53e12314",
+      "sha256": "16188ed4804a670f6b00637a53e135190668dddc12b10f5233e20b403b9df9e2",
+      "archive_top": "unordered_dense-73f3cbb237e84d483afafc743f1f14ec53e12314",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "ANKERL_UNORDERED_DENSE_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
       "name": "utf8proc",
       "repository": "https://github.com/JuliaStrings/utf8proc",
       "version": "v2.10.0",
@@ -1150,6 +2264,106 @@
         "c",
         "generated-config",
         "install-export"
+      ]
+    },
+    {
+      "name": "vulkan-headers",
+      "repository": "https://github.com/KhronosGroup/Vulkan-Headers",
+      "version": "v1.4.321",
+      "commit": "2cd90f9d20df57eac214c148f3aed885372ddcfe",
+      "url": "https://codeload.github.com/KhronosGroup/Vulkan-Headers/tar.gz/2cd90f9d20df57eac214c148f3aed885372ddcfe",
+      "sha256": "e3865307e665f6a4ac4f7bbca7b3ba95e4191c7f8adf9f04b084ef514a2454e9",
+      "archive_top": "Vulkan-Headers-2cd90f9d20df57eac214c148f3aed885372ddcfe",
+      "license": "Apache-2.0 OR MIT",
+      "license_files": [
+        "LICENSE.md"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "VULKAN_HEADERS_ENABLE_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "header-only",
+        "install-export"
+      ]
+    },
+    {
+      "name": "websocketpp",
+      "repository": "https://github.com/zaphoyd/websocketpp",
+      "version": "0.8.2",
+      "commit": "56123c87598f8b1dd471be83ca841ceae07f95ba",
+      "url": "https://codeload.github.com/zaphoyd/websocketpp/tar.gz/56123c87598f8b1dd471be83ca841ceae07f95ba",
+      "sha256": "56a040dd99e7e58e0513204030e5af5e94750a3d80b176b16bf8e3a837b40f0a",
+      "archive_top": "websocketpp-56123c87598f8b1dd471be83ca841ceae07f95ba",
+      "license": "BSD-3-Clause",
+      "license_files": [
+        "COPYING"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "BUILD_EXAMPLES=OFF",
+        "BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "install-export"
+      ]
+    },
+    {
+      "name": "wolfssl",
+      "repository": "https://github.com/wolfSSL/wolfssl",
+      "version": "v5.8.2-stable",
+      "commit": "decea12e223869c8f8f3ab5a53dc90b69f436eb2",
+      "url": "https://codeload.github.com/wolfSSL/wolfssl/tar.gz/decea12e223869c8f8f3ab5a53dc90b69f436eb2",
+      "sha256": "7a5ca6f13a58a93fb2eb361ff3f556867ee9da1c0f395098c4b7b0af292366d4",
+      "archive_top": "wolfssl-decea12e223869c8f8f3ab5a53dc90b69f436eb2",
+      "license": "GPL-2.0-or-later",
+      "license_files": [
+        "COPYING"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "WOLFSSL_EXAMPLES=OFF",
+        "WOLFSSL_CRYPT_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "compiler-probes",
+        "crypto"
+      ]
+    },
+    {
+      "name": "wslay",
+      "repository": "https://github.com/tatsuhiro-t/wslay",
+      "version": "release-1.1.1",
+      "commit": "c9a84aa6df8512584c77c8cd15be9536b89c35aa",
+      "url": "https://codeload.github.com/tatsuhiro-t/wslay/tar.gz/c9a84aa6df8512584c77c8cd15be9536b89c35aa",
+      "sha256": "1f52b66cb429b3d8c143c38464efe6cdd777b9a063113f2ec5926f79fd2ee3a9",
+      "archive_top": "wslay-c9a84aa6df8512584c77c8cd15be9536b89c35aa",
+      "license": "MIT",
+      "license_files": [
+        "COPYING"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "WSLAY_BUILD_EXAMPLES=OFF",
+        "WSLAY_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "network"
       ]
     },
     {
@@ -1226,6 +2440,38 @@
       ]
     },
     {
+      "name": "xz",
+      "repository": "https://github.com/tukaani-project/xz",
+      "version": "v5.8.1",
+      "commit": "a522a226545730551f7e7c2685fab27cf567746c",
+      "url": "https://codeload.github.com/tukaani-project/xz/tar.gz/a522a226545730551f7e7c2685fab27cf567746c",
+      "sha256": "d85e28de5141805efc8ee3b50fffef0b83c81a630a85bbc77ea69791fa1ff712",
+      "archive_top": "xz-a522a226545730551f7e7c2685fab27cf567746c",
+      "license": "0BSD AND LGPL-2.1-or-later",
+      "license_files": [
+        "COPYING",
+        "COPYING.0BSD",
+        "COPYING.GPLv2",
+        "COPYING.GPLv3",
+        "COPYING.LGPLv2.1"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "XZ_TOOL_XZ=OFF",
+        "XZ_TOOL_XZDEC=OFF",
+        "XZ_TOOL_LZMADEC=OFF",
+        "XZ_TOOL_LZMAINFO=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
+        "compression",
+        "compiler-probes"
+      ]
+    },
+    {
       "name": "yaml-cpp",
       "repository": "https://github.com/jbeder/yaml-cpp",
       "version": "0.8.0",
@@ -1248,6 +2494,30 @@
       "feature_tags": [
         "cxx",
         "static",
+        "install-export"
+      ]
+    },
+    {
+      "name": "yyjson",
+      "repository": "https://github.com/ibireme/yyjson",
+      "version": "0.12.0",
+      "commit": "8b4a38dc994a110abaec8a400615567bd996105f",
+      "url": "https://codeload.github.com/ibireme/yyjson/tar.gz/8b4a38dc994a110abaec8a400615567bd996105f",
+      "sha256": "94e9c90f8f12d8329f2c0756782d21e5c278729023cd2c5fe47e323a35947ed6",
+      "archive_top": "yyjson-8b4a38dc994a110abaec8a400615567bd996105f",
+      "license": "MIT",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "YYJSON_BUILD_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "c",
+        "static-or-shared",
         "install-export"
       ]
     },
@@ -1301,6 +2571,34 @@
         "c",
         "subdirectory-entry",
         "asm"
+      ]
+    },
+    {
+      "name": "zxing-cpp",
+      "repository": "https://github.com/zxing-cpp/zxing-cpp",
+      "version": "v2.3.0",
+      "commit": "d6068bcebeb8fd9f0d35a99b00d202be86a14dbe",
+      "url": "https://codeload.github.com/zxing-cpp/zxing-cpp/tar.gz/d6068bcebeb8fd9f0d35a99b00d202be86a14dbe",
+      "sha256": "67a58db28ba01234f9692d89f1c7c67cf4cb1cbc6d3c3784352951cdabee5847",
+      "archive_top": "zxing-cpp-d6068bcebeb8fd9f0d35a99b00d202be86a14dbe",
+      "license": "Apache-2.0",
+      "license_files": [
+        "LICENSE"
+      ],
+      "cmake_subdir": "",
+      "defines": [
+        "BUILD_TESTING=OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "ZXING_READERS=ON",
+        "ZXING_WRITERS=OFF",
+        "ZXING_EXAMPLES=OFF",
+        "ZXING_BLACKBOX_TESTS=OFF",
+        "ZXING_UNIT_TESTS=OFF"
+      ],
+      "feature_tags": [
+        "cxx",
+        "static-or-shared",
+        "multi-target"
       ]
     }
   ]

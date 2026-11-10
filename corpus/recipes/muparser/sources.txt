@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+muparser acb94ea8f4d947e18e39859b8d1db766e84f1b2bbbfc72a977e666f9934c6625 muparser-fbafd7f8774af2b53f4d2de07c57353fcfc09216 BSD-2-Clause https://codeload.github.com/beltoforion/muparser/tar.gz/fbafd7f8774af2b53f4d2de07c57353fcfc09216

@@ -7,6 +7,7 @@ dump, no absolute paths of the build machine.
 import argparse
 import hashlib
 import json
+import pathlib
 import os
 import platform
 import sys
@@ -89,6 +90,9 @@ def main():
                            "scripts/recipe-lib.sh", "scripts/write-manifest.py", "scripts/reference.py",
                            "toolchain.lock", "scripts/corpus.py", "scripts/public_check.py",
                            ".github/workflows/capture.yml", "corpus/packages.json", "corpus/selection.txt", "corpus/POLICY.md")]
+
+    scripts += [{"path": str(path.relative_to(a.repo_root)), "sha256": sha256_file(path)}
+                for path in sorted(pathlib.Path(a.repo_root).glob('corpus/campaigns/*.json'))]
 
     lock = lock_values(a.toolchain_lock)
     toolchain = {

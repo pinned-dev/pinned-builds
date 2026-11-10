@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+ordered-map bc6c8ca6916f3a74a9d421d10e986897f602f3faa89b331cdd39f4b32feadd44 ordered-map-eba0b81b89c42232e8a937389be303a33f34a527 MIT https://codeload.github.com/Tessil/ordered-map/tar.gz/eba0b81b89c42232e8a937389be303a33f34a527

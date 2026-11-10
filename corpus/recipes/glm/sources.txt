@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+glm e7f187d83523f505eb38dd25d297ea6c0d4ed856d733e808f18253f5a8fa88a0 glm-0af55ccecd98d4e5a8d1fad7de25ba429d60e863 MIT https://codeload.github.com/g-truc/glm/tar.gz/0af55ccecd98d4e5a8d1fad7de25ba429d60e863

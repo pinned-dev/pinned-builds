@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+spirv-headers c2225a49c3d7efa5c4f4ce4a6b42081e6ea3daca376f3353d9d7c2722d77a28a SPIRV-Headers-2a611a970fdbc41ac2e3e328802aed9985352dca MIT https://codeload.github.com/KhronosGroup/SPIRV-Headers/tar.gz/2a611a970fdbc41ac2e3e328802aed9985352dca

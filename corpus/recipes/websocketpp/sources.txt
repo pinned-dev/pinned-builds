@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+websocketpp 56a040dd99e7e58e0513204030e5af5e94750a3d80b176b16bf8e3a837b40f0a websocketpp-56123c87598f8b1dd471be83ca841ceae07f95ba BSD-3-Clause https://codeload.github.com/zaphoyd/websocketpp/tar.gz/56123c87598f8b1dd471be83ca841ceae07f95ba

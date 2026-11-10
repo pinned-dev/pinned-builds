@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+nanobench be2de6cbe83924ed751737ef40cfe4796c28aa92733808a7ebcd8ff553e3a5e8 nanobench-a5a50c2b33eea2ff1fcb355cacdface43eb42b25 MIT https://codeload.github.com/martinus/nanobench/tar.gz/a5a50c2b33eea2ff1fcb355cacdface43eb42b25

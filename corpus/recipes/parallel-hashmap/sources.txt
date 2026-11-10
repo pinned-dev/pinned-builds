@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+parallel-hashmap 11f42dd45abe08ad0c93d5509bfb24bc3877efdd11ce678e07b71b7d7fd74921 parallel-hashmap-2ec799017610ef831f4dc29c21fb3cce7e4a19b9 Apache-2.0 https://codeload.github.com/greg7mdp/parallel-hashmap/tar.gz/2ec799017610ef831f4dc29c21fb3cce7e4a19b9

@@ -1,0 +1,2 @@
+# name sha256 archive-top license url
+flecs 56e5613799c5456150c2a27104f5fe4e04453c5b1b2681f935cf089203da94db flecs-9e06477db0fdf9317bf583ff4b1318622283165f MIT https://codeload.github.com/SanderMertens/flecs/tar.gz/9e06477db0fdf9317bf583ff4b1318622283165f
