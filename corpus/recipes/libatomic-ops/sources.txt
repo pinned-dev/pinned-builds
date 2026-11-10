@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libatomic-ops dfde3168572484125f3c3792adc83dc29ca6cedd9db7ce9d63dc6499fac507a0 libatomic_ops-4c00f978cbafe4eb76929dace4ba8f456e800fec MIT https://codeload.github.com/ivmai/libatomic_ops/tar.gz/4c00f978cbafe4eb76929dace4ba8f456e800fec

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+linenoise-ng d909b8bd240a009672f9f034921608a78c60980f9fde8d574e20a74f9c4f553e linenoise-ng-48874097805313bb3faf6bb3fa6989a07ec91d48 BSD-3-Clause https://codeload.github.com/arangodb/linenoise-ng/tar.gz/48874097805313bb3faf6bb3fa6989a07ec91d48

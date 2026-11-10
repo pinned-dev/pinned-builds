@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+pe-parse 7c2fbaa69ac8bb6566a216c473521d4fe94bbdc3dca8f376a2a851706755799e pe-parse-7888f1f8de2f6bc302c291a5b4519fad926c0133 MIT https://codeload.github.com/trailofbits/pe-parse/tar.gz/7888f1f8de2f6bc302c291a5b4519fad926c0133

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libucl e41f8a2c96c3341857cc1d20deb3752f1efe416d0c2b2bacbd0a57df09c3350a libucl-f897d5a0fed3a4474a4c3137c7b92853845fed47 BSD-2-Clause https://codeload.github.com/vstakhov/libucl/tar.gz/f897d5a0fed3a4474a4c3137c7b92853845fed47

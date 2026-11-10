@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libsamplerate 35ceb3e63eb8884ec802b5be685a9aacf2458c4eb3c0ea38dc18ef1b00648c44 libsamplerate-c96f5e3de9c4488f4e6c97f59f5245f22fda22f7 BSD-2-Clause https://codeload.github.com/libsndfile/libsamplerate/tar.gz/c96f5e3de9c4488f4e6c97f59f5245f22fda22f7

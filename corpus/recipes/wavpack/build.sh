@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake wavpack "$PB_SRC/wavpack" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DWAVPACK_BUILD_PROGRAMS=OFF \
+  -DWAVPACK_BUILD_TESTS=OFF

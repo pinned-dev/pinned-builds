@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+indicators cc79414257dc9d0c47c0a33a9d005b8484613ba2f36473709e285d227bedaddc indicators-26d39ad8fb438f5f50fb16427f554045d8431030 MIT https://codeload.github.com/p-ranav/indicators/tar.gz/26d39ad8fb438f5f50fb16427f554045d8431030

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+ctre b9ec7e4272b9a2c2cdab423496e30c9588bb28fad7a63c184e1fc55f34037b9d compile-time-regular-expressions-eb9577aae3515d14e6c5564f9aeb046d2e7c1124 Apache-2.0 https://codeload.github.com/hanickadot/compile-time-regular-expressions/tar.gz/eb9577aae3515d14e6c5564f9aeb046d2e7c1124

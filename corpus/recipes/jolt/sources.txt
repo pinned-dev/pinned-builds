@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+jolt 834644d7e9dffee9be0220748015667649d3361611b01c7e6839a5eb58e89711 JoltPhysics-0373ec0dd762e4bc2f6acdb08371ee84fa23c6db MIT https://codeload.github.com/jrouwe/JoltPhysics/tar.gz/0373ec0dd762e4bc2f6acdb08371ee84fa23c6db

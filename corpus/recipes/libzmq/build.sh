@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake libzmq "$PB_SRC/libzmq" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DWITH_LIBSODIUM=OFF \
+  -DENABLE_CURVE=OFF \
+  -DBUILD_TESTS=OFF \
+  -DWITH_DOCS=OFF

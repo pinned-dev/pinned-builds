@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake pegtl "$PB_SRC/pegtl" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DTAO_PEGTL_BUILD_TESTS=OFF \
+  -DTAO_PEGTL_BUILD_EXAMPLES=OFF

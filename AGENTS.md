@@ -23,3 +23,11 @@ private paths, personal identities, internal hostnames/IP addresses, credentials
 and private product details. Use a generic automation commit identity. Preserve
 public upstream package identities and required license notices. Public graph
 artifacts must pass the bounded capture and privacy checks in corpus/POLICY.md.
+
+# PR and merge completion
+
+Read [docs/PR_WORKFLOW.md](docs/PR_WORKFLOW.md) for all required preflight,
+review, merge, main validation, durable restoration mapping and cleanup steps.
+The agreed corpus delivery includes integration into main. Closing without
+merging is not completion; do not repeat approval for the same authorized scope.
+Respect required reviews and branch protection; no force/admin bypasses.

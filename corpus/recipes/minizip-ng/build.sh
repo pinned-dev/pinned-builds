@@ -1,0 +1,14 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake minizip-ng "$PB_SRC/minizip-ng" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DMZ_ZLIB=OFF \
+  -DMZ_BZIP2=OFF \
+  -DMZ_LZMA=OFF \
+  -DMZ_ZSTD=OFF \
+  -DMZ_LIBCOMP=OFF \
+  -DMZ_OPENSSL=OFF \
+  -DMZ_LIBBSD=OFF \
+  -DMZ_BUILD_TESTS=OFF \
+  -DMZ_BUILD_UNIT_TESTS=OFF

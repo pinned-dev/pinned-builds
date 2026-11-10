@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+flatbuffers efac5e331f544cac1fa13a6a4cb18823e31c5709997971b8744e86573fe45dc9 flatbuffers-1c514626e83c20fffa8557e75641848e1e15cd5e Apache-2.0 https://codeload.github.com/google/flatbuffers/tar.gz/1c514626e83c20fffa8557e75641848e1e15cd5e

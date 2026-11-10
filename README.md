@@ -114,10 +114,13 @@ privacy validation and 14-day retention. These artifacts do not inherit
 results/CC0 licensing and contain neither source archives nor built libraries.
 Native success grants no Pinned verdict.
 
-The [native capture corpus](corpus/README.md) retains the qualified 50-project
-pilot and adds a second reviewed 50-project campaign. Explicit campaign inventories
+The [native capture corpus](corpus/README.md) pins 200 public projects. It retains
+the two qualified 50-project campaigns and adds a reviewed 100-project expansion. Explicit campaign inventories
 and deterministic partitions support larger runs without count-only completeness. Per-package outcomes and aggregate metrics distinguish
 capture success, configure/source/infra errors and missing results.
 
 Checks: `python3 -I checks/native-reference.py` and
 `python3 -I checks/manifest-completeness.py`.
+
+The complete [PR/check/merge/main/cleanup procedure](docs/PR_WORKFLOW.md) is
+mandatory for corpus delivery and is linked from AGENTS.md.

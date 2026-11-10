@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libfyaml f86404efdd11af7c0d9e08af73286c3cd41b69e57674e68456a5986948a9dab5 libfyaml-8054c66e0454a09a810f756996d1b280738594e5 MIT https://codeload.github.com/pantoniou/libfyaml/tar.gz/8054c66e0454a09a810f756996d1b280738594e5

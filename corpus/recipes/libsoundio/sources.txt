@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libsoundio a07e692ae236fd196a0e9544499104ff7919ca55b8d0ae9c39c1838c342712c4 libsoundio-dc4f84339039ac518b6cd1c0e7683e88e25be470 MIT https://codeload.github.com/andrewrk/libsoundio/tar.gz/dc4f84339039ac518b6cd1c0e7683e88e25be470

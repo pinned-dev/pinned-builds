@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+mini 4b13a357b9885b441a83e4c30511eabc45cbd4f174ed96699e0f9e656d0838a4 mINI-a5ebe269831cf7ede1a016fbfabbc2b6d7b44ec6 MIT https://codeload.github.com/metayeti/mINI/tar.gz/a5ebe269831cf7ede1a016fbfabbc2b6d7b44ec6

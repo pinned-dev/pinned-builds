@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+bitsery 0f21d405c6b17588668db7ae60a5f21a8f4e6680c1b2aad75f4520cd370f7feb bitsery-ee992d8b5782e41792e4810c5b00ad4625783427 MIT https://codeload.github.com/fraillt/bitsery/tar.gz/ee992d8b5782e41792e4810c5b00ad4625783427

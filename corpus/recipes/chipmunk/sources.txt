@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+chipmunk d6143fe7dd786d0d72e132171b5e74da9d864cabb592d4238a9a877e240c931d Chipmunk2D-87340c216bf97554dc552371bbdecf283f7c540e MIT https://codeload.github.com/slembcke/Chipmunk2D/tar.gz/87340c216bf97554dc552371bbdecf283f7c540e

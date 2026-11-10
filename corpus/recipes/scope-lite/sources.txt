@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+scope-lite 88016340a52418bb6c64cfaf4d497b3fca48db723db76e7c5eea50b510abef39 scope-lite-59ecb62742d371d9347a2c2c6b0baeb98d683b6d BSL-1.0 https://codeload.github.com/martinmoene/scope-lite/tar.gz/59ecb62742d371d9347a2c2c6b0baeb98d683b6d

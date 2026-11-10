@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+args c97c70a1451873688a62d96ed42a2dcf14bb695072fe6ab9bade3e4b57c50dfd args-114200a9ad5fe06c8dea76e15d92325695cf3e34 MIT https://codeload.github.com/Taywee/args/tar.gz/114200a9ad5fe06c8dea76e15d92325695cf3e34

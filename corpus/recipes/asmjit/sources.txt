@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+asmjit 0bcc7d502846a307fa72c0fc0bf96a2f1b586a9f4706fe98e03cbb0852cda73c asmjit-677a10bac2c24f7e068cf1f9e675bf51c7b534ea Zlib https://codeload.github.com/asmjit/asmjit/tar.gz/677a10bac2c24f7e068cf1f9e675bf51c7b534ea

@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libhv a80752e116ff48e4f91dbb7dddbb647819d7d87bd0f5f6e93e690bc7bc4f5c67 libhv-b7928e930710df51c055fc2345f6871eeee04530 BSD-3-Clause https://codeload.github.com/ithewei/libhv/tar.gz/b7928e930710df51c055fc2345f6871eeee04530

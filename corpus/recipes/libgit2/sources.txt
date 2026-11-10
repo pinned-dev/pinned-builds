@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libgit2 7efaf8f564c7a2c0f5cf475f80c91fc003e529e66643b07b9265320f55b0664b libgit2-0060d9cf5666f015b1067129bd874c6cc4c9c7ac GPL-2.0-only https://codeload.github.com/libgit2/libgit2/tar.gz/0060d9cf5666f015b1067129bd874c6cc4c9c7ac

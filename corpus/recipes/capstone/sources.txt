@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+capstone ef6950c8276293a407fe374e99c95aa95faf25d022cc65974a52a01b79f5b4b3 capstone-accf4df62f1fba6f92cae692985d27063552601c BSD-3-Clause https://codeload.github.com/capstone-engine/capstone/tar.gz/accf4df62f1fba6f92cae692985d27063552601c

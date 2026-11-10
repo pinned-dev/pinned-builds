@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+magic-enum a06b11989a7802de62a405c373b23c3fcc4caca27e0a0df5f9905bc322a14a40 magic_enum-e046b69a3736d314fad813e159b1c192eaef92cd MIT https://codeload.github.com/Neargye/magic_enum/tar.gz/e046b69a3736d314fad813e159b1c192eaef92cd

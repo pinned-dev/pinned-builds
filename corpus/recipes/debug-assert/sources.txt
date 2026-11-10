@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+debug-assert 1977071c372ad28922ea8d25aae7e4b0059b1dc20302aa65bf590b8624ef1615 debug_assert-faedee673ed065fea802f5b347652737837958bd Zlib https://codeload.github.com/foonathan/debug_assert/tar.gz/faedee673ed065fea802f5b347652737837958bd

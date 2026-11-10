@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+imath adb799567cd7b6a505deedb8f8f653b07c12ed2c38c6bdadded4da0b32cc2abf Imath-c0396a055a01bc537d32f435aee11a9b7ed6f0b5 BSD-3-Clause https://codeload.github.com/AcademySoftwareFoundation/Imath/tar.gz/c0396a055a01bc537d32f435aee11a9b7ed6f0b5

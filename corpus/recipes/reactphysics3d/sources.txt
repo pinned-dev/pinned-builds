@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+reactphysics3d 28485b53b0ac088e133210c22adecbced1ac020eca895d45c7a68d140d5f54c3 reactphysics3d-cd958bbc0c6e84a869388cba6613f10cc645b3cb Zlib https://codeload.github.com/DanielChappuis/reactphysics3d/tar.gz/cd958bbc0c6e84a869388cba6613f10cc645b3cb

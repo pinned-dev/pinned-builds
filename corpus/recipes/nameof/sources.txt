@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+nameof a7203ea646beb49d20bfe5d4ae4e64ef83f862ebb1f0ea8ee95f84a651e9e41e nameof-3d4c9820fc88837a8ec3081544d3e52a75813c40 MIT https://codeload.github.com/Neargye/nameof/tar.gz/3d4c9820fc88837a8ec3081544d3e52a75813c40

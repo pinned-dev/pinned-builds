@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+docopt c7ac5409c3568123bdd06045b4e38dda75aa9e3f6474838c1e77b971c9ce227e docopt.cpp-42ebcec9dc2c99a1b3a4542787572045763ad196 MIT https://codeload.github.com/docopt/docopt.cpp/tar.gz/42ebcec9dc2c99a1b3a4542787572045763ad196

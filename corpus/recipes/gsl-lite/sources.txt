@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+gsl-lite 898695eafad4f6a6871773b05894ee4738e2d515c104bf0f273ebc787805dc2e gsl-lite-21751fb0473473e27ffb1f280543885ed65447a8 MIT https://codeload.github.com/gsl-lite/gsl-lite/tar.gz/21751fb0473473e27ffb1f280543885ed65447a8

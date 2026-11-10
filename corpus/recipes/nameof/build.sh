@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake nameof "$PB_SRC/nameof" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DNAMEOF_OPT_BUILD_TESTS=OFF \
+  -DNAMEOF_OPT_BUILD_EXAMPLES=OFF

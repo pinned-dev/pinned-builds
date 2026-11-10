@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake elfio "$PB_SRC/elfio" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DELFIO_BUILD_TESTS=OFF \
+  -DELFIO_BUILD_EXAMPLES=OFF

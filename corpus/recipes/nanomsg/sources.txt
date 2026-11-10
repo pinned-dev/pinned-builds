@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+nanomsg 92ab382da1af62a91381e9c454d07e62680d85ba8f555d5be9844d9b4d0533b9 nanomsg-fc3f684a80151a3319446fc96083a9ff384ee4fe MIT https://codeload.github.com/nanomsg/nanomsg/tar.gz/fc3f684a80151a3319446fc96083a9ff384ee4fe

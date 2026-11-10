@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+soxr ae970b44833c7dd2b088d5928b27c7f1796198ff5bc5386b90393aaf33e53d51 soxr-945b592b70470e29f917f4de89b4281fbbd540c0 LGPL-2.1-or-later https://codeload.github.com/chirlu/soxr/tar.gz/945b592b70470e29f917f4de89b4281fbbd540c0

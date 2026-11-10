@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+libconfig fd4c4f3bea7adca9b0fe199fdc7ef3607329c82c72219b4192b21b3f9c055bf6 libconfig-47ec93c588f534d20f6ee8704d2a2cec339db7b7 LGPL-2.1-or-later https://codeload.github.com/hyperrealm/libconfig/tar.gz/47ec93c588f534d20f6ee8704d2a2cec339db7b7

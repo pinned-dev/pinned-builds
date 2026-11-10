@@ -52,3 +52,18 @@ PR results are development evidence and are not harvested as trusted-main data.
 Use one configure profile per package initially; options and toolchain identity
 are part of the sample. Artifacts expire after 14 days. Cache is not evidence.
 Only selected verified snapshots should later be promoted to durable storage.
+
+## Numeric version contexts
+
+CMake permits major.minor.patch.tweak project versions. The privacy lexer
+distinguishes these exact generated contexts from addresses: CMAKE_PROJECT_VERSION
+STATIC cache entries, quoted VERSION compiler definitions and protoc-VERSION
+executable names. All other occurrences remain subject to IP checks, including
+the same numeric values as URL/host addresses. Secrets and adjacent addresses
+remain blocked. No generated evidence bytes are redacted or replaced.
+Reference: https://cmake.org/cmake/help/latest/command/project.html .
+
+Home-path detection applies to absolute filesystem roots and file:// home URIs.
+A nested scratch component such as native-work/home/.cmake is a CMake registry
+directory, not a personal home root. Real home/work paths and adjacent addresses
+remain blocked; this distinction does not alter any captured bytes.

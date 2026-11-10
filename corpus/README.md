@@ -1,15 +1,16 @@
 # Native CMake/Ninja capture pilot
 
-The catalog pins 100 public C/C++ projects to exact source commits and SHA-256
+The catalog pins 200 public C/C++ projects to exact source commits and SHA-256
 archives. The [single-package acceptance run](https://github.com/pinned-dev/pinned-builds/actions/runs/42795928218)
 passed for Catch2: download, integrity/privacy validation and graph comparison
 with a repeated local capture. It retained 31 files, 265 Ninja targets, 9 rules
 and all four requested File API object kinds. An initial upload omission of
 hidden File API files was fixed and is covered by a regression check.
 
-The frozen pilot-50 campaign retains the original 50 projects. expansion-100
-selects 50 additional projects; inventory-100 is their union. The reviewed selection is now expansion-100 after the complete RE2 hosted
-round trip and local repeat.
+The frozen pilot-50 and expansion-100 campaigns retain the first 100 projects.
+expansion-200 selects 100 additional projects; inventory-200 records the complete
+primary-project inventory. The representative PNG source-dependency profile is
+qualified before wider hosted fan-out. Campaign definitions alone make no PASS claim.
 Campaign files and the selection are hashed into result manifests. No private product is used at any stage here.
 
 ## What is captured
@@ -33,8 +34,8 @@ List the reviewed selection, a campaign, or a deterministic partition:
 
 ```sh
 python3 -I scripts/corpus.py plan
-python3 -I scripts/corpus.py plan --campaign expansion-100
-python3 -I scripts/corpus.py plan --campaign expansion-100 --batch 1/2 --scope-output scope.json
+python3 -I scripts/corpus.py plan --campaign expansion-200
+python3 -I scripts/corpus.py plan --campaign expansion-200 --batch 1/2 --scope-output scope.json
 ```
 
 For a local capture, choose an installed native toolchain and a task-owned absolute
@@ -114,3 +115,21 @@ All 50 new profiles also completed a local configure/capture calibration.
 XZ uses a declared public issue-tracker contact hook; original capture bytes
 and upstream notices are preserved. These checks precede the wider hosted run
 and do not claim that the wider run has already passed.
+
+## Source dependencies and contribution lifecycle
+
+Selected PNG/SPNG profiles configure a separately pinned zlib-native source as a
+real nested library target. extra_sources declares every alias/URL/commit/archive
+hash and license notice; sources.txt must match every declaration in order. The
+configure hook resolves ZLIB::ZLIB to an interface linking the actual zlibstatic
+source target. No prebuilt library, dummy path or configure-time network is used.
+The SimpleIni profile is a real add_subdirectory consumer wrapper; upstream tests
+that run unconditionally at top level are excluded by normal parent-project use.
+
+Version-shaped metadata is distinguished narrowly from address literals by the
+privacy lexer, with negative regressions retaining URL/host/secret blocking. Raw
+capture bytes remain authoritative. See POLICY.md for the exact contexts.
+
+Follow [the full PR/merge workflow](../docs/PR_WORKFLOW.md): reviewed source and
+metadata, relevant local/hosted checks, exact-head integration, main CI confirmation,
+durable restoration mapping and cleanup. Closing a PR alone is not delivery.

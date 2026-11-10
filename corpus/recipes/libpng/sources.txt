@@ -1,0 +1,3 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+zlib-native d9e270d46252734aa49770fbc544125391617956266f220bd63216c834f3a522 zlib-51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf Zlib https://codeload.github.com/madler/zlib/tar.gz/51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf
+libpng fba1c8e793f01b493f3f47a926862edbfab487ae4240e02ec67131f1e2bf067f libpng-2b978915d82377df13fcbb1fb56660195ded868a libpng-2.0 https://codeload.github.com/pnggroup/libpng/tar.gz/2b978915d82377df13fcbb1fb56660195ded868a

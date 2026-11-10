@@ -9,11 +9,22 @@ from pathlib import Path
 BOT_NAME = 'Native Corpus Bot'
 BOT_EMAIL = 'native-corpus-bot@users.noreply.github.com'
 SECRET = re.compile(r'github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[A-Z0-9]{16}|-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----|https?://[^/\s:]+:[^@\s]+@')
-HOME_PATH = re.compile(r'/(?:home|Users)/[A-Za-z0-9._-]+')
+HOME_PATH = re.compile(r'(?:(?<![\w/])|(?<=file://))/(?:home|Users)/[A-Za-z0-9._-]+')
 PRIVATE_ROOT = re.compile(r'(?<![\w/])/(?:work|root|private)/[A-Za-z0-9]')
 EMAIL = re.compile(r'[A-Za-z0-9.!#$%&*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}')
 IPV4 = re.compile(r'(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])')
 INTERNAL_HOST = re.compile(r'\b[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:internal|local|lan|corp)\b')
+
+
+# Four-component CMake/package versions can look like IPv4. Accept only these
+# explicit version contexts; the same numeric text in addresses remains denied.
+_VERSION = r'(?P<version>[0-9]+(?:\.[0-9]+){3})'
+VERSION_CONTEXTS = [
+    re.compile(r'(?:\b|-D)VERSION=(?:\\*")'+_VERSION+r'(?:\\*")'),
+    re.compile(r'(?<![\w-])protoc-'+_VERSION+r'(?![0-9.])'),
+    re.compile(r'^CMAKE_PROJECT_VERSION:STATIC='+_VERSION+r'\s*$',re.MULTILINE),
+    re.compile(r'"name"\s*:\s*"CMAKE_PROJECT_VERSION"\s*,\s*"properties"\s*:\s*\[\s*\{\s*"name"\s*:\s*"HELPSTRING"\s*,\s*"value"\s*:\s*"Value Computed by CMake"\s*\}\s*\]\s*,\s*"type"\s*:\s*"STATIC"\s*,\s*"value"\s*:\s*"'+_VERSION+r'"'),
+]
 
 
 def problems(data, legal_notice=False):
@@ -30,7 +41,9 @@ def problems(data, legal_notice=False):
     if INTERNAL_HOST.search(text): found.append('internal-hostname')
     if not legal_notice and any(m.group() != BOT_EMAIL for m in EMAIL.finditer(text)):
         found.append('personal-email')
+    versions=[match.span('version') for pattern in VERSION_CONTEXTS for match in pattern.finditer(text)]
     for match in IPV4.finditer(text):
+        if any(start<=match.start() and match.end()<=end for start,end in versions):continue
         try:
             ipaddress.IPv4Address(match.group())
         except ipaddress.AddressValueError:

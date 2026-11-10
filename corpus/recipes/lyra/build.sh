@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake lyra "$PB_SRC/lyra" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DLYRA_BUILD_TESTS=OFF \
+  -DLYRA_BUILD_EXAMPLES=OFF

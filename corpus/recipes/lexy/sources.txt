@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+lexy 11f318eaa40c4f15d979c998a6f03ebe1ca67c5d36ad919c743965a5340076c1 lexy-982f36fe0f663153463657a166e4f173099dea6f BSL-1.0 https://codeload.github.com/foonathan/lexy/tar.gz/982f36fe0f663153463657a166e4f173099dea6f

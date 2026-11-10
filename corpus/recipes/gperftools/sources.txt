@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+gperftools 4a93191e42ab74acfa9ef0be33aeb32c77bb1e9e9b462f80cd68f1e79b42725c gperftools-e1014dead2029b341d06027b4f2b5562d799d5b1 BSD-3-Clause https://codeload.github.com/gperftools/gperftools/tar.gz/e1014dead2029b341d06027b4f2b5562d799d5b1

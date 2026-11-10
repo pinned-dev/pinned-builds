@@ -1,0 +1,2 @@
+# name sha256 archive-top spdx url; full declarations in catalog
+simdutf 921aec2b74046b7c6c7730ac93d314e390906d7cfdad4064927106856784831b simdutf-1a62f928fcce103868d22df80376feea158060b9 Apache-2.0 https://codeload.github.com/simdutf/simdutf/tar.gz/1a62f928fcce103868d22df80376feea158060b9

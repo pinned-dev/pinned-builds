@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake toml11 "$PB_SRC/toml11" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DTOML11_BUILD_TESTS=OFF \
+  -DTOML11_BUILD_EXAMPLES=OFF

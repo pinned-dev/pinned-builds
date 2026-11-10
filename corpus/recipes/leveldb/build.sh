@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake leveldb "$PB_SRC/leveldb" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DLEVELDB_BUILD_TESTS=OFF \
+  -DLEVELDB_BUILD_BENCHMARKS=OFF

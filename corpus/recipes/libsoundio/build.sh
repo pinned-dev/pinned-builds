@@ -1,0 +1,10 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake libsoundio "$PB_SRC/libsoundio" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DBUILD_EXAMPLES=OFF \
+  -DBUILD_TESTS=OFF \
+  -DENABLE_JACK=OFF \
+  -DENABLE_PULSEAUDIO=OFF \
+  -DENABLE_ALSA=OFF
