@@ -8,8 +8,8 @@ and all four requested File API object kinds. An initial upload omission of
 hidden File API files was fixed and is covered by a regression check.
 
 The frozen pilot-50 campaign retains the original 50 projects. expansion-100
-selects 50 additional projects; inventory-100 is their union. The initial
-reviewed selection is re2 for a complete hosted round trip before expansion.
+selects 50 additional projects; inventory-100 is their union. The reviewed selection is now expansion-100 after the complete RE2 hosted
+round trip and local repeat.
 Campaign files and the selection are hashed into result manifests. No private product is used at any stage here.
 
 ## What is captured
@@ -104,3 +104,13 @@ Declared campaigns are source definitions, not claims that all projects passed.
 The private consumer must select the same campaign/partition and preserve the
 original run, attempt, source and profile identities. A new campaign does not
 rewrite or merge old receipts. One project with several profiles is one project.
+
+The RE2 acceptance run [42823678426](https://github.com/pinned-dev/pinned-builds/actions/runs/42823678426)
+completed capture/upload/download validation. Root-only graph hashes differed
+because CMake sorts regeneration paths before root substitution. A separate
+private comparison view confirmed that only the regeneration dependency/phony
+set order changed; command and action input ordering remained exact.
+All 50 new profiles also completed a local configure/capture calibration.
+XZ uses a declared public issue-tracker contact hook; original capture bytes
+and upstream notices are preserved. These checks precede the wider hosted run
+and do not claim that the wider run has already passed.

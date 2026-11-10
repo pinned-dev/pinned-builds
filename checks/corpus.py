@@ -23,6 +23,9 @@ class CorpusTests(unittest.TestCase):
         self.assertGreaterEqual(len(entries),50)
         self.assertEqual(len({e['repository'].lower() for e in entries}),len(entries))
         self.assertEqual(len(c.scope(campaign='pilot-50')['packages']),50)
+        self.assertEqual(c.scope(campaign='inventory-100')['packages'],sorted(e['name'] for e in entries))
+        self.assertEqual(set(c.scope(campaign='expansion-100')['packages']) | set(c.scope(campaign='pilot-50')['packages']), {e['name'] for e in entries})
+        self.assertFalse(set(c.scope(campaign='expansion-100')['packages']) & set(c.scope(campaign='pilot-50')['packages']))
 
     def mutated_catalog(self,mutate):
         with tempfile.TemporaryDirectory() as directory:
@@ -205,5 +208,30 @@ class CorpusTests(unittest.TestCase):
             root=Path(directory);(root/'fmt').mkdir()
             (root/'fmt/capture.json').write_text(json.dumps({'schema':'pinned-builds/capture-result/v1','package':'fmt','status':'SOURCE_FAIL','source':{'run_id':'wrong'}}))
             with self.assertRaises(ValueError):c.summarize(root,1,root/'out',c.scope(only='fmt'),{'run_id':'expected'})
+
+    def test_missing_scope_reports_exact_names(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory); value=c.scope(campaign='expansion-100',batch='2/2')
+            self.assertEqual(c.summarize(root,len(value['packages']),root/'out',value),1)
+            metrics=json.loads((root/'out/metrics.json').read_text())
+            self.assertEqual(metrics['expected_packages'],value['packages'])
+            self.assertEqual(metrics['missing_packages'],value['packages'])
+            self.assertEqual(metrics['counts']['MISSING'],25)
+
+    def test_duplicate_or_unknown_campaign_member_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);shutil.copytree(ROOT/'corpus',root/'corpus')
+            path=root/'corpus/campaigns/pilot-50.json';original=json.loads(path.read_text())
+            for names in ([original['packages'][0]]*2,['unknown-package']):
+                value=dict(original,packages=names);path.write_text(json.dumps(value))
+                with self.assertRaises(ValueError):c.scope(campaign='pilot-50',root=root)
+
+    def test_large_catalog_requires_and_accepts_partition(self):
+        packages=[{'name':f'package-{i:04}'} for i in range(2000)]
+        with mock.patch.object(c,'catalog',return_value={'packages':packages}):
+            with self.assertRaises(ValueError):c.scope(only='all')
+            parts=[c.scope(only='all',batch=f'{i}/8')['packages'] for i in range(1,9)]
+            self.assertEqual([len(part) for part in parts],[250]*8)
+            self.assertEqual(len(set(n for part in parts for n in part)),2000)
 
 if __name__=='__main__': unittest.main()

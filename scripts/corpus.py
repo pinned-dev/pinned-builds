@@ -282,9 +282,17 @@ def summarize(root,expected,output,scope_value=None,source=None):
     counts=Counter(r['status'] for r in results)
     counts.update({'MISSING':len(missing)})
     tags=Counter(t for r in results if r['status']=='CAPTURED' for t in r['declared_feature_tags'])
+    cmake_types=Counter()
+    for result in results:
+        if result['status']=='CAPTURED': cmake_types.update(result['capture'].get('cmake_target_types',{}))
     metrics={'schema':'pinned-builds/capture-summary/v1','expected':expected,'expected_packages':sorted(selected),'missing_packages':missing,'scope':scope_value,'received':len(results),'counts':dict(counts),'declared_feature_tags_captured':dict(sorted(tags.items())),
              'captured_bytes':sum(r['capture'].get('bytes',0) for r in results if r['status']=='CAPTURED'),
              'ninja_targets':sum(r['capture'].get('ninja_targets',0) for r in results if r['status']=='CAPTURED'),
+             'captured_files':sum(r['capture'].get('files',0) for r in results if r['status']=='CAPTURED'),
+             'ninja_rules':sum(r['capture'].get('ninja_rules',0) for r in results if r['status']=='CAPTURED'),
+             'ninja_fragments':sum(r['capture'].get('ninja_fragments',0) for r in results if r['status']=='CAPTURED'),
+             'cmake_target_types':dict(sorted(cmake_types.items())),
+             'compilation_database':dict(Counter(r['capture'].get('compilation_database','UNKNOWN') for r in results if r['status']=='CAPTURED')),
              'builds_executed':0,'tests_executed':0,'pinned_executions':0,'results':results}
     write(output/'metrics.json',metrics)
     rows=['# Native capture pilot','',f"Expected: {expected}; received: {len(results)}.",'',

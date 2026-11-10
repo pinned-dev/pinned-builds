@@ -1,0 +1,15 @@
+# Declared configure profile: use the public issue tracker for package contact.
+# Original generated evidence is captured unchanged; no publication redaction.
+function(pb_public_xz_contact)
+  get_directory_property(definitions COMPILE_DEFINITIONS)
+  set(public_definitions)
+  foreach(definition IN LISTS definitions)
+    if(definition MATCHES "^PACKAGE_BUGREPORT=")
+      list(APPEND public_definitions "PACKAGE_BUGREPORT=\"https://github.com/tukaani-project/xz/issues\"")
+    else()
+      list(APPEND public_definitions "${definition}")
+    endif()
+  endforeach()
+  set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS "${public_definitions}")
+endfunction()
+cmake_language(DEFER CALL pb_public_xz_contact)

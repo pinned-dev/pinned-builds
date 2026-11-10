@@ -2323,7 +2323,7 @@
       "url": "https://codeload.github.com/wolfSSL/wolfssl/tar.gz/decea12e223869c8f8f3ab5a53dc90b69f436eb2",
       "sha256": "7a5ca6f13a58a93fb2eb361ff3f556867ee9da1c0f395098c4b7b0af292366d4",
       "archive_top": "wolfssl-decea12e223869c8f8f3ab5a53dc90b69f436eb2",
-      "license": "GPL-2.0-or-later",
+      "license": "GPL-3.0-or-later",
       "license_files": [
         "COPYING"
       ],
@@ -2469,7 +2469,8 @@
         "static-or-shared",
         "compression",
         "compiler-probes"
-      ]
+      ],
+      "cmake_hook": "public-metadata.cmake"
     },
     {
       "name": "yaml-cpp",
