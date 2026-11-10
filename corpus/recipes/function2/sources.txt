@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+function2 7b313824b8ea1aaf9be1242126f2f05931970f1af30f1ba07659fc0b57a27e95 function2-a354bd093d2b6e50c9325dbce84d20b4e77aabc6 BSL-1.0 https://codeload.github.com/Naios/function2/tar.gz/a354bd093d2b6e50c9325dbce84d20b4e77aabc6

@@ -76,10 +76,18 @@ RECIPE=$1 TC_IN=$2 W_IN=$3 MANIFEST_OUT=$4
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd -P)
 [[ $RECIPE =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "bad recipe name: $RECIPE"
-RDIR=$ROOT/recipes/$RECIPE
+export PB_RECIPE_SET=${PB_RECIPE_SET:-recipes}
+case "$PB_RECIPE_SET" in
+  recipes) RDIR=$ROOT/recipes/$RECIPE ;;
+  corpus) RDIR=$ROOT/corpus/recipes/$RECIPE ;;
+  *) die "unknown recipe set" ;;
+esac
 if [ ! -f "$RDIR/sources.txt" ] || [ ! -f "$RDIR/build.sh" ]; then
   die "no recipe at $RDIR"
 fi
+export PB_MODE=${PB_MODE:-full}
+[ "$PB_RECIPE_SET" != corpus ] || [ "$PB_MODE" = configure ] || die "corpus recipes are configure-only"
+case "$PB_MODE" in full|configure) ;; *) die "PB_MODE must be full or configure" ;; esac
 STAGE=toolchain
 TC=$(realpath -e "$TC_IN") || die "no toolchain at $TC_IN"
 if [ -e "$W_IN" ] || [ -L "$W_IN" ]; then die "work dir exists: $W_IN"; fi
@@ -232,6 +240,7 @@ set +e
 "$ROOT/scripts/sandbox.sh" --ro "$ROOT" --ro "$TC" --rw "$W" -- env -i \
   PATH=/usr/bin:/bin HOME="$W/home" TMPDIR="$W/tmp" LC_ALL=C TZ=UTC \
   SOURCE_DATE_EPOCH=1 LD_LIBRARY_PATH="$W/hostlibs" \
+  PB_MODE="$PB_MODE" PB_REFERENCE_SCRIPT="$ROOT/scripts/reference.py" \
   PB_LIB="$ROOT/scripts/recipe-lib.sh" PB_RECIPE_DIR="$RDIR" PB_WORK="$W" \
   PB_SRC="$W/src" PB_BUILD="$W/build" PB_OUT="$W/out" PB_PREFIX="$W/out/root/pb" PB_INSTALL_PREFIX=/pb \
   PB_TOOLCHAIN="$TC" PB_TOOLCHAIN_FILE="$W/toolchain.cmake" PB_CMAKE="$CMAKE" \
@@ -242,7 +251,7 @@ set -e
 # Every input the compile and link steps read (ninja's dependency log, fed by
 # the compiler and by ld --dependency-file) must lie in the toolchain, the
 # work directory or the repository.
-if [ "$RC" -eq 0 ]; then
+if [ "$RC" -eq 0 ] && [ "$PB_MODE" = full ]; then
   dirs=()
   for d in "$W/build"/*/; do
     if [ -f "$d/build.ninja" ]; then dirs+=("${d%/}"); fi
@@ -268,6 +277,13 @@ python3 -I "$ROOT/scripts/write-manifest.py" \
   --toolchain-archive-sha256 "${PB_TOOLCHAIN_ARCHIVE_SHA256:-}" \
   --started "$START" --finished "$END" --output "$MANIFEST_OUT"
 echo "build-recipe: manifest $MANIFEST_OUT"
+if [ -n "${PB_REFERENCE_OUT:-}" ]; then
+  STAGE=reference
+  PB_MODE="$PB_MODE" python3 -I "$ROOT/scripts/reference.py" capture \
+    --work "$W" --repo "$ROOT" --toolchain "$TC" \
+    --result "$MANIFEST_OUT" --output "$PB_REFERENCE_OUT" \
+    --visibility "${PB_REFERENCE_VISIBILITY:-local-only}"
+fi
 # The exit status is the build's; the summary names its stage.
 STAGE=$STAGE_BUILD
 exit "$RC"

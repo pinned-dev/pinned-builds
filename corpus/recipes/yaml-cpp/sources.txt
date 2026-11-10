@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+yaml-cpp 2fd3bf695ccc056835a70dd6d3046312cc1004e8338b8b5c91646918a27b7ef6 yaml-cpp-f7320141120f720aecc4c32be25586e7da9eb978 MIT https://codeload.github.com/jbeder/yaml-cpp/tar.gz/f7320141120f720aecc4c32be25586e7da9eb978

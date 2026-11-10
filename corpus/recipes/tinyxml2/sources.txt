@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+tinyxml2 d0bcc7bf4e3e8ed7d83156e681ab9cb72bd636e5b2bb61d6f7199b32c007707f tinyxml2-9148bdf719e997d1f474be6bcc7943881046dba1 Zlib https://codeload.github.com/leethomason/tinyxml2/tar.gz/9148bdf719e997d1f474be6bcc7943881046dba1

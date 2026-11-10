@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake yaml-cpp "$PB_SRC/yaml-cpp" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DYAML_CPP_BUILD_TESTS=OFF \
+  -DYAML_CPP_BUILD_TOOLS=OFF \
+  -DYAML_CPP_BUILD_CONTRIB=OFF

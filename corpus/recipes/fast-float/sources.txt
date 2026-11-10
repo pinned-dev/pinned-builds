@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+fast-float 74224e92a52544d8496c6e2ac066703f6a4ae0ecd4421159bdd9d17ea91d925e fast_float-50a80a73ab2ab256ba1c3bf86923ddd8b4202bc7 MIT https://codeload.github.com/fastfloat/fast_float/tar.gz/50a80a73ab2ab256ba1c3bf86923ddd8b4202bc7

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+tl-optional 456a6cc2351725de53ef88cd5763d82342ae760027f5f20374028e0b1090ae62 optional-3a1209de8370bf5fe16362934956144b49591565 CC0-1.0 https://codeload.github.com/TartanLlama/optional/tar.gz/3a1209de8370bf5fe16362934956144b49591565

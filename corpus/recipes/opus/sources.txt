@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+opus 18e9d9e26565e279753aafb6823a482ef85ea9fddbfdcdbff8fd095b12dd96b6 opus-ddbe48383984d56acd9e1ab6a090c54ca6b735a6 BSD-3-Clause https://codeload.github.com/xiph/opus/tar.gz/ddbe48383984d56acd9e1ab6a090c54ca6b735a6

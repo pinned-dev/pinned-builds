@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake expat "$PB_SRC/expat/expat" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DEXPAT_BUILD_TESTS=OFF \
+  -DEXPAT_BUILD_EXAMPLES=OFF \
+  -DEXPAT_BUILD_TOOLS=OFF \
+  -DEXPAT_BUILD_DOCS=OFF

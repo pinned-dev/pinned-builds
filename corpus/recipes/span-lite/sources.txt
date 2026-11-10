@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+span-lite 1e4e274b04566137f296ec4cb6a531841ec8c9f0bf333a75c32a52b76ccee44f span-lite-50f55c59d1b66910837313c40d11328d03447a41 BSL-1.0 https://codeload.github.com/martinmoene/span-lite/tar.gz/50f55c59d1b66910837313c40d11328d03447a41

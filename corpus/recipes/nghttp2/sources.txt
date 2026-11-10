@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+nghttp2 64d6d9c53862b14b965f1f390d41815b8cff99369ed6702c00c73ab869229765 nghttp2-319bf015de8fa38e21ac271ce2f7d61aa77d90cb MIT https://codeload.github.com/nghttp2/nghttp2/tar.gz/319bf015de8fa38e21ac271ce2f7d61aa77d90cb

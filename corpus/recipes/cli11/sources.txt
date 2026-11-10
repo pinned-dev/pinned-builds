@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+cli11 c91e8768600e61be11f7250e3cf3e71afd9d0f18f9c9e9e209a8e084ca08cd85 CLI11-4160d259d961cd393fd8d67590a8c7d210207348 BSD-3-Clause https://codeload.github.com/CLIUtils/CLI11/tar.gz/4160d259d961cd393fd8d67590a8c7d210207348

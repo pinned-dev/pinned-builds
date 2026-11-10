@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+expat 86f0e8afaf4cd72d806e32afb68e1e84bb2c6e5b0b40de2a34c0970bf8d08c40 libexpat-f9a3eeb3e09fbea04b1c451ffc422ab2f1e45744 MIT https://codeload.github.com/libexpat/libexpat/tar.gz/f9a3eeb3e09fbea04b1c451ffc422ab2f1e45744

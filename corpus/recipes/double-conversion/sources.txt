@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+double-conversion ab73e8fcbe8c30cc44014449020747e3223176e71a106a1b9088b53f91d744a3 double-conversion-ae0dbfeb9744efd216c95b30555049d75d47116a BSD-3-Clause https://codeload.github.com/google/double-conversion/tar.gz/ae0dbfeb9744efd216c95b30555049d75d47116a

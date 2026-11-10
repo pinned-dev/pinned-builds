@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+libwebp e3a6189054f81e06a5fbadb0d5c5a4678018c6df6d37e17bd99a86f66c650a97 libwebp-a4d7a715337ded4451fec90ff8ce79728e04126c BSD-3-Clause https://codeload.github.com/webmproject/libwebp/tar.gz/a4d7a715337ded4451fec90ff8ce79728e04126c

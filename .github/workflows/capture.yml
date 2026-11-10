@@ -1,0 +1,148 @@
+name: native-capture
+
+on:
+  pull_request:
+    paths: ['corpus/**', 'scripts/**', 'checks/**', '.github/workflows/**', 'toolchain.lock']
+  push:
+    branches: [main]
+    paths: ['corpus/**', 'scripts/**', 'checks/**', '.github/workflows/**', 'toolchain.lock']
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'One package or all; empty uses the reviewed selection file'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-capture-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      packages: ${{ steps.plan.outputs.packages }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check capture boundaries and catalog
+        run: |
+          python3 -I checks/native-reference.py
+          python3 -I checks/corpus.py
+          python3 -I checks/manifest-completeness.py
+      - name: Select packages
+        id: plan
+        env:
+          ONLY: ${{ inputs.package }}
+        run: |
+          packages=$(python3 -I scripts/corpus.py plan --only "$ONLY")
+          echo "packages=$packages" >> "$GITHUB_OUTPUT"
+          echo "count=$(jq length <<< "$packages")" >> "$GITHUB_OUTPUT"
+      - name: Download and verify native toolchain
+        run: |
+          mkdir -p "$RUNNER_TEMP/toolchain"
+          scripts/fetch-toolchain.sh download "$RUNNER_TEMP/toolchain/toolchain.tar.zst"
+          scripts/fetch-toolchain.sh install "$RUNNER_TEMP/toolchain/toolchain.tar.zst" "$RUNNER_TEMP/toolchain-check"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-corpus-toolchain
+          path: ${{ runner.temp }}/toolchain/toolchain.tar.zst
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+
+  capture:
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        package: ${{ fromJSON(needs.plan.outputs.packages) }}
+    name: capture (${{ matrix.package }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: native-corpus-toolchain
+          path: ${{ runner.temp }}/toolchain
+      - name: Install native toolchain
+        run: |
+          scripts/fetch-toolchain.sh install "$RUNNER_TEMP/toolchain/toolchain.tar.zst" "$RUNNER_TEMP/native-toolchain"
+          rm -f "$RUNNER_TEMP/toolchain/toolchain.tar.zst"
+      - name: Enable isolated native configure
+        run: |
+          f=/proc/sys/kernel/apparmor_restrict_unprivileged_userns
+          if [ -e "$f" ]; then
+            sudo sysctl -q -w kernel.apparmor_restrict_unprivileged_userns=0
+            [ "$(cat "$f")" = 0 ]
+          fi
+          sudo systemctl stop docker.socket docker.service containerd.service
+          sudo systemctl mask docker.socket docker.service containerd.service
+          for s in /var/run/docker.sock /run/containerd/containerd.sock; do
+            if sudo curl --silent --max-time 5 --unix-socket "$s" -o /dev/null http://d/_ping; then
+              echo 'sandbox socket isolation failed' >&2
+              exit 1
+            fi
+          done
+      - name: Configure and capture native graph
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          export PB_TOOLCHAIN_ARCHIVE_SHA256=$(sed -n 's/^TOOLCHAIN_SHA256=//p' toolchain.lock)
+          python3 -I scripts/corpus.py run "$PACKAGE" "$RUNNER_TEMP/native-toolchain" \
+            "$RUNNER_TEMP/native-work" "$RUNNER_TEMP/capture"
+      - name: Validate public artifact privacy
+        id: privacy
+        if: always()
+        run: |
+          test -f "$RUNNER_TEMP/capture/capture.json"
+          python3 -I scripts/public_check.py "$RUNNER_TEMP/capture"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ always() && steps.privacy.outcome == 'success' }}
+        with:
+          name: capture-${{ matrix.package }}
+          path: ${{ runner.temp }}/capture/
+          retention-days: 14
+          compression-level: 6
+          if-no-files-found: error
+
+  summary:
+    needs: [plan, capture]
+    if: ${{ always() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: capture-*
+          path: ${{ runner.temp }}/captures
+      - name: Summarize all expected captures
+        env:
+          EXPECTED: ${{ needs.plan.outputs.count }}
+        run: |
+          python3 -I scripts/corpus.py summarize "$RUNNER_TEMP/captures" \
+            --expected "$EXPECTED" --output "$RUNNER_TEMP/summary"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: native-capture-summary
+          path: ${{ runner.temp }}/summary/
+          retention-days: 14
+          if-no-files-found: error

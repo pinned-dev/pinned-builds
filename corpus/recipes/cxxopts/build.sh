@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake cxxopts "$PB_SRC/cxxopts" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DCXXOPTS_BUILD_TESTS=OFF \
+  -DCXXOPTS_BUILD_EXAMPLES=OFF

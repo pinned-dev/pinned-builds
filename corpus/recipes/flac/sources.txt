@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+flac 0fa04cfc14b1ac837ab969b2ccfcd5ac33c6c0e1eac94ac9a7edbc9b52b54a6e flac-28e4f0528c76b296c561e922ba67d43751990599 BSD-3-Clause https://codeload.github.com/xiph/flac/tar.gz/28e4f0528c76b296c561e922ba67d43751990599

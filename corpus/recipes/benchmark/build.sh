@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake benchmark "$PB_SRC/benchmark" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DBENCHMARK_ENABLE_TESTING=OFF \
+  -DBENCHMARK_ENABLE_GTEST_TESTS=OFF

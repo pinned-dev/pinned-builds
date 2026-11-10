@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake rapidjson "$PB_SRC/rapidjson" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DRAPIDJSON_BUILD_TESTS=OFF \
+  -DRAPIDJSON_BUILD_EXAMPLES=OFF \
+  -DRAPIDJSON_BUILD_DOC=OFF

@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+ms-gsl a4e61b4b2383acb8fe398ff11a16fe1719d5d902ac341b078ec95a45b2925bd3 GSL-2828399820ef4928cc89b65605dca5dc68efca6e MIT https://codeload.github.com/microsoft/GSL/tar.gz/2828399820ef4928cc89b65605dca5dc68efca6e

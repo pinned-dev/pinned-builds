@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+curl a85fb51143b95bb6aaacf761d7a88de7bc66e9db55804752b6d66140d262e622 curl-1c3149881769e7bd79b072e48374e4c2b3678b2f curl https://codeload.github.com/curl/curl/tar.gz/1c3149881769e7bd79b072e48374e4c2b3678b2f

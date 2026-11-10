@@ -1,0 +1,8 @@
+# shellcheck shell=bash
+. "$PB_LIB"
+pb_cmake jansson "$PB_SRC/jansson" \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DJANSSON_BUILD_DOCS=OFF \
+  -DJANSSON_EXAMPLES=OFF \
+  -DJANSSON_BUILD_TESTS=OFF

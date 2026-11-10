@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+string-view-lite cdc7de644d9a67780552890b7ff0fdd9bf9dc16da97b2578410578f94272b0ea string-view-lite-a47222b9855dd6e6d1eac38acaa495822e2caa69 BSL-1.0 https://codeload.github.com/martinmoene/string-view-lite/tar.gz/a47222b9855dd6e6d1eac38acaa495822e2caa69

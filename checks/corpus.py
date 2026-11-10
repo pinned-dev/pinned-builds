@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+"""Negative publication checks and real subprocess failure receipts."""
+import contextlib
+import hashlib
+import importlib.util
+import io
+import json
+from pathlib import Path
+import shutil
+import sys
+import tempfile
+import unittest
+from unittest import mock
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[1]
+spec=importlib.util.spec_from_file_location('corpus',ROOT/'scripts/corpus.py')
+c=importlib.util.module_from_spec(spec); spec.loader.exec_module(c)
+
+
+class CorpusTests(unittest.TestCase):
+    def test_inventory_is_50_unique_pinned_packages(self):
+        entries=c.catalog()['packages']
+        self.assertEqual(len(entries),50)
+        self.assertEqual(len({e['repository'] for e in entries}),50)
+
+    def mutated_catalog(self,mutate):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory); shutil.copytree(ROOT/'corpus',root/'corpus')
+            p=root/'corpus/packages.json'; data=json.loads(p.read_text()); mutate(data); p.write_text(json.dumps(data))
+            with self.assertRaises(ValueError): c.catalog(root)
+
+    def test_duplicate_package_rejected(self):
+        self.mutated_catalog(lambda d:d['packages'].append(d['packages'][0]))
+
+    def test_license_escape_rejected(self):
+        self.mutated_catalog(lambda d:d['packages'][0].update(license_files=['../secret']))
+
+    def test_source_url_drift_rejected(self):
+        self.mutated_catalog(lambda d:d['packages'][0].update(url='https://example.org/archive'))
+
+    def test_option_drift_rejected(self):
+        self.mutated_catalog(lambda d:d['packages'][0]['defines'].append('NEW_FLAG=ON'))
+
+    def test_credentials_rejected(self):
+        self.assertIn('credential-pattern',c.privacy.problems(('github_'+'pat_'+'a'*30).encode()))
+
+    def test_private_home_rejected(self):
+        self.assertIn('personal-home-path',c.privacy.problems(('/home/'+'test-user'+'/src').encode()))
+        self.assertFalse(c.privacy.problems(b'/home/runner/work/public-repo'))
+
+    def test_private_workspace_rejected(self):
+        self.assertIn('private-work-path',c.privacy.problems(('/work/'+'task-data').encode()))
+
+    def test_ip_and_internal_host_rejected(self):
+        address='.'.join(map(str,[192,168,12,8]))
+        self.assertIn('ip-address',c.privacy.problems(address.encode()))
+        self.assertIn('internal-hostname',c.privacy.problems(('build'+'.internal').encode()))
+        self.assertIn('ip-address',c.privacy.problems(('fd00'+':'*2+'1').encode()))
+
+    def test_email_rejected_but_license_preserved(self):
+        address=('contact'+'@'+'example.org').encode()
+        self.assertIn('personal-email',c.privacy.problems(address))
+        self.assertFalse(c.privacy.problems(address,legal_notice=True))
+
+    def test_symlink_not_followed(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); (root/'link').symlink_to('/etc/passwd')
+            self.assertEqual(c.privacy.scan(root)['findings'][0]['reasons'],['symlink'])
+
+    def test_nul_rejected(self):
+        self.assertIn('nul-byte',c.privacy.problems(b'abc\0def'))
+
+    def subprocess_case(self,script,expected,timeout=10):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); (root/'scripts').mkdir(); (root/'tc').mkdir()
+            p=root/'scripts/build-recipe.sh'; p.write_text('#!/bin/sh\n'+script+'\n'); p.chmod(0o755)
+            entry={'name':'test','repository':'https://github.com/example/public','version':'v1','commit':'a'*40,'sha256':'b'*64,'license':'MIT','feature_tags':['c']}
+            with mock.patch.object(c,'ROOT',root),mock.patch.object(c,'catalog',return_value={'packages':[entry]}),contextlib.redirect_stdout(io.StringIO()):
+                rc=c.capture('test',root/'tc',root/'work',root/'out',local=True,timeout=timeout)
+            result=json.loads((root/'out/capture.json').read_text())
+            self.assertNotEqual(rc,0); self.assertEqual(result['status'],expected)
+            self.assertEqual(result['pinned_status'],'NOT_RUN')
+            self.assertEqual(list((root/'out').iterdir()),[root/'out/capture.json'])
+
+    def test_exit_zero_without_manifest_is_infra_error(self):
+        self.subprocess_case('exit 0','INFRA_ERROR')
+
+    def test_real_source_failure_is_not_pass(self):
+        self.subprocess_case('echo "download failed:"; exit 2','SOURCE_FAIL')
+
+    def test_real_configure_failure_is_not_pass(self):
+        self.subprocess_case('echo \'{"status":"FAIL","phases":[{"phase":"configure","status":"FAIL","returncode":7}]}\' > "$4"; exit 7','CONFIGURE_FAIL')
+
+    def test_missing_capture_after_native_pass_fails(self):
+        self.subprocess_case('echo \'{"status":"PASS","phases":[]}\' > "$4"; exit 0','CAPTURE_FAIL')
+
+    def test_real_timeout_is_not_pass(self):
+        self.subprocess_case('sleep 5','TIMEOUT',timeout=.05)
+
+
+    def reference_fixture(self,root):
+        files={
+            'build/test/build.ninja':b'build all: phony\n',
+            'reference/introspection/test/targets.txt':b'all: phony\n',
+            'reference/introspection/test/rules.txt':b'phony\n',
+            'build/test/.cmake/api/v1/reply/model.json':b'{"configurations":[]}',
+        }
+        objects=[{'kind':kind,'jsonFile':'model.json'} for kind in ('codemodel','cache','cmakeFiles','toolchains')]
+        files['build/test/.cmake/api/v1/reply/index-test.json']=json.dumps({'objects':objects}).encode()
+        entries=[]
+        for rel,data in files.items():
+            p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_bytes(data)
+            entries.append({'path':rel,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+        m={'schema':'pinned-builds/native-reference/v1','recipe':'test','native_status':'PASS','pinned_status':'NOT_RUN','roots':{'work':'/sample/work','repository':'/sample/repo','toolchain':'/sample/tools'},'files':entries,'introspection':[{'project':'test','tool':tool,'rows':1} for tool in ('targets','rules')]}
+        (root/'reference.json').write_text(json.dumps(m))
+        return m
+
+    def test_graph_byte_tamper_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.reference_fixture(root)
+            self.assertEqual(c.inspect_reference(root,'test')['ninja_targets'],1)
+            (root/'build/test/build.ninja').write_text('build other: phony\n')
+            with self.assertRaises(ValueError): c.inspect_reference(root,'test')
+
+    def test_unlisted_file_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.reference_fixture(root); (root/'extra').write_text('extra')
+            with self.assertRaises(ValueError): c.inspect_reference(root,'test')
+
+    def test_empty_symlink_directory_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); self.reference_fixture(root); (root/'link').symlink_to(root/'missing',target_is_directory=True)
+            with self.assertRaises(ValueError): c.inspect_reference(root,'test')
+
+    def test_forged_node_count_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); m=self.reference_fixture(root); m['introspection'][0]['rows']=100
+            (root/'reference.json').write_text(json.dumps(m))
+            with self.assertRaises(ValueError): c.inspect_reference(root,'test')
+
+    def test_missing_receipts_fail_summary(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); output=root/'summary'
+            self.assertEqual(c.summarize(root,50,output),1)
+            self.assertEqual(json.loads((output/'metrics.json').read_text())['counts']['MISSING'],50)
+
+if __name__=='__main__': unittest.main()

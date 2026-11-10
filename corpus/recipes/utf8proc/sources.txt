@@ -1,0 +1,2 @@
+# name sha256 top-level-dir spdx url
+utf8proc 43f09c9d0a2d3fcbb4eba77729dd603b0ac470ccace59a2961f82a8b6323445f utf8proc-a1b99daa2a3393884220264c927a48ba1251a9c6 MIT https://codeload.github.com/JuliaStrings/utf8proc/tar.gz/a1b99daa2a3393884220264c927a48ba1251a9c6
